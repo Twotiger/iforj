@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-6 col-md-offset-3">
+<ul class="nav nav-tabs">
+   <li {% if flag == 'question' %}class="active"{% endif %} id='question'><a href="/search?type=question&q={{ q }}">问题</a></li>
+   <li id='people' {% if flag == 'people' %}class="active"{% endif %}><a href="/search?type=people&q={{ q }}">用户</a></li>
+   <li id='topic' {% if flag == 'topic' %}class="active"{% endif %}><a href="/search?type=topic&q={{ q }}">话题</a></li>
+
+</ul>
+</div>
+<br/>
+<div id="questions" class="col-md-6 col-md-offset-3" style="disabled:block;">
+    {% for question in questions %}
+
+      <div class="panel panel-default">
+   <div class="panel-heading">
+      <h3 class="panel-title" style="color:#337ab7">
+         <a href="{% url 'question' question.id %}" >{{ question.title }}</a>
+      </h3><a href="#"><span class="badge">{{ question.q_type }}</span></a>
+   </div>
+   <div class="panel-body">
+      回复:{{ question.q_times }}
+   </div>
+</div>
+    {% endfor %}
+</div>
+
+<div id="users" class="col-md-6 col-md-offset-3" style="disabled:none;">
+    <ul class="list users">
+        {% for user in users %}
+            <li class="user item">
+                <div class="panel">
+                    <div class="top">
+                    <div class="panel-heading">
+                        <a href="#" class="left avatar-link">
+                        <img src="/static/image/user.jpg" alt="{{ user }}" class="avatar" style="float:left;width:60px;heigth:60px;">
+                            </a>
+                        <div class="info">
+                            <a href="#"><strong>{{ user.name }}</strong></a>
+                            <p>{{ user.introduction }}</p>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="panel-body">
+                        <a href="#" class="btn-sm btn-primary" style="text-decoration: none;">
+                        关注</a>
+                    <div class="panel-foot">
+                        <strong>{{ user.question_set.count }}</strong>&nbsp;<a href="#" class="col">问题</a>&nbsp;&nbsp;
+                        <strong>{{ user.answer_set.count }}</strong>&nbsp;<a href="#" class="col">回答</a>&nbsp;&nbsp;
+
+                        <strong>0</strong>&nbsp;<a href="#" class="col">关注者</a>
+                    </div>
+                </div>
+                </div>
+            </li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="col-md-6 col-md-offset-3" id="topics" style="disabled:none;">
+    {% for topic in topics %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title" style="color:#337ab7">
+
+                    <a href="#">{{ topic.name }}</a>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <a href="#" class="btn-sm btn-primary" style="text-decoration: none;">关注</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+

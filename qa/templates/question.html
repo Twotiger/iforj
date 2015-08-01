@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% load staticfiles %}
+
+<script src="//cdn.bootcss.com/summernote/0.6.13/summernote.min.js"></script>
+<script  src="/static/js/summernote/summernote-zh-CN.js"></script>
+
+<style type="text/css">
+@import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
+@import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
+@import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
+
+</style>
+{% endblock css %}
+
+{% block title %}{{ questions.title }} - python+{% endblock %}
+{% block content %}
+
+    <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
+
+        <div class="panel panel-default">
+
+          <div class="panel-heading">
+              <h3 class="panel-title">{{ questions.title }}</h3>
+          </div>
+          <div class="panel-body">
+               {{ questions.text }}
+          </div>
+          <div class="panel-footer">
+{#            <img src="{{ questions.user.image }}"#}
+{#               class="img-circle" style="height: 30px;">#}
+                   <a href="#">{{ questions.user }}</a>
+            </div>
+        </div>
+    </div>
+
+
+{#  循环打印所有答案#}
+    <div class="col-md-6 col-md-offset-3 answers" >
+    {% for answer in answers %}
+{#      <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>#}
+      <div class="panel panel-default">
+{#            如果是我写的评论,添加个可编辑属性#}
+          <div class="panel-body {% ifequal answered answer.user.id %}click2edit"{% endifequal %}>
+
+            {{ answer.text|safe }}
+       </div>
+
+          <div class="panel-footer">
+{#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
+              <a href="#">{{ answer.user }}</a>
+
+              {% ifequal answered answer.user.id %}
+
+                  <a  href="#" class='pull-right asdf'>
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        编辑</a>
+                   <a href="#" class='pull-right opencomment' style="padding-right: 10px">
+                       <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        评论</a>
+                {% else %}
+                    <a href="#" class='pull-right opencomment'>
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                        评论</a>
+              {% endifequal %}
+
+              {{ answer.a_time }}
+          </div>
+          <div class="comment" cid="{{ answer.id }}"></div>
+      </div>
+    {% endfor %}
+    </div>
+
+
+{% if answered %}
+    <div class="col-md-6 col-md-offset-3" >
+       该问题你已经回答过, {{ answered }}
+    </div>
+{% else %}
+    {% if name %}
+        <!--     编辑器 -->
+      <div class="col-md-6 col-md-offset-3" >
+      <div id="editor"></div>
+      <br/>
+      <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+    {% else %}
+        <div class="col-md-6 col-md-offset-3" >
+            <button type="button" class="btn btn-primary btn-lg btn-block commit" data-toggle="modal"
+     data-target="#login">加入我们</button>
+        </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}
+
+
+{% block js %}
+<script>
+
+$('.asdf').click(function(){
+  $('.click2edit').summernote({
+    toolbar: [
+        ['style', ['bold', 'italic', 'underline']],
+        ['font', ['strikethrough']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['Layout',['fullscreen']],
+        ['link',['link']],
+        ['insert',['picture']],],
+    focus: true});
+    $(this).parent().html("<button class=\"save\" onclick=\"saveanswer(this)\">提交未完成</button>");
+});
+
+// $('.save').click(function(){
+//   alert('save');
+//     var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+//   $('.click2edit').destroy();
+// });
+
+function saveanswer(id){
+  alert('真的未完成');
+
+};
+
+
+    // $('#editor').summernote();
+
+    $('#editor').summernote({
+        toolbar: [
+        ['style', ['bold', 'italic', 'underline']],
+        ['font', ['strikethrough']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['Layout',['fullscreen']],
+        ['link',['link']],
+        ['insert',['picture']],
+  ],
+  height: 300,                 // set editor height
+    lang: 'zh-CN',
+  minHeight: null,             // set minimum height of editor
+  maxHeight: null,             // set maximum height of editor
+
+{#  focus: true#}
+
+});
+
+{##}
+{#function sendFile(file, editor, $editable){#}
+{#$(".note-toolbar.btn-toolbar").append('#}
+{#正在上传图片#}
+{#');#}
+{#var filename = false;#}
+{#try{#}
+{#filename = file['name'];#}
+{#} catch(e){filename = false;}#}
+{#if(!filename){$(".note-alarm").remove();}#}
+{#//以上防止在图片在编辑器内拖拽引发第二次上传导致的提示错误#}
+{#var ext = filename.substr(filename.lastIndexOf("."));#}
+{#ext = ext.toUpperCase();#}
+{#var timestamp = new Date().getTime();#}
+{#var name = timestamp+"_"+$("#summernote").attr('aid')+ext;#}
+{#//name是文件名，自己随意定义，aid是我自己增加的属性用于区分文件用户#}
+{#data = new FormData();#}
+{#data.append("file", file);#}
+{#data.append("key",name);#}
+{#data.append("token",$("#summernote").attr('token'));#}
+{#$.ajax({#}
+{#data: data,#}
+{#type: "POST",#}
+{#url: "http://upload.qiniu.com",#}
+{#cache: false,#}
+{#contentType: false,#}
+{#processData: false,#}
+{#success: function(data) {#}
+{#//data是返回的hash,key之类的值，key是定义的文件名#}
+{#editor.insertImage($editable, $("#summernote").attr('url-head')+data['key']);#}
+{#//url-head是自己七牛云的domain#}
+{#$(".note-alarm").html("上传成功,请等待加载");#}
+{#setTimeout(function(){$(".note-alarm").remove();},3000);#}
+{#},#}
+{#error:function(){#}
+{#$(".note-alarm").html("上传失败");#}
+{#setTimeout(function(){$(".note-alarm").remove();},3000);#}
+{#}#}
+{#});#}
+{#}#}
+
+{#    #}
+{#$(document).ready(function() {#}
+{#$('#summernote').summernote({#}
+{#height: 300,#}
+{#focus:false,#}
+{#lang:'zh-CN',#}
+{#onImageUpload: function(files, editor, $editable) {#}
+{#sendFile(files[0],editor,$editable);#}
+{#}#}
+{#//方法重载#}
+{#});#}
+{#});#}
+
+// 图片自适应可能存在兼容问题
+$("img").addClass("carousel-inner img-responsive img-rounded");
+
+{#    提交评论#}
+    $(".commit").click(function() {
+        var sHTML = $('#editor').code();
+        var qid =$(".questions").attr('id');
+        $.ajax({
+            type:'POST',
+            url:'/commit/post/addanswer',
+            data:{"qid":qid,"text":sHTML},
+            
+{#          success: function(data){window.location.reload();}#}
+        });
+{#       alert(sHTML)#}
+    });
+
+    $(".opencomment").click(function () {
+        var comments = "<div>asdfasdf<div>asdfasdf</div><div>asdfasdf</div></div>";
+        var cid = $(this).parent().next().attr('cid');
+        $.ajax({
+            type:'POST',
+            url:'/commit/post/getcomment',
+            data:{"cid":cid},
+            success:function(){
+{#                使用js渲染模板,未完成#}
+                $(this).parent().next().html('asdf');
+            },
+            error:function(XMLResponse){alert(XMLResponse.responseText)}
+
+        });
+
+
+
+
+
+    });
+
+
+
+            $.ajaxSetup({
+             beforeSend: function(xhr, settings) {
+                 function getCookie(name) {
+                     var cookieValue = null;
+                     if (document.cookie && document.cookie != '') {
+                         var cookies = document.cookie.split(';');
+                         for (var i = 0; i < cookies.length; i++) {
+                             var cookie = jQuery.trim(cookies[i]);
+                             // Does this cookie string begin with the name we want?
+                         if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                             break;
+                         }
+                     }
+                 }
+                 return cookieValue;
+                 }
+                 if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                     // Only send the token to relative URLs i.e. locally.
+                     xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                 }
+             }
+        });
+   </script>
+{% endblock %}

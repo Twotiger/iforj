@@ -1,0 +1,19 @@
+strong {
+    color: black;
+}
+
+.info {
+    float:left;
+    margin-left: 20px;
+}
+
+.top {
+    height: 70px;
+}
+
+.users {
+    list-style: none;
+}
+.panel-foot {
+    float: right;
+}

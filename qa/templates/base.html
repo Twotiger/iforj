@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="Zh-cn">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+                                     initial-scale=1.0,
+                                     maximum-scale=1.0,
+                                     user-scalable=no">
+    <title>{% block title %}Python社区{% endblock %}</title>
+
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/search.css">
+    <script src="http://cdn.bootcss.com/jquery/1.11.2/jquery.min.js"></script>
+    <!-- <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script> -->
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    {% load staticfiles %}
+<style>
+    body{
+        background-image:url(/static/img/concrete_seamless.png);
+    }
+</style>
+    {% block css %}
+
+    {% endblock css %}
+
+
+</head>
+
+<body>
+ {% include 'nav.html' %}
+    {% block content %}
+        <div>这里是默认内容，所有继承自这个模板的，如果不覆盖就显示这里的默认内容。</div>
+    {% endblock %}
+
+{% block js %}
+{% endblock %}
+<script>
+{#    $('#login').modal().css({#}
+{#    width: 'auto'#}
+{#   #}
+{#   })#}
+
+</script>
+</body>
+</html>
