@@ -37,12 +37,12 @@
 
 
 {#  循环打印所有答案#}
-    <div class="col-md-6 col-md-offset-3 answers" >
+    <div class="col-md-6 col-md-offset-3" >
     {% for answer in answers %}
 {#      <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>#}
       <div class="panel panel-default">
 {#            如果是我写的评论,添加个可编辑属性#}
-          <div class="panel-body {% ifequal answered answer.user.id %}click2edit"{% endifequal %}>
+          <div class="panel-body{% ifequal answered answer.user.id %} click2edit{% endifequal %}">
 
             {{ answer.text|safe }}
        </div>
@@ -53,7 +53,7 @@
 
               {% ifequal answered answer.user.id %}
 
-                  <a  href="#" class='pull-right asdf'>
+                  <a class='pull-right asdf'>
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         编辑</a>
                    <a href="#" class='pull-right opencomment' style="padding-right: 10px">
@@ -107,7 +107,7 @@ $('.asdf').click(function(){
         ['Layout',['fullscreen']],
         ['link',['link']],
         ['insert',['picture']],],
-    focus: true});
+        focus: true});
     $(this).parent().html("<button class=\"save\" onclick=\"saveanswer(this)\">提交未完成</button>");
 });
 
@@ -135,7 +135,7 @@ function saveanswer(id){
         ['insert',['picture']],
   ],
   height: 300,                 // set editor height
-    lang: 'zh-CN',
+  lang: 'zh-CN',
   minHeight: null,             // set minimum height of editor
   maxHeight: null,             // set maximum height of editor
 
@@ -143,59 +143,8 @@ function saveanswer(id){
 
 });
 
-{##}
-{#function sendFile(file, editor, $editable){#}
-{#$(".note-toolbar.btn-toolbar").append('#}
-{#正在上传图片#}
-{#');#}
-{#var filename = false;#}
-{#try{#}
-{#filename = file['name'];#}
-{#} catch(e){filename = false;}#}
-{#if(!filename){$(".note-alarm").remove();}#}
-{#//以上防止在图片在编辑器内拖拽引发第二次上传导致的提示错误#}
-{#var ext = filename.substr(filename.lastIndexOf("."));#}
-{#ext = ext.toUpperCase();#}
-{#var timestamp = new Date().getTime();#}
-{#var name = timestamp+"_"+$("#summernote").attr('aid')+ext;#}
-{#//name是文件名，自己随意定义，aid是我自己增加的属性用于区分文件用户#}
-{#data = new FormData();#}
-{#data.append("file", file);#}
-{#data.append("key",name);#}
-{#data.append("token",$("#summernote").attr('token'));#}
-{#$.ajax({#}
-{#data: data,#}
-{#type: "POST",#}
-{#url: "http://upload.qiniu.com",#}
-{#cache: false,#}
-{#contentType: false,#}
-{#processData: false,#}
-{#success: function(data) {#}
-{#//data是返回的hash,key之类的值，key是定义的文件名#}
-{#editor.insertImage($editable, $("#summernote").attr('url-head')+data['key']);#}
-{#//url-head是自己七牛云的domain#}
-{#$(".note-alarm").html("上传成功,请等待加载");#}
-{#setTimeout(function(){$(".note-alarm").remove();},3000);#}
-{#},#}
-{#error:function(){#}
-{#$(".note-alarm").html("上传失败");#}
-{#setTimeout(function(){$(".note-alarm").remove();},3000);#}
-{#}#}
-{#});#}
-{#}#}
 
-{#    #}
-{#$(document).ready(function() {#}
-{#$('#summernote').summernote({#}
-{#height: 300,#}
-{#focus:false,#}
-{#lang:'zh-CN',#}
-{#onImageUpload: function(files, editor, $editable) {#}
-{#sendFile(files[0],editor,$editable);#}
-{#}#}
-{#//方法重载#}
-{#});#}
-{#});#}
+
 
 // 图片自适应可能存在兼容问题
 $("img").addClass("carousel-inner img-responsive img-rounded");

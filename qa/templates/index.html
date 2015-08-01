@@ -23,7 +23,7 @@
    <div class="panel-heading">
       <h3 class="panel-title" style="color:#337ab7">
          <a href="{% url 'question' question.id %}" >{{ question.title }}</a>
-      </h3><a href="#"><span class="badge">{{ question.q_type }}</span></a>
+      </h3><a href="/search/?type=topic&q={{ question.q_type }}"><span class="badge">{{ question.q_type }}</span></a>
    </div>
    <div class="panel-body">
       回复:{{ question.q_times }}
