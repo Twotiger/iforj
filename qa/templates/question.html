@@ -123,8 +123,6 @@ function saveanswer(id){
 };
 
 
-    // $('#editor').summernote();
-
     $('#editor').summernote({
         toolbar: [
         ['style', ['bold', 'italic', 'underline']],
@@ -162,7 +160,7 @@ $("img").addClass("carousel-inner img-responsive img-rounded");
         });
 {#       alert(sHTML)#}
     });
-
+//打开评论(有人在做)
     $(".opencomment").click(function () {
         var comments = "<div>asdfasdf<div>asdfasdf</div><div>asdfasdf</div></div>";
         var cid = $(this).parent().next().attr('cid');
@@ -177,11 +175,6 @@ $("img").addClass("carousel-inner img-responsive img-rounded");
             error:function(XMLResponse){alert(XMLResponse.responseText)}
 
         });
-
-
-
-
-
     });
 
 

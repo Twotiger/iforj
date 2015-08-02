@@ -135,11 +135,11 @@ def test(request):
     secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
     bucket_name = "iforj"
     q = qiniu.Auth(access_key, secret_key)
-    key = 'janpan'
+    # key = 'janpan'
     # 上传策略仅指定空间名和上传后的文件名，其他参数仅为默认值
     
     # data = 'asdfasdfasdf123123'
-    data = open('Japan.jpg','rb').read()
+    # data = open('Japan.jpg','rb').read()
     token = q.upload_token(bucket_name)
     # token = q.upload_token(bucket_name, key)
 
