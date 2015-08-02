@@ -20,6 +20,17 @@ def index(request):
     return render(request,'index.html',{'page': page, 'error':gol_error})
 
 
+#后期再改
+def testtwo():
+    access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
+    secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
+    bucket_name = "iforj"
+    q = qiniu.Auth(access_key, secret_key)
+    token = q.upload_token(bucket_name)
+    return token
+
+
+
 def getquestion(request, n):
     """问题页面"""
     questions = Question.objects.get(id=n)
@@ -37,8 +48,8 @@ def getquestion(request, n):
                                                 'answered': user.id})
         else:
             return render(request,'question.html', {'questions': questions,
-                                                'answers': answers,
-                                                'name': name})
+                                                'answers': answers, 'uptoken':testtwo(),
+                                                'name': name })
     else:
         return render(request,'question.html', {'questions': questions,
                                             'answers': answers})
@@ -175,10 +186,3 @@ def askquestion(request):
 
 
 
-def testtwo(request):
-    access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
-    secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
-    bucket_name = "iforj"
-    q = qiniu.Auth(access_key, secret_key)
-    token = q.upload_token(bucket_name)
-    return render(request,'testtwo.html',{'uptoken':token})
