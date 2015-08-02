@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from form import LoginForm, RegisterForm
+from form import LoginForm, RegisterForm, QuestionForm
 from models import User, Question, Answer,QuestionType
 from django.http import HttpResponse, HttpResponseRedirect
 import hashlib
@@ -28,7 +28,7 @@ def getquestion(request, n):
     if name:
         # 当登陆时传递名字
         user = User.objects.get(name=name)
-        answered = Answer.objects.filter(user=user ,question=questions)
+        answered = Answer.objects.filter(user=user).filter(question=questions)
         if answered:
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
@@ -73,7 +73,8 @@ def login(request):
             data = form.cleaned_data
             u_email = data['email']
             u_psd = data['password']
-            user = User.objects.filter(email=u_email, psd= hashlib.sha1(u_psd).hexdigest())
+
+            user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()  ).hexdigest())
             if user:
                 # response = HttpResponseRedirect('/')
                 response =HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -81,6 +82,7 @@ def login(request):
                 request.session['name'] = name
                 return response
             else:
+                return HttpResponseRedirect("/"+"?error=loginerror&a=%s"%hashlib.sha1(u_psd).hexdigest())
                 return HttpResponseRedirect("/"+"?error=loginerror")
 
 def register(request):
@@ -130,31 +132,47 @@ def getcomment(request):
 
 
 
-def test(request):
-    access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
-    secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
-    bucket_name = "iforj"
-    q = qiniu.Auth(access_key, secret_key)
-    # key = 'janpan'
-    # 上传策略仅指定空间名和上传后的文件名，其他参数仅为默认值
-    
-    # data = 'asdfasdfasdf123123'
-    # data = open('Japan.jpg','rb').read()
-    token = q.upload_token(bucket_name)
-    # token = q.upload_token(bucket_name, key)
+def askquestion(request):
+    """提问模板"""
+    name =request.session.get('name')
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            title = data['title']
+            text = data['text']
+            qtype = data['q_type']
+            # title = request.POST.get('title')
+            # text = request.POST.get('text')
+            # q_type = data['q_type']
+            user = User.objects.get(name=name)
+            questiontype = QuestionType.objects.get(id=qtype)
 
-    # 上传策略除空间名和上传后的文件名外，指定上传凭证有效期为7200s
-    # callcakurl为"http://callback.do"，
-    # callbackBody为原始文件名和文件Etag值
-    # token2 = q.upload_token(bucket_name, key, 7200, {'callbackUrl':"http://callback.do", 'callbackBody':"name=$(fname)&hash=$(etag)"})
-    # token2 = q.upload_token(bucket_name, 7200, {'callbackUrl':"http://callback.do", 'callbackBody':"name=$(fname)&hash=$(etag)"})
+            question = Question(user=user, title=title, text=text, q_type=questiontype)
 
-    # ret, info = qiniu.put_data(token,key, data)
-    # if ret is not None:
-    #     print('All is OK')
-    # else:
-    #     print(info) # error message in info
-    return render(request,'test.html',{'uptoken':token})
+            question.save()
+            # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+            return HttpResponseRedirect("/") #待改
+        else:
+            return HttpResponse(request.POST.get('title'))
+    if name:
+        access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
+        secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
+        bucket_name = "iforj"
+        q = qiniu.Auth(access_key, secret_key)
+        token = q.upload_token(bucket_name)
+        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'uptoken':token,'name':name})
+    else:
+        return HttpResponseRedirect("/")
+"""
+    user = models.ForeignKey(User)
+    title = models.CharField(max_length=127)
+    text = models.TextField()
+    q_datetime = models.DateTimeField(auto_now=True) # 回复时间
+    q_times = models.PositiveSmallIntegerField(default=0)   # 回复数量
+    q_type = models.ForeignKey(QuestionType, null=True, blank=True)
+"""
+
 
 
 def testtwo(request):

@@ -59,7 +59,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)  # 用户外键
     text = models.TextField()   # 答案
-    agree_user = models.ManyToManyField(User ,related_name='Answer_agree_user', null=True, blank=True) # 赞同的人
+    agree_user = models.ForeignKey(User ,related_name='Answer_agree_user', null=True, blank=True) # 赞同的人
     a_time = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):

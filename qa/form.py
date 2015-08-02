@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from django import forms
 
-from models import User
+from models import User, QuestionType
 
 class LoginForm(forms.Form):
+    """简单的登陆"""
     email = forms.CharField(max_length=254)
     password = forms.CharField(max_length=127)
 
@@ -14,14 +15,14 @@ error_messages = {
     'name': {
         'required': u'必须填写用户名',
         'min_length': u'用户名长度过短（3-12个字符）',
-        'max_length': u'用户名长度过长（3-12个字符）',
-        'invalid': u'用户名格式错误（英文字母开头，数字，下划线构成）'
+        'max_length': u'用户名长度过长（3-12个字符）'
+        # 'invalid': u'用户名格式错误（英文字母开头，数字，下划线构成）'
     },
     'email': {
         'required': u'必须填写E-mail',
         'min_length': u'Email长度有误',
         'max_length': u'Email长度有误',
-        'invalid': u'Email地址无效'
+        # 'invalid': u'Email地址无效'
     },
     'psd': {
         'required': u'必须填写密码',
@@ -32,14 +33,12 @@ error_messages = {
 
 
 class RegisterForm(forms.ModelForm):
-
-    name = forms.RegexField(min_length=3,max_length=30,regex=r'^[a-zA-Z][a-zA-Z0-9_]*$',
+    # name = forms.RegexField(min_length=3, max_length=30, regex=r'^[a-zA-Z][a-zA-Z0-9_]*$',
+    #                         error_messages=error_messages.get("name"))
+    name = forms.CharField(min_length=3, max_length=30,
                             error_messages=error_messages.get("name"))
-
-    email = forms.EmailField(min_length=8, max_length=64,error_messages=error_messages.get("email"))
-
-    psd = forms.CharField(min_length=6, max_length=64,error_messages=error_messages.get("psd"))
-
+    email = forms.EmailField(min_length=8, max_length=64, error_messages=error_messages.get("email"))
+    psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
     introduction = forms.CharField(required=False)
 
     class Meta:
@@ -59,3 +58,17 @@ class RegisterForm(forms.ModelForm):
         if user:
             raise forms.ValidationError(u'所填邮箱已经被注册过')
         return email
+
+
+
+
+CHOICES = []
+questiontype = QuestionType.objects.all()
+for qtype in questiontype:
+    CHOICES.append([qtype.id, qtype.name])
+QTYPE_CHOICES = tuple(CHOICES)
+
+class QuestionForm(forms.Form):
+    title = forms.CharField(min_length=5, max_length=127)
+    text = forms.CharField(min_length=5, max_length=127)
+    q_type = forms.ChoiceField(label=u'类型',choices=QTYPE_CHOICES)

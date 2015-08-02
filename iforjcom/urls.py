@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^question/(\d)+$', 'qa.views.getquestion', name='question'),
     url(r'^search/$', 'qa.views.search'),
 
-    url(r'^test/$', 'qa.views.test'),
+    url(r'^askquestion/$', 'qa.views.askquestion'),
     url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
     url(r'^commit/post/getcomment$', 'qa.views.getcomment'),
 

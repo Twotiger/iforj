@@ -24,12 +24,14 @@
     <div class="col-md-6 col-md-offset-3" >
         <div class="input-group">
             <span class="input-group-addon">标题</span>
-            <input type="text" class="form-control" placeholder="问题">
+            <input id="qtitle" type="text" class="form-control" placeholder="问题">
         </div>
-
+        <br/>
         <div id="editor"></div>
 
-        <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+        {{ QuestionForm.q_type }}
+
+        <button id="qsubmit" type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
     </div>
 
 
@@ -38,7 +40,7 @@
 
 {% block js %}
     <script>
-
+{#富文本#}
         $('#editor').summernote({
             toolbar: [
                 ['style', ['bold', 'italic', 'underline']],
@@ -51,13 +53,10 @@
             height: 300,                 // set editor height213123
             lang: 'zh-CN',
             minHeight: null,             // set minimum height of editor
-            maxHeight: null,             // set maximum height of editor
-
-            {#  focus: true#}
-
+            maxHeight: null             // set maximum height of editor
         });
 
-
+{#七牛云支持#}
         var uploader = Qiniu.uploader({
             runtimes: 'html5,flash,html4',    //上传模式,依次退化
             browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
@@ -117,6 +116,48 @@
         // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
 
         // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
-    </script>
 
+
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+
+
+{#提交问题#}
+        $("#qsubmit").click(function() {
+            var sHTML = $('#editor').code();
+            var qtitle =$("#qtitle").val();
+            var qtype = $('select').val();
+            $.ajax({
+                type:'POST',
+                url:'/askquestion/',
+                data:{"title":qtitle,"text":sHTML, "q_type":qtype},
+                success:function(){
+                    window.location.href="/";
+                }
+            });
+            {#       alert(sHTML)#}
+        });
+    </script>
 {% endblock %}

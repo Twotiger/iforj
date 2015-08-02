@@ -25,7 +25,7 @@
                 <h3 class="panel-title">{{ questions.title }}</h3>
             </div>
             <div class="panel-body">
-                {{ questions.text }}
+                {{ questions.text |safe}}
             </div>
             <div class="panel-footer">
                 {#            <img src="{{ questions.user.image }}"#}
@@ -50,7 +50,7 @@
                 <div class="panel-footer">
                     {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
                     <a href="#">{{ answer.user }}</a>
-
+{#回答过显示编辑+评论#}
                     {% ifequal answered answer.user.id %}
 
                         <a class='pull-right asdf'>
@@ -79,11 +79,16 @@
         </div>
     {% else %}
         {% if name %}
-            <!--     编辑器 -->
-            <div class="col-md-6 col-md-offset-3" >
+            {% ifequal name questions.user.name %}
+
+                {% else %}
+                <div class="col-md-6 col-md-offset-3" >
             <div id="editor"></div>
             <br/>
             <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+            {% endifequal %}
+            <!--     编辑器 -->
+
         {% else %}
             <div class="col-md-6 col-md-offset-3" >
                 <button type="button" class="btn btn-primary btn-lg btn-block commit" data-toggle="modal"
@@ -147,7 +152,7 @@
         // 图片自适应可能存在兼容问题
         $("img").addClass("carousel-inner img-responsive img-rounded");
 
-        {#    提交评论#}
+{# 提交问答#}
         $(".commit").click(function() {
             var sHTML = $('#editor').code();
             var qid =$(".questions").attr('id');
@@ -156,7 +161,7 @@
                 url:'/commit/post/addanswer',
                 data:{"qid":qid,"text":sHTML},
 
-                {#          success: function(data){window.location.reload();}#}
+                success: function(data){window.location.reload();}
             });
             {#       alert(sHTML)#}
         });
