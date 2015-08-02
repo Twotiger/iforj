@@ -155,3 +155,12 @@ def test(request):
     # else:
     #     print(info) # error message in info
     return render(request,'test.html',{'uptoken':token})
+
+
+def testtwo(request):
+    access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
+    secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
+    bucket_name = "iforj"
+    q = qiniu.Auth(access_key, secret_key)
+    token = q.upload_token(bucket_name)
+    return render(request,'testtwo.html',{'uptoken':token})

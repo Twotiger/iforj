@@ -1,41 +1,11 @@
-{% extends 'base.html' %}
-
-    {% block css %}
-        <script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
-        <script src="http://jssdk.demo.qiniu.io/js/qiniu.js"></script>
 
 
-        {% load staticfiles %}
-
-        <script src="/static/js/summernote/summernote_c.min.js"></script>
-        <script src="/static/js/summernote/summernote-zh-CN.js"></script>
-
-        <style type="text/css">
-            @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
-            @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
-            @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
-        </style>
-
-    {% endblock css %}
-
-
-{% block content %}
-
-
-<div class="col-md-6 col-md-offset-3" >
-     <div class="input-group">
-         <span class="input-group-addon">标题</span>
-         <input type="text" class="form-control" placeholder="问题">
-     </div>
-
-      <div id="editor"></div>
-
-      <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
-</div>
-
-
-
-    <div class="container">
+<script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
+<script src="http://jssdk.demo.qiniu.io/js/qiniu.js"></script>
+------------------
+{{uptoken}}
+-----------------
+<div class="container">
 	<div class="text-left col-md-12 wrapper">
 		<h1 class="text-left col-md-12 ">
 			七牛云存储 - JavaScript SDK
@@ -76,7 +46,7 @@
                     <i class="glyphicon glyphicon-plus"></i>
                     <sapn>选择文件</sapn>
                 </a>
-            <div id="html5_19rljedrkaco119l3551ccb15d13_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 167px; height: 45px; overflow: hidden; z-index: 0;"><input id="html5_19rljedrkaco119l3551ccb15d13" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div></div>
+            <div id="html5_19rlsivoq71b7g01qtv1l5vaqr3_container" class="moxie-shim moxie-shim-html5" style="position: absolute; top: 0px; left: 0px; width: 167px; height: 45px; overflow: hidden; z-index: 0;"><input id="html5_19rlsivoq71b7g01qtv1l5vaqr3" type="file" style="font-size: 999px; opacity: 0; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;" multiple="" accept=""></div></div>
         </div>
 
         <div style="display:none" id="success" class="col-md-12">
@@ -255,29 +225,9 @@
 </div>
 
 
-{% endblock %}
 
-{% block js %}
+
 <script>
-
-    $('#editor').summernote({
-        toolbar: [
-        ['style', ['bold', 'italic', 'underline']],
-        ['font', ['strikethrough']],
-        ['para', ['ul', 'ol', 'paragraph']],
-        ['Layout',['fullscreen']],
-        ['link',['link']],
-        ['insert',['picture']],
-  ],
-  height: 300,                 // set editor height213123
-  lang: 'zh-CN',
-  minHeight: null,             // set minimum height of editor
-  maxHeight: null,             // set maximum height of editor
-
-{#  focus: true#}
-
-});
-
 
 var uploader = Qiniu.uploader({
     runtimes: 'html5,flash,html4',    //上传模式,依次退化
@@ -342,9 +292,8 @@ var uploader = Qiniu.uploader({
         }
     }
 });
-            // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
 
-            // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
+// domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
+
+// uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
 </script>
-
-{% endblock %}
