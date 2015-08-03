@@ -72,3 +72,10 @@ class QuestionForm(forms.Form):
     title = forms.CharField(min_length=5, max_length=127)
     text = forms.CharField(min_length=5, max_length=127)
     q_type = forms.ChoiceField(label=u'类型',choices=QTYPE_CHOICES)
+
+    # def clean_text(self):
+    #     html = self.clean_data['text']
+    #
+    #     text = html.replace('<', '&lt;').replace('>', '&gt;')
+    #
+    #     return text

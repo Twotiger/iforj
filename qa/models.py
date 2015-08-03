@@ -29,6 +29,8 @@ class User(models.Model):
         self.vericode = hashlib.sha1(self.email+'4646868').hexdigest()
         super(User,self).save(*args,**kwargs)
 
+
+
     def __unicode__(self):
         return self.name
 
@@ -49,6 +51,9 @@ class Question(models.Model):
     q_datetime = models.DateTimeField(auto_now=True) # 回复时间
     q_times = models.PositiveSmallIntegerField(default=0)   # 回复数量
     q_type = models.ForeignKey(QuestionType, null=True, blank=True)
+
+    class Meta:
+        ordering = ('q_datetime',)
 
     def __unicode__(self):
         return self.title

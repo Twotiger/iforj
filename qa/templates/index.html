@@ -2,35 +2,40 @@
 
 {% block title %}python{% endblock %}
 {% block content %}
-{% if error %}
-    <div class="col-md-6 col-md-offset-3">
-    <div class="alert alert-danger alert-dismissable">
-       <button type="button" class="close" data-dismiss="alert"
-           aria-hidden="true">
-          &times;
-       </button>
-       用户名或密码错误
-    </div>
+    {% if error %}
+        <div class="col-md-6 col-md-offset-3">
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"
+                        aria-hidden="true">
+                    &times;
+                </button>
+                用户名或密码错误
+            </div>
         </div>
-{% endif %}
+    {% endif %}
 
 
-<div class="col-md-6 col-md-offset-3" >
-    {% for question in page %}
+    <div class="col-md-6 col-md-offset-3" >
+        {% for question in page %}
 
 
-      <div class="panel panel-default">
-   <div class="panel-heading">
-      <h3 class="panel-title" style="color:#337ab7">
-         <a href="{% url 'question' question.id %}" >{{ question.title }}</a>
-      </h3><a href="/search/?type=topic&q={{ question.q_type }}"><span class="badge">{{ question.q_type }}</span></a>
-   </div>
-   <div class="panel-body">
-      回复:{{ question.q_times }}
-   </div>
-</div>
-    {% endfor %}
-</div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title" style="color:#337ab7">
+                        <a href="{% url 'question' question.id %}" >{{ question.title }}</a>
+
+                                            <a href="/search/?type=topic&q={{ question.q_type }}">
+                       <span class="label label-default">{{ question.q_type }}</span>
+                    </a>
+                    </h3>
+
+                </div>
+                <div class="panel-body">
+                    回复:{{ question.q_times }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 

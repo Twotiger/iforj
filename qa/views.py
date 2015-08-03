@@ -60,6 +60,7 @@ def commit_post_add(request):
     if request.method == "POST" and name:
         qid = request.POST.get('qid')
         text = request.POST.get('text')
+        # text = html.replace('<', '&lt;').replace('>', '&gt;') #待改
         question = Question.objects.get(id=int(qid))
         # 答案数 + 1
         question.q_times += 1

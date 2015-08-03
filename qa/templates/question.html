@@ -34,6 +34,7 @@
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
                 <a href="#">{{ questions.user }}</a>
+                共{{ questions.q_times }}个回答
             </div>
         </div>
     </div>
@@ -151,7 +152,8 @@
 
 
         // 图片自适应可能存在兼容问题
-        $("img").addClass("carousel-inner img-responsive img-rounded");
+{#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
+        $("img").addClass("img-responsive");
 
         {# 提交问答#}
         $(".commit").click(function() {
@@ -217,14 +219,13 @@
                 },
                 'UploadProgress': function(up, file) {
                     // 每个文件上传时,处理相关的事情
+                    $('.modal-dialog').modal('hide')
                 },
                 'FileUploaded': function(up, file, info) {
                     var domain = up.getOption('domain');
                     var res = $.parseJSON(info);
                     var sourceLink = domain + res.key; //获取上传成功后的文件的Url
-{#                    $(".panel-body").append('<img src="'+sourceLink+'"/>');#}
-
-                    $('#editor').code($('#editor').code()+'<img src="'+sourceLink+'"/>');
+                    $('#editor').code($('#editor').code()+'<img style="width:"100%" src="'+sourceLink+'"/>');
                 },
                 'Error': function(up, err, errTip) {
                     //上传出错时,处理相关的事情
