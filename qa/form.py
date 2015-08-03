@@ -29,14 +29,14 @@ error_messages = {
         'min_length': u'密码长度过短（6-64个字符）',
         'max_length': u'密码长度过长（6-64个字符）'
     },
-}
+    }
 
 
 class RegisterForm(forms.ModelForm):
     # name = forms.RegexField(min_length=3, max_length=30, regex=r'^[a-zA-Z][a-zA-Z0-9_]*$',
     #                         error_messages=error_messages.get("name"))
     name = forms.CharField(min_length=3, max_length=30,
-                            error_messages=error_messages.get("name"))
+                           error_messages=error_messages.get("name"))
     email = forms.EmailField(min_length=8, max_length=64, error_messages=error_messages.get("email"))
     psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
     introduction = forms.CharField(required=False)

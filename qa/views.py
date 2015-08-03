@@ -43,16 +43,16 @@ def getquestion(request, n):
         if answered:
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
-                                                'answers': answers,
-                                                'name': name,
-                                                'answered': user.id})
+                                                    'answers': answers,
+                                                    'name': name,
+                                                    'answered': user.id})
         else:
             return render(request,'question.html', {'questions': questions,
-                                                'answers': answers, 'uptoken':testtwo(),
-                                                'name': name })
+                                                    'answers': answers, 'uptoken':testtwo(),
+                                                    'name': name })
     else:
         return render(request,'question.html', {'questions': questions,
-                                            'answers': answers})
+                                                'answers': answers})
 
 def commit_post_add(request):
     """ajax提交答案"""
@@ -119,7 +119,7 @@ def search(request):
     q = request.GET.get('q')
     if not search_type:
         search_type = "question"
-        
+
     name = None
     if request.session.get("name"):
         name = request.session.get("name")

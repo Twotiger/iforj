@@ -19,7 +19,7 @@ class User(models.Model):
     introduction = models.CharField(max_length=127,null=True, blank=True) # 简介
     image = models.URLField(null=True, blank=True)   # 头像
     login_error = models.PositiveSmallIntegerField(default=0)   # 当错误登陆+1
-    agree_num = models.PositiveIntegerField(default=0)  # 赞同数
+    agree_num = models.PositiveIntegerField(default=0)  # 赞同数(当问答问题的时候被赞+1)
     viewed = models.PositiveIntegerField(default=0)   # 被浏览次数
 
 
@@ -64,7 +64,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)  # 用户外键
     text = models.TextField()   # 答案
-    agree_user = models.ForeignKey(User ,related_name='Answer_agree_user', null=True, blank=True) # 赞同的人
+    agree_user = models.ForeignKey(User ,related_name='Answer_agree_user', null=True, blank=True) # 赞同的人,要改成多对多
     a_time = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):

@@ -71,7 +71,7 @@
 
                     {{ answer.a_time }}
                 </div>
-{#                <div class="comment" cid="{{ answer.id }}"></div>#}
+                {#                <div class="comment" cid="{{ answer.id }}"></div>#}
             </div>
         {% endfor %}
     </div>
@@ -106,7 +106,7 @@
 
 {% block js %}
     <script>
-{#编辑待改#}
+        {#编辑待改#}
         $('.asdf').click(function(){
             $('.click2edit').summernote({
                 toolbar: [
@@ -152,7 +152,7 @@
 
 
         // 图片自适应可能存在兼容问题
-{#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
+        {#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
         $("img").addClass("img-responsive");
 
         {# 提交问答#}
@@ -185,7 +185,7 @@
             });
         });
 
-{#七牛云支持#}
+        {#七牛云支持#}
         var uploader = Qiniu.uploader({
             runtimes: 'html5,flash,html4',    //上传模式,依次退化
             browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**

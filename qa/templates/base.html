@@ -15,11 +15,11 @@
     <!-- <script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script> -->
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     {% load staticfiles %}
-<style>
-    body{
-        background-image:url(/static/img/concrete_seamless.png);
-    }
-</style>
+    <style>
+        body{
+            background-image:url(/static/img/concrete_seamless.png);
+        }
+    </style>
     {% block css %}
 
     {% endblock css %}
@@ -28,10 +28,10 @@
 </head>
 
 <body>
- {% include 'nav.html' %}
-    {% block content %}
-        <div>这里是默认内容，所有继承自这个模板的，如果不覆盖就显示这里的默认内容。</div>
-    {% endblock %}
+{% include 'nav.html' %}
+{% block content %}
+    <div>这里是默认内容，所有继承自这个模板的，如果不覆盖就显示这里的默认内容。</div>
+{% endblock %}
 
 {% block js %}
 {% endblock %}
