@@ -33,7 +33,7 @@
             <div class="panel-footer">
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
-                <a href="#">{{ questions.user }}</a>
+                <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
             </div>
         </div>
@@ -53,11 +53,11 @@
 
                 <div class="panel-footer">
                     {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
-                    <a href="#">{{ answer.user }}</a>
+                    <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
                     {#回答过显示编辑+评论#}
                     {% ifequal answered answer.user.id %}
 
-                        <a class='pull-right asdf'>
+                        <a class='pull-right redit'>
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             编辑</a>
                         <a href="#" class='pull-right opencomment' style="padding-right: 10px">
@@ -79,7 +79,7 @@
 
     {% if answered %}
         <div class="col-md-6 col-md-offset-3" >
-            该问题你已经回答过, {{ answered }}
+            该问题你已经回答过
         </div>
     {% else %}
         {% if name %}
@@ -107,7 +107,7 @@
 {% block js %}
     <script>
         {#编辑待改#}
-        $('.asdf').click(function(){
+        $('.redit').click(function(){
             $('.click2edit').summernote({
                 toolbar: [
                     ['style', ['bold', 'italic', 'underline']],
@@ -225,7 +225,7 @@
                     var domain = up.getOption('domain');
                     var res = $.parseJSON(info);
                     var sourceLink = domain + res.key; //获取上传成功后的文件的Url
-                    $('#editor').code($('#editor').code()+'<img style="width:"100%" src="'+sourceLink+'"/>');
+                    $('#editor').code($('#editor').code()+'<img src="'+sourceLink+'"/>');
                 },
                 'Error': function(up, err, errTip) {
                     //上传出错时,处理相关的事情

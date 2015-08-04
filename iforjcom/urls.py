@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """iforjcom URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -21,9 +22,10 @@ urlpatterns = [
     url(r'^$', 'qa.views.index', name='index'),
     url(r'^login/$', 'qa.views.login'),
     url(r'^logout/$', 'qa.views.logout'),
-    url(r'^register/$', 'qa.views.register', name='register'),
-    url(r'^question/(\d)+$', 'qa.views.getquestion', name='question'),
+    url(r'^register/$', 'qa.views.register', name='register'),                  # 注册
+    url(r'^question/(\d+)$', 'qa.views.getquestion', name='question'),          # 问题
     url(r'^search/$', 'qa.views.search'),
+    url(r'^programmer/(\d+)$', 'qa.views.programmer', name='programmer'),
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
     url(r'^testtwo/$', 'qa.views.testtwo'), # will be del

@@ -2,13 +2,12 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
 
-        <div class="navbar-header">
+        <div class="navbar-nav">
             <a class="navbar-brand" href="/">Python+</a>
         </div>
 
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
+            <ul class="hidden-sm hidden-xs nav navbar-nav">
                 <li class="active"><a href="/">NEW<span class="sr-only">(current)</span></a></li>
                 <li><a href="/?type=top">TOP</a></li>
                 <li class="dropdown">
@@ -25,7 +24,7 @@
                 </li>
             </ul>
 
-            <form class="navbar-form navbar-left" method="get" action="/search" >
+            <form class="hidden-sm hidden-xs nav navbar-form navbar-left" method="get" action="/search" >
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Search" name='q'>
                 </div>
@@ -40,7 +39,7 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ name }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">我的主页</a></li>
+                            <li><a href="/programmer">我的主页</a></li>
                             <li><a href="#">消息</a></li>
                             <li><a href="#">设置</a></li>
                             <li role="separator" class="divider"></li>
@@ -49,7 +48,7 @@
                     </li>
 
                 {%else%}
-                    <div class="btn-group  pull-right">
+                    <div class="btn-group pull-right">
                         <button class="btn btn-primary btn-lg" data-toggle="modal"
                                 data-target="#login" >
                             戳我登陆
@@ -60,7 +59,7 @@
 
             </ul>
         </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
+
 </nav>
 
 

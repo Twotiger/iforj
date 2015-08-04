@@ -11,7 +11,14 @@ import qiniu
 def index(request):
     """Q&A首页"""
     name =request.session.get('name')
-    page = Question.objects.all()
+
+    qtype = request.GET.get('type')
+    if qtype == "top":
+
+        page = Question.objects.all()
+    else:
+        page = Question.objects.all()
+
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
@@ -94,7 +101,7 @@ def login(request):
                 request.session['name'] = name
                 return response
             else:
-                return HttpResponseRedirect("/"+"?error=loginerror&a=%s"%hashlib.sha1(u_psd).hexdigest())
+                # return HttpResponseRedirect("/"+"?error=loginerror&a=%s"%hashlib.sha1(u_psd).hexdigest())
                 return HttpResponseRedirect("/"+"?error=loginerror")
 
 def register(request):
@@ -176,14 +183,10 @@ def askquestion(request):
         return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'uptoken':token,'name':name})
     else:
         return HttpResponseRedirect("/")
-"""
-    user = models.ForeignKey(User)
-    title = models.CharField(max_length=127)
-    text = models.TextField()
-    q_datetime = models.DateTimeField(auto_now=True) # 回复时间
-    q_times = models.PositiveSmallIntegerField(default=0)   # 回复数量
-    q_type = models.ForeignKey(QuestionType, null=True, blank=True)
-"""
 
-
-
+def programmer(request, n):
+    user = User.objects.filter(id=n)
+    if user:
+        return render(request, 'programmer.html', {'user':user[0]})
+    else:
+        return HttpResponseRedirect("/")
