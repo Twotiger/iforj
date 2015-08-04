@@ -22,7 +22,7 @@ def index(request):
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
-        return render(request,'index.html',{'page': page, 'name': name})
+        return render(request,'index.html',{'page': page, 'name': name.split()})
 
     return render(request,'index.html',{'page': page, 'error':gol_error})
 
@@ -45,18 +45,18 @@ def getquestion(request, n):
     name =request.session.get('name')
     if name:
         # 当登陆时传递名字
-        user = User.objects.get(name=name)
+        user = User.objects.get(name=name.split()[0])
         answered = Answer.objects.filter(user=user).filter(question=questions)
         if answered:
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers,
-                                                    'name': name,
+                                                    'name': name.split()[0],
                                                     'answered': user.id})
         else:
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers, 'uptoken':testtwo(),
-                                                    'name': name })
+                                                    'name': name.split() })
     else:
         return render(request,'question.html', {'questions': questions,
                                                 'answers': answers})
@@ -73,7 +73,7 @@ def commit_post_add(request):
         question.q_times += 1
         question.save()
         # 保存到数据库
-        user = User.objects.get(name=name)
+        user = User.objects.get(name=name.split())
         answer = Answer(user=user, question=question, text=text)
         answer.save()
         # 待修改
@@ -93,12 +93,12 @@ def login(request):
             u_email = data['email']
             u_psd = data['password']
 
-            user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()  ).hexdigest())
+            user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()).hexdigest())
             if user:
                 # response = HttpResponseRedirect('/')
                 response =HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-                name = User.objects.get(email=u_email).name
-                request.session['name'] = name
+                name = user[0].name
+                request.session['name'] = name+" "+str(user[0].id)
                 return response
             else:
                 # return HttpResponseRedirect("/"+"?error=loginerror&a=%s"%hashlib.sha1(u_psd).hexdigest())
@@ -164,7 +164,7 @@ def askquestion(request):
             # title = request.POST.get('title')
             # text = request.POST.get('text')
             # q_type = data['q_type']
-            user = User.objects.get(name=name)
+            user = User.objects.get(name=name.split()[0])
             questiontype = QuestionType.objects.get(id=qtype)
 
             question = Question(user=user, title=title, text=text, q_type=questiontype)
@@ -180,7 +180,7 @@ def askquestion(request):
         bucket_name = "iforj"
         q = qiniu.Auth(access_key, secret_key)
         token = q.upload_token(bucket_name)
-        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'uptoken':token,'name':name})
+        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'uptoken':token,'name':name.split()})
     else:
         return HttpResponseRedirect("/")
 
