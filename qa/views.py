@@ -51,7 +51,7 @@ def getquestion(request, n):
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers,
-                                                    'name': name.split()[0],
+                                                    'name': name.split(),
                                                     'answered': user.id})
         else:
             return render(request,'question.html', {'questions': questions,
@@ -73,7 +73,7 @@ def commit_post_add(request):
         question.q_times += 1
         question.save()
         # 保存到数据库
-        user = User.objects.get(name=name.split())
+        user = User.objects.get(name=name.split()[0])
         answer = Answer(user=user, question=question, text=text)
         answer.save()
         # 待修改
@@ -147,6 +147,7 @@ def logout(request):
     return HttpResponseRedirect('/')    # 改成刷新 或者 js
 
 def getcomment(request):
+    # 得到评论
     return HttpResponse('ok')
 
 
@@ -173,7 +174,8 @@ def askquestion(request):
             # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             return HttpResponseRedirect("/") #待改
         else:
-            return HttpResponse(request.POST.get('title'))
+            # return HttpResponse(request.POST.get('title'))
+            return render(request, 'askquestion.html')
     if name:
         access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
         secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
@@ -185,8 +187,34 @@ def askquestion(request):
         return HttpResponseRedirect("/")
 
 def programmer(request, n):
+    # 个人主页
     user = User.objects.filter(id=n)
     if user:
         return render(request, 'programmer.html', {'user':user[0]})
     else:
         return HttpResponseRedirect("/")
+
+
+def agree_answer(request):
+    # 增加赞同的数 2增加赞同的人
+    name = request.session.get('name')
+    # 如果登录了,就变动
+    if name:
+        answer_id = request.GET.get('aid')
+        tag = request.GET.get('tag')    # 加还是减
+        answer = Answer.objects.get(id=answer_id)
+        user = User.objects.get(id=name.split()[1])
+        # 如果传递1就加
+        if tag == '1':
+            if not Answer.objects.filter(agree_user=user).filter(id=answer_id):
+                answer.agree_num += 1
+                answer.agree_user.add(user)
+                answer.save()
+                return HttpResponse('ok')
+        else:
+            if Answer.objects.filter(agree_user=user).filter(id=answer_id):
+                answer.agree_num -= 1
+                answer.agree_user.remove(user)
+                answer.save()
+                return HttpResponse('ok')
+

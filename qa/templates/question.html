@@ -13,7 +13,7 @@
         @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
         @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
         @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
-
+.panel{margin-left:2em}
     </style>
 {% endblock css %}
 
@@ -35,6 +35,7 @@
                 {#               class="img-circle" style="height: 30px;">#}
                 <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
+                <div class="pull-right">{{ questions.q_datetime}}</div>
             </div>
         </div>
     </div>
@@ -43,9 +44,27 @@
     {#  循环打印所有答案#}
     <div class="col-md-6 col-md-offset-3" >
         {% for answer in answers %}
+            <div class="btn-group-xs btn-group-vertical pull-left">
+{#                点赞区#}
+                    <button type="button" class="btn btn-default upnum" data-toggle="tooltip" 
+                       title="赞同这个答案" value="{{ answer.id }}">
+                      <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
+                       <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
+                        </button>
+                    <button type="button" class="btn btn-default downnum" data-toggle="tooltip" 
+                       title="没什么用"  value="{{ answer.id }}">
+                      <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                    </button>
+
+            
+</div>
+
+
+
+
             {#      <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>#}
-            <div class="panel panel-default">
-                {#            如果是我写的评论,添加个可编辑属性#}
+            <div class="panel panel-default" >
+                {#如果是我写的评论,添加个可编辑属性#}
                 <div class="panel-body{% ifequal answered answer.user.id %} click2edit{% endifequal %}">
 
                     {{ answer.text|safe }}
@@ -56,7 +75,6 @@
                     <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
                     {#回答过显示编辑+评论#}
                     {% ifequal answered answer.user.id %}
-
                         <a class='pull-right redit'>
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             编辑</a>
@@ -83,7 +101,7 @@
         </div>
     {% else %}
         {% if name %}
-            {% ifequal name questions.user.name %}
+            {% ifequal name.0 questions.user.name %}
 
             {% else %}
                 <div class="col-md-6 col-md-offset-3" >
@@ -185,6 +203,29 @@
             });
         });
 
+        $(".upnum").click(function(){
+            var aid = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'/agreeanswer/',
+                data:{'aid':aid, 'tag':1},
+                success:function(){
+                    $('#a'+aid).html($('#a'+aid).html()*1+1)
+                }
+            });
+        });
+
+        $(".downnum").click(function(){
+            var aid = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'/agreeanswer/',
+                data:{'aid':aid, 'tag':0},
+                success:function(){
+                    $('#a'+aid).html($('#a'+aid).html()*1-1)
+                }
+            });
+        });
         {#七牛云支持#}
         var uploader = Qiniu.uploader({
             runtimes: 'html5,flash,html4',    //上传模式,依次退化

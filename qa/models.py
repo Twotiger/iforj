@@ -19,7 +19,7 @@ class User(models.Model):
     introduction = models.CharField(max_length=127,null=True, blank=True) # 简介
     image = models.URLField(null=True, blank=True)   # 头像
     login_error = models.PositiveSmallIntegerField(default=0)   # 当错误登陆+1
-    agree_num = models.PositiveIntegerField(default=0)  # 赞同数(当问答问题的时候被赞+1)
+    agree_num = models.IntegerField(default=0)  # 赞同数(当问答问题的时候被赞+1)
     viewed = models.PositiveIntegerField(default=0)   # 被浏览次数
 
 
@@ -48,7 +48,7 @@ class Question(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=127)
     text = models.TextField()
-    q_datetime = models.DateTimeField(auto_now=True) # 回复时间
+    q_datetime = models.DateTimeField(auto_now_add=True) # 回复时间
     q_times = models.PositiveSmallIntegerField(default=0)   # 回复数量
     q_type = models.ForeignKey(QuestionType, null=True, blank=True)
 
@@ -59,17 +59,26 @@ class Question(models.Model):
         return self.title
 
 
+
 class Answer(models.Model):
     """答案表"""
     question = models.ForeignKey(Question)
-    user = models.ForeignKey(User)  # 用户外键
+    user = models.ForeignKey(User)  # 回答者
     text = models.TextField()   # 答案
-    agree_user = models.ForeignKey(User ,related_name='Answer_agree_user', null=True, blank=True) # 赞同的人,要改成多对多
-    a_time = models.DateTimeField(auto_now=True)
+    agree_user = models.ManyToManyField(User, related_name='answer_user') # 赞同的人
+    agree_num = models.SmallIntegerField(default=0)
+    a_time = models.DateTimeField(auto_now_add=True)
+    weight = models.PositiveSmallIntegerField(null=True)    # 权重.
+
 
     def __unicode__(self):
         return "%s"%self.text
 
+class Comment(models.Model):
+    """评论"""
+    user = models.ForeignKey(User)
+    text = models.TextField()
+    answer = models.ManyToManyField(Answer, related_name='comment_answer')
 
 
 
