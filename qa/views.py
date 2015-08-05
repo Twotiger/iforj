@@ -47,6 +47,8 @@ def getquestion(request, n):
         # 当登陆时传递名字
         user = User.objects.get(name=name.split()[0])
         answered = Answer.objects.filter(user=user).filter(question=questions)
+        a = Answer.objects.get(user=user)
+
         if answered:
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
@@ -54,10 +56,12 @@ def getquestion(request, n):
                                                     'name': name.split(),
                                                     'answered': user.id})
         else:
+            # 没回答过显示文本编辑框
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers, 'uptoken':testtwo(),
-                                                    'name': name.split() })
+                                                    'name': name.split()})
     else:
+        # 没登陆
         return render(request,'question.html', {'questions': questions,
                                                 'answers': answers})
 
