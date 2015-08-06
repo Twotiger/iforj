@@ -137,13 +137,13 @@ def search(request):
 
     if search_type == "question":
         questions = Question.objects.filter(title__contains=q)
-        return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name})
+        return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name.split()})
     elif search_type == "people":
         users = User.objects.filter(name__contains=q)
-        return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name})
+        return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name.split()})
     else:
         topics = QuestionType.objects.filter(name__contains=q)
-        return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name})
+        return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name.split()})
 
 def logout(request):
     """登出"""

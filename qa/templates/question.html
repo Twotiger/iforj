@@ -75,16 +75,20 @@
                     <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
                     {#回答过显示编辑+评论#}
                     {% ifequal answered answer.user.id %}
+                    <span>
                         <a class='pull-right redit'>
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             编辑</a>
                         <a href="#" class='pull-right opencomment' style="padding-right: 10px">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             评论</a>
+                            </span>
                     {% else %}
+                    <div>
                         <a href="#" class='pull-right opencomment'>
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             评论</a>
+                            </div>
                     {% endifequal %}
 
                     {{ answer.a_time }}
@@ -115,8 +119,10 @@
 
         {% else %}
             <div class="col-md-6 col-md-offset-3" >
+            <div class="panel panel-default apanel">
                 <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
                         data-target="#login">加入我们</button>
+                        </div>
             </div>
         {% endif %}
     </div>
@@ -126,6 +132,12 @@
 
 {% block js %}
     <script>
+
+    $(document).ready(function(){
+        $(".panel-footer").mouseenter(function(){
+        $(this).children('div').hide();
+        });
+    });
         {#再次编辑待改#}
         $('.redit').click(function(){
             $('.click2edit').summernote({
@@ -264,7 +276,6 @@
                 },
                 'UploadProgress': function(up, file) {
                     // 每个文件上传时,处理相关的事情
-                    $('.modal-dialog').modal('hide')
                 },
                 'FileUploaded': function(up, file, info) {
                     var domain = up.getOption('domain');

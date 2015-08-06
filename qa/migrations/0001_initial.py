@@ -16,6 +16,15 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('text', models.TextField()),
                 ('a_time', models.DateTimeField(auto_now=True)),
+                ('weight', models.PositiveSmallIntegerField(null=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Comment',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', models.TextField()),
+                ('answer', models.ManyToManyField(related_name='comment_answer', to='qa.Answer')),
             ],
         ),
         migrations.CreateModel(
@@ -27,6 +36,9 @@ class Migration(migrations.Migration):
                 ('q_datetime', models.DateTimeField(auto_now=True)),
                 ('q_times', models.PositiveSmallIntegerField(default=0)),
             ],
+            options={
+                'ordering': ('q_datetime',),
+            },
         ),
         migrations.CreateModel(
             name='QuestionType',
@@ -64,9 +76,14 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(to='qa.User'),
         ),
         migrations.AddField(
+            model_name='comment',
+            name='user',
+            field=models.ForeignKey(to='qa.User'),
+        ),
+        migrations.AddField(
             model_name='answer',
             name='agree_user',
-            field=models.ForeignKey(related_name='Answer_agree_user', blank=True, to='qa.User', null=True),
+            field=models.ManyToManyField(related_name='answer_user', to='qa.User'),
         ),
         migrations.AddField(
             model_name='answer',
