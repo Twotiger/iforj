@@ -47,7 +47,7 @@ def getquestion(request, n):
         # 当登陆时传递名字
         user = User.objects.get(name=name.split()[0])
         answered = Answer.objects.filter(user=user).filter(question=questions)
-        a = Answer.objects.get(user=user)
+        # a = Answer.objects.get(user=user)
 
         if answered:
             # 如果回答过了传递用户id
@@ -221,4 +221,5 @@ def agree_answer(request):
                 answer.agree_user.remove(user)
                 answer.save()
                 return HttpResponse('ok')
-
+    else:
+        return None #返回json

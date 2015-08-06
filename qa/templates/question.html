@@ -13,7 +13,7 @@
         @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
         @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
         @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
-.panel{margin-left:2em}
+.apanel{margin-left:2em}
     </style>
 {% endblock css %}
 
@@ -22,7 +22,7 @@
 
     <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
 
-        <div class="panel panel-default">
+        <div class="panel panel-default apanel">
 
             <div class="panel-heading">
                 <h3 class="panel-title">{{ questions.title }}</h3>
@@ -63,7 +63,7 @@
 
 
             {#      <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>#}
-            <div class="panel panel-default" >
+            <div class="panel panel-default apanel">
                 {#如果是我写的评论,添加个可编辑属性#}
                 <div class="panel-body{% ifequal answered answer.user.id %} click2edit{% endifequal %}">
 
@@ -105,9 +105,11 @@
 
             {% else %}
                 <div class="col-md-6 col-md-offset-3" >
+                  <div class="apanel">
                 <div id="editor"></div>
-                <br/>
-                <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+               <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+                </div>
+
             {% endifequal %}
             <!--     编辑器 -->
 
@@ -124,7 +126,7 @@
 
 {% block js %}
     <script>
-        {#编辑待改#}
+        {#再次编辑待改#}
         $('.redit').click(function(){
             $('.click2edit').summernote({
                 toolbar: [
@@ -134,6 +136,8 @@
                     ['Layout',['fullscreen']],
                     ['link',['link']],
                     ['insert',['picture']],],
+                lang: 'zh-CN',
+                height: 300,
                 focus: true});
             $(this).parent().html("<button class=\"save\" onclick=\"saveanswer(this)\">提交未完成</button>");
         });
@@ -149,7 +153,7 @@
 
         };
 
-
+{#富文本编辑框只有在登陆没评论的时候出现#}
         $('#editor').summernote({
             toolbar: [
                 ['style', ['bold', 'italic', 'underline']],
@@ -202,7 +206,7 @@
 
             });
         });
-
+{#赞同+#}
         $(".upnum").click(function(){
             var aid = $(this).val();
             $.ajax({
@@ -214,7 +218,7 @@
                 }
             });
         });
-
+{#赞同-#}
         $(".downnum").click(function(){
             var aid = $(this).val();
             $.ajax({
@@ -284,9 +288,7 @@
                 }
             }
         });
-        // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
 
-        // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
 
         $.ajaxSetup({
             beforeSend: function(xhr, settings) {

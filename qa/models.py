@@ -66,9 +66,10 @@ class Answer(models.Model):
     user = models.ForeignKey(User)  # 回答者
     text = models.TextField()   # 答案
     agree_user = models.ManyToManyField(User, related_name='answer_user') # 赞同的人
-    agree_num = models.SmallIntegerField(default=0)
-    a_time = models.DateTimeField(auto_now_add=True)
+    agree_num = models.SmallIntegerField(default=0) # 赞同人的数量
+    a_time = models.DateTimeField(auto_now_add=True)    #创建时间
     weight = models.PositiveSmallIntegerField(null=True)    # 权重.
+    waring = models.PositiveSmallIntegerField(null=True)    # 有人举报+1
 
 
     def __unicode__(self):
