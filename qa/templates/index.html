@@ -2,6 +2,7 @@
 
 {% block title %}python{% endblock %}
 {% block content %}
+    {{  questPage}}
     {% if error %}
         <div class="col-md-6 col-md-offset-3">
             <div class="alert alert-danger alert-dismissable">
@@ -16,7 +17,7 @@
 
 
     <div class="col-md-6 col-md-offset-3" >
-        {% for question in page %}
+        {% for question in questions.page_list %}
 
 
             <div class="panel panel-default">
@@ -35,6 +36,21 @@
                 </div>
             </div>
         {% endfor %}
+
+
+        <ul class="pagination">
+
+            <li><a href="?page=1">&laquo;</a></li>
+
+            {%  for i in questions.page_range %}
+                <li {% ifequal i questions.number %}class="active"{% endifequal %}>
+                    <a href="?page={{ i }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+            <li><a href="?page={{ questions.num_pages }}">&raquo;</a></li>
+        </ul>
+
+
     </div>
 {% endblock %}
 

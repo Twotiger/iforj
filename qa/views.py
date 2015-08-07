@@ -3,9 +3,13 @@ from django.shortcuts import render
 from form import LoginForm, RegisterForm, QuestionForm
 from models import User, Question, Answer,QuestionType
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
+# from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage ,Page
 import hashlib
-# from django_qiniu.fields import QiNiuImageField, QiniuFileField
+
+from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu
+
 
 # Create your views here.
 def index(request):
@@ -15,16 +19,25 @@ def index(request):
     qtype = request.GET.get('type')
     if qtype == "top":
 
-        page = Question.objects.all()
+        questions = Question.objects.all()
     else:
-        page = Question.objects.all()
-
+        # 显示最新
+        questions = Question.objects.all()
+    # 分页
+    paginator  = MyPaginator(questions, 10)
+    page = request.GET.get('page')
+    try:
+        paginator.page(page)
+    except PageNotAnInteger:
+        paginator.page(1)
+    except EmptyPage:
+        paginator.page(paginator.num_pages)
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
-        return render(request,'index.html',{'page': page, 'name': name.split()})
+        return render(request,'index.html',{'questions': paginator, 'name': name.split()})
 
-    return render(request,'index.html',{'page': page, 'error':gol_error})
+    return render(request,'index.html',{'questions': paginator, 'error':gol_error})
 
 
 #后期再改
@@ -131,29 +144,32 @@ def search(request):
     if not search_type:
         search_type = "question"
 
-    name = None
+
     if request.session.get("name"):
-        name = request.session.get("name")
+        name = request.session.get("name").split()
+    else:
+        name = None
 
     if search_type == "question":
         questions = Question.objects.filter(title__contains=q)
-        return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name.split()})
+        return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name})
     elif search_type == "people":
         users = User.objects.filter(name__contains=q)
-        return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name.split()})
+        return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name})
     else:
         topics = QuestionType.objects.filter(name__contains=q)
-        return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name.split()})
+        return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name})
+
 
 def logout(request):
     """登出"""
     del request.session['name']
     return HttpResponseRedirect('/')    # 改成刷新 或者 js
 
+
 def getcomment(request):
     # 得到评论
     return HttpResponse('ok')
-
 
 
 def askquestion(request):
@@ -214,12 +230,18 @@ def agree_answer(request):
                 answer.agree_num += 1
                 answer.agree_user.add(user)
                 answer.save()
-                return HttpResponse('ok')
+                jsonData = {'status':'ok'}
+                return JsonResponse(jsonData)
+            else:
+                return HttpResponse("已经赞同过了↖(^ω^)↗")
         else:
             if Answer.objects.filter(agree_user=user).filter(id=answer_id):
                 answer.agree_num -= 1
                 answer.agree_user.remove(user)
                 answer.save()
-                return HttpResponse('ok')
+                jsonData = {'status':'ok'}
+                return JsonResponse(jsonData)
+            else:
+                return HttpResponse("已经取消赞同啦")
     else:
-        return None #返回json
+        return HttpResponse("可以麻烦您登陆下么⊙︿⊙")

@@ -13,7 +13,7 @@
         @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
         @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
         @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
-.apanel{margin-left:2em}
+        .apanel{margin-left:2em}
     </style>
 {% endblock css %}
 
@@ -40,24 +40,24 @@
         </div>
     </div>
 
-{{ agreed }}
+    {{ agreed }}
     {#  循环打印所有答案#}
     <div class="col-md-6 col-md-offset-3" >
         {% for answer in answers %}
             <div class="btn-group-xs btn-group-vertical pull-left">
-{#                点赞区#}
-                    <button type="button" class="btn btn-default upnum" data-toggle="tooltip" 
-                       title="赞同这个答案" value="{{ answer.id }}">
-                      <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                       <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
-                        </button>
-                    <button type="button" class="btn btn-default downnum" data-toggle="tooltip" 
-                       title="没什么用"  value="{{ answer.id }}">
-                      <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                    </button>
+                {#                点赞区#}
+                <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
+                        title="赞同这个答案" value="{{ answer.id }}">
+                    <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
+                    <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
+                </button>
+                <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
+                        title="没什么用"  value="{{ answer.id }}">
+                    <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                </button>
 
-            
-</div>
+
+            </div>
 
 
 
@@ -75,7 +75,7 @@
                     <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
                     {#回答过显示编辑+评论#}
                     {% ifequal answered answer.user.id %}
-                    <span>
+                        <span class="invisible">
                         <a class='pull-right redit'>
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             编辑</a>
@@ -84,11 +84,11 @@
                             评论</a>
                             </span>
                     {% else %}
-                    <div>
-                        <a href="#" class='pull-right opencomment'>
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                            评论</a>
-                            </div>
+                        <span class="invisible">
+                            <a href="#" class='pull-right opencomment'>
+                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                评论</a>
+                        </span>
                     {% endifequal %}
 
                     {{ answer.a_time }}
@@ -109,9 +109,9 @@
 
             {% else %}
                 <div class="col-md-6 col-md-offset-3" >
-                  <div class="apanel">
-                <div id="editor"></div>
-               <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+                <div class="apanel">
+                    <div id="editor"></div>
+                    <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
                 </div>
 
             {% endifequal %}
@@ -119,10 +119,10 @@
 
         {% else %}
             <div class="col-md-6 col-md-offset-3" >
-            <div class="panel panel-default apanel">
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
-                        data-target="#login">加入我们</button>
-                        </div>
+                <div class="panel panel-default apanel">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                            data-target="#login">加入我们</button>
+                </div>
             </div>
         {% endif %}
     </div>
@@ -133,11 +133,16 @@
 {% block js %}
     <script>
 
-    $(document).ready(function(){
-        $(".panel-footer").mouseenter(function(){
-        $(this).children('div').hide();
+        $(document).ready(function(){
+            $(".panel-footer").mouseenter(function(){
+                $(this).children('span').attr('class','');
+
+            });
+
+            $(".panel-footer").mouseleave(function(){
+                $(this).children('span').attr('class','invisible');
+            });
         });
-    });
         {#再次编辑待改#}
         $('.redit').click(function(){
             $('.click2edit').summernote({
@@ -165,7 +170,7 @@
 
         };
 
-{#富文本编辑框只有在登陆没评论的时候出现#}
+        {#富文本编辑框只有在登陆没评论的时候出现#}
         $('#editor').summernote({
             toolbar: [
                 ['style', ['bold', 'italic', 'underline']],
@@ -218,27 +223,35 @@
 
             });
         });
-{#赞同+#}
+        {#赞同+#}
         $(".upnum").click(function(){
             var aid = $(this).val();
             $.ajax({
                 type:'GET',
                 url:'/agreeanswer/',
                 data:{'aid':aid, 'tag':1},
+                dataType:'json',
                 success:function(){
-                    $('#a'+aid).html($('#a'+aid).html()*1+1)
+                    $('#a'+aid).html($('#a'+aid).html()*1+1);
+                },
+                error:function(msg){
+                    alert(msg.responseText);
                 }
             });
         });
-{#赞同-#}
+        {#赞同-#}
         $(".downnum").click(function(){
             var aid = $(this).val();
             $.ajax({
                 type:'GET',
                 url:'/agreeanswer/',
                 data:{'aid':aid, 'tag':0},
+                dataType:'json',
                 success:function(){
                     $('#a'+aid).html($('#a'+aid).html()*1-1)
+                },
+                error:function(msg){
+                    alert(msg.responseText);
                 }
             });
         });
