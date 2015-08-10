@@ -6,19 +6,29 @@
     <script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
     <script src="http://jssdk.demo.qiniu.io/js/qiniu.js"></script>
 
-    <script src="/static/js/summernote/summernote_c.min.js"></script>
-    <script  src="/static/js/summernote/summernote-zh-CN.js"></script>
+{#    代码markdown编辑#}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
+
+{#    高亮#}
+{#    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">#}
+
+    {#<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>#}
+    <script src="/static/highlight.pack.js"></script>
+    <link rel="stylesheet" href="/static/styles/github.css">
 
     <style type="text/css">
-        @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
-        @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
-        @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
+{#        @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');#}
+{#        @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');#}
+{#        @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');#}
         .apanel{margin-left:2em}
     </style>
 {% endblock css %}
 
 {% block title %}{{ questions.title }} - python+{% endblock %}
 {% block content %}
+
+
+
 
     <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
 
@@ -27,7 +37,7 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{ questions.title }}</h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body qpanel">
                 {{ questions.text |safe}}
             </div>
             <div class="panel-footer">
@@ -35,7 +45,7 @@
                 {#               class="img-circle" style="height: 30px;">#}
                 <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
-                <div class="pull-right">{{ questions.q_datetime}}</div>
+                <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
             </div>
         </div>
     </div>
@@ -52,7 +62,7 @@
                     <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
                 </button>
                 <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
-                        title="没什么用"  value="{{ answer.id }}">
+                        title="取消赞同"  value="{{ answer.id }}">
                     <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
                 </button>
 
@@ -63,14 +73,13 @@
 
 
             {#      <span class="glyphicon glyphicon-menu-up" aria-hidden="true"></span>#}
-            <div class="panel panel-default apanel">
+
                 {#如果是我写的评论,添加个可编辑属性#}
-                <div class="panel-body{% ifequal answered answer.user.id %} click2edit{% endifequal %}">
+
 
                     {{ answer.text|safe }}
-                </div>
 
-                <div class="panel-footer">
+
                     {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
                     <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
                     {#回答过显示编辑+评论#}
@@ -85,18 +94,17 @@
                             </span>
                     {% else %}
                         <span class="invisible">
-                            <a href="#" class='pull-right opencomment'>
+                            <a  class='pull-right opencomment'>
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 评论</a>
                         </span>
                     {% endifequal %}
 
-                    {{ answer.a_time }}
-                </div>
-                {#                <div class="comment" cid="{{ answer.id }}"></div>#}
-            </div>
+                    {{ answer.a_time|date:"Y-m-d H:i:s" }}
+    <br/>
+<hr style="margin-bottom: 2em"/>
         {% endfor %}
-    </div>
+<br/>
 
 
     {% if answered %}
@@ -127,13 +135,22 @@
         {% endif %}
     </div>
     {% endif %}
+
+
 {% endblock %}
 
 
 {% block js %}
     <script>
+    hljs.initHighlightingOnLoad();
+var converter = new showdown.Converter(),
+        text = $('.qpanel').html(),
+    html = converter.makeHtml('{{ questions.text| escapejs  }}');
+
+$('.qpanel').html(html);
 
         $(document).ready(function(){
+{#            鼠标不在焦点时隐藏span#}
             $(".panel-footer").mouseenter(function(){
                 $(this).children('span').attr('class','');
 
@@ -144,20 +161,21 @@
             });
         });
         {#再次编辑待改#}
-        $('.redit').click(function(){
-            $('.click2edit').summernote({
-                toolbar: [
-                    ['style', ['bold', 'italic', 'underline']],
-                    ['font', ['strikethrough']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['Layout',['fullscreen']],
-                    ['link',['link']],
-                    ['insert',['picture']],],
-                lang: 'zh-CN',
-                height: 300,
-                focus: true});
-            $(this).parent().html("<button class=\"save\" onclick=\"saveanswer(this)\">提交未完成</button>");
-        });
+{#        $('.redit').click(function(){#}
+{#            $('.click2edit').summernote({#}
+{#                toolbar: [#}
+{#                    ['style', ['bold', 'italic', 'underline']],#}
+{#                    ['font', ['strikethrough']],#}
+{#                    ['para', ['ul', 'ol', 'paragraph']],#}
+{#                    ['Layout',['fullscreen']],#}
+{#                    ['link',['link']],#}
+{#                    ['insert',['picture']],#}
+{#                ],#}
+{#                lang: 'zh-CN',#}
+{#                height: 300,#}
+{#                focus: true});#}
+{#            $(this).parent().html("<button class=\"save\" onclick=\"saveanswer(this)\">提交未完成</button>");#}
+{#        });#}
 
         // $('.save').click(function(){
         //   alert('save');
@@ -171,23 +189,24 @@
         };
 
         {#富文本编辑框只有在登陆没评论的时候出现#}
-        $('#editor').summernote({
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['strikethrough']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['Layout',['fullscreen']],
-                ['link',['link']],
-                ['insert',['picture']],
-            ],
-            height: 300,                 // set editor height
-            lang: 'zh-CN',
-            minHeight: null,             // set minimum height of editor
-            maxHeight: null,             // set maximum height of editor
-
+{#        $('#editor').summernote({#}
+{#            toolbar: [#}
+{#                ['style', ['bold', 'italic', 'underline']],#}
+{#                ['font', ['strikethrough']],#}
+{#                ['para', ['ul', 'ol']],#}
+{#                ['Layout',['fullscreen']],#}
+{#                ['link',['link']],#}
+{#                ['insert',['picture']],#}
+{#                    ['Misc',['codeview']]#}
+{#            ],#}
+{#            height: 300,                 // set editor height#}
+{#            lang: 'zh-CN',#}
+{#            minHeight: null,             // set minimum height of editor#}
+{#            maxHeight: null,             // set maximum height of editor#}
+{##}
             {#  focus: true#}
-
-        });
+{##}
+{#        });#}
 
 
         // 图片自适应可能存在兼容问题
@@ -202,8 +221,7 @@
                 type:'POST',
                 url:'/commit/post/addanswer',
                 data:{"qid":qid,"text":sHTML},
-
-                success: function(data){window.location.reload();}
+                success: function(){window.location.reload();}
             });
             {#       alert(sHTML)#}
         });
@@ -211,6 +229,8 @@
         $(".opencomment").click(function () {
             var comments = "<div>asdfasdf<div>asdfasdf</div><div>asdfasdf</div></div>";
             var cid = $(this).parent().next().attr('cid');
+            var p = ($(this).parents('.apanel'));
+            p.append('<div> <div class="panel-body">这是一个基本的面板 </div> </div>');
             $.ajax({
                 type:'POST',
                 url:'/commit/post/getcomment',
@@ -232,8 +252,11 @@
                 data:{'aid':aid, 'tag':1},
                 dataType:'json',
                 success:function(){
-                    $('#a'+aid).html($('#a'+aid).html()*1+1);
+                    $('#a'+aid).html(function(i,origText){
+                        return + origText + 1;
+                    })
                 },
+
                 error:function(msg){
                     alert(msg.responseText);
                 }
@@ -248,7 +271,9 @@
                 data:{'aid':aid, 'tag':0},
                 dataType:'json',
                 success:function(){
-                    $('#a'+aid).html($('#a'+aid).html()*1-1)
+                    $('#a'+aid).html(function(i,origText){
+                        return + origText - 1;
+                    })
                 },
                 error:function(msg){
                     alert(msg.responseText);
@@ -302,6 +327,7 @@
                 },
                 'UploadComplete': function() {
                     //队列文件处理完毕后,处理相关的事情
+                    alert('ok');
                 },
                 'Key': function(up, file) {
                     // 若想在前端对每个文件的key进行个性化处理，可以配置该函数

@@ -7,9 +7,13 @@
 
     {#富文本支持#}
     {% load staticfiles %}
-    <script src="/static/js/summernote/summernote_c.min.js"></script>
-    <script src="/static/js/summernote/summernote-zh-CN.js"></script>
+    <script src="/static/js/epiceditor.js"></script>
+
+
+
     <style type="text/css">
+
+
         @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');
         @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');
         @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');
@@ -27,12 +31,25 @@
             <input id="qtitle" type="text" class="form-control" placeholder="问题">
         </div>
         <br/>
-        <div id="editor"></div>
+
+        <div id="epiceditor"></div>
+        <br/>
+
+        <!-- <textarea class="form-control" rows="8"></textarea> -->
+
 
         {{ QuestionForm.q_type }}
 
-        <button id="qsubmit" type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
+
+    <div id="container">
+                <a class="btn btn-default btn-lg " id="pickfiles" href="#" >
+                    <i class="glyphicon glyphicon-plus"></i>
+                    <sapn>选择文件</sapn>
+                </a>
+            </div>
+    <button id="qsubmit" type="button" class="btn btn-default pull-right">提交</button>
     </div>
+
 
 
 
@@ -40,23 +57,15 @@
 
 {% block js %}
     <script>
-{#富文本#}
-        $('#editor').summernote({
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline']],
-                ['font', ['strikethrough']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['Layout',['fullscreen']],
-                ['link',['link']],
-                ['insert',['picture']],
-            ],
-            height: 300,                 // set editor height213123
-            lang: 'zh-CN',
-            minHeight: null,             // set minimum height of editor
-            maxHeight: null             // set maximum height of editor
-        });
 
-{#七牛云支持#}
+        var editor = new EpicEditor().load();
+
+{#        $('#addimage').click(function(){#}
+{#            // editor.getElement('editor').body.innerHTML#}
+{#            editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text](http://7xkozr.com1.z0.glb.clouddn.com/o_19s0a7ij11m7s19a71s511noj156a9.png)'#}
+{#        });#}
+
+        {#七牛云支持#}
         var uploader = Qiniu.uploader({
             runtimes: 'html5,flash,html4',    //上传模式,依次退化
             browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
@@ -95,7 +104,7 @@
                     var domain = up.getOption('domain');
                     var res = $.parseJSON(info);
                     var sourceLink = domain + res.key; //获取上传成功后的文件的Url
-                    $(".panel-body").append('<img src="'+sourceLink+'"/>');
+                    editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text]('+sourceLink+')'
                 },
                 'Error': function(up, err, errTip) {
                     //上传出错时,处理相关的事情
@@ -144,20 +153,21 @@
         });
 
 
-{#提交问题#}
+        {#提交问题#}
         $("#qsubmit").click(function() {
-            var sHTML = $('#editor').code();
             var qtitle =$("#qtitle").val();
             var qtype = $('select').val();
+            var theContent = editor.exportFile();
+
             $.ajax({
                 type:'POST',
                 url:'/askquestion/',
-                data:{"title":qtitle,"text":sHTML, "q_type":qtype},
+                data:{"title":qtitle,"text":theContent, "q_type":qtype},
                 success:function(){
                     window.location.href="/";
                 }
             });
-            {#       alert(sHTML)#}
+            // alert(theContent)
         });
     </script>
 {% endblock %}
