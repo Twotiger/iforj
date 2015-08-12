@@ -48,12 +48,13 @@ class Question(models.Model):
     user = models.ForeignKey(User)
     title = models.CharField(max_length=127)
     text = models.TextField()
-    q_datetime = models.DateTimeField(auto_now_add=True) # 回复时间
+    q_datetime = models.DateTimeField(auto_now_add=True) # 创建时间
     q_times = models.PositiveSmallIntegerField(default=0)   # 回复数量
-    q_type = models.ForeignKey(QuestionType, null=True, blank=True)
+    # 新增赞同数量
+    q_type = models.ForeignKey(QuestionType, null=True, blank=True) # 问题类型
 
     class Meta:
-        ordering = ('q_datetime',)
+        ordering = ('-q_datetime',)
 
     def __unicode__(self):
         return self.title
