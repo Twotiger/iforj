@@ -25,6 +25,7 @@
     <style type="text/css">
         .apanel{margin:0 3em}
         .qpanel{margin:0 3em}
+        .apanel-edit{margin:0 3em}
         .afooter{margin:0 3em}
     </style>
 {% endblock css %}
@@ -56,54 +57,60 @@
 
     {{ agreed }}
     {#  循环打印所有答案#}
+
     <div class="col-md-6 col-md-offset-3">
-        {% for answer in answers %}
-            <div class="myanswer">
-                <div class="btn-group-xs btn-group-vertical pull-left">
-                    {#                点赞区#}
-                    <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
-                            title="赞同这个答案" value="{{ answer.id }}">
-                        <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                        <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
-                    </button>
-                    <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
-                            title="取消赞同"  value="{{ answer.id }}">
-                        <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                    </button>
-                </div>
+    {% for answer in answers %}
+        <br/>
+        <div class="myanswer">
+        <div class="btn-group-xs btn-group-vertical pull-left">
+
+            {#                点赞区#}
+            <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
+                    title="赞同这个答案" value="{{ answer.id }}">
+                <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
+                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
+            </button>
+            <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
+                    title="取消赞同"  value="{{ answer.id }}">
+                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+            </button>
+        </div>
 
 
-                {#如果是我写的评论,添加个可编辑属性#}
-{#                <div class="apanel-edit">#}
-                <div class="apanel">
+        {#如果是我写的评论,添加个可编辑属性#}
 
-{#                    渲染答案#}
-                    <script>
-                        var converter = new showdown.Converter(),
+        <div class="apanel a{{ answer.id }}">
+            {#渲染答案#}
+            <script>
+                var converter = new showdown.Converter(),
                         html = converter.makeHtml('{{ answer.text|escapejs  }}');
-                        document.write(html)
-                    </script>
-{#如果有编辑选项#}
-                     {% ifequal answered answer.user.id %}
-                         <div id="epiceditor"></div>
-                        <script>
-                            var equalhtml ="{{ answer.text|escapejs }}"
-                        </script>
-                    {% endifequal %}
+                document.write(html)
+            </script>
+        </div>
+
+        {#如果有编辑选项#}
+        <div class="apanel-edit" style="display:none">
+            {% ifequal answered answer.user.id %}
+                <div id="epiceditor"></div>
+                <script>
+                    var equalhtml ="{{ answer.text|escape|escapejs }}"
+                </script>
+                <button class="btn pull-right r_commit">完成</button>
+            {% endifequal %}
 
 
 
-                </div>
-                {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
-                <br/>
+        </div>
+        {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
+        <br/>
 
-                <div class="afooter">
-                    <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
+        <div class="afooter">
+            <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
             <span class="invisible">
                 {{ answer.a_time|date:"Y-m-d H:i:s" }}
                 {#回答过显示编辑+评论#}
                 {% ifequal answered answer.user.id %}
-                    <a class='pull-right redit'>
+                    <a class='pull-right redit' name="{{ answer.id }}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         编辑</a>
                     <a href="#" class='pull-right opencomment' style="padding-right: 10px">
@@ -117,53 +124,53 @@
                 {% endifequal %}
 
             </span>
-                </div>
+        </div>
 
 
-            <hr style="margin-bottom: 2em;margin-left: 2em"/>
-        {% endfor %}
-        <br/>
+        <hr style="margin-bottom: 2em;margin-left: 2em"/>
+    {% endfor %}
+<br/>
 
 
-        {% if answered %}
-            <div class="col-md-6" >
-                该问题你已经回答过
-            </div>
+{% if answered %}
+    <div class="col-md-6" >
+        该问题你已经回答过
+    </div>
+{% else %}
+    {% if name %}
+        {% ifequal name.0 questions.user.name %}
+
         {% else %}
-            {% if name %}
-                {% ifequal name.0 questions.user.name %}
-
-                {% else %}
-                    <div class="apanel">
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert"
-                                    aria-hidden="true">&times;
-                            </button>
-                            回复的时候注意排版
-                        </div>
-                        <!--     编辑器 -->
-                        <div id="epiceditor"></div>
-                        <div id="container">
-                            <a class="btn btn-default btn-lg" id="pickfiles" href="#" >
-                                <i class="glyphicon glyphicon-plus"></i>
-                                <sapn>上传图片</sapn>
-                            </a>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
-                    </div>
-
-                {% endifequal %}
-
-            {% else %}
-                <div class="col-md-6 col-md-offset-3" >
-                    <div class="panel panel-default apanel">
-                        <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
-                                data-target="#login">加入我们</button>
-                    </div>
+            <div class="apanel">
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert"
+                            aria-hidden="true">&times;
+                    </button>
+                    回复的时候注意排版
                 </div>
-            {% endif %}
+                <!--     编辑器 -->
+                <div id="epiceditor"></div>
+                <div id="container">
+                    <a class="btn btn-default btn-lg" id="pickfiles" href="#" >
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <sapn>上传图片</sapn>
+                    </a>
+                </div>
+                <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
             </div>
-        {% endif %}
+
+        {% endifequal %}
+
+    {% else %}
+        <div class="col-md-6 col-md-offset-3" >
+            <div class="panel panel-default apanel">
+                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                        data-target="#login">加入我们</button>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+{% endif %}
 
 
 {% endblock %}
@@ -171,7 +178,25 @@
 
 {% block js %}
     <script>
+        {#    update答案#}
+        $('.r_commit').click(function(){
+            var aid =$('.redit').attr('name');
+            var theContent = editor.exportFile();
+            {#            alert(theContent);#}
+            $.ajax({
+                type:'POST',
+                url:'/commit/post/updateanswer',
+                data:{'get_id':aid, 'text':theContent},
+                dataType:'json',
+                success:function(){
+                    {#                    $('#a'+aid).html(function(i,oldText){#}
+                    {#                        return + oldText + 1;#}
+                    window.location.reload();
+                }
 
+            });
+
+        });
 
         var converter = new showdown.Converter();
         text = $('.qmarkdown').html();
@@ -181,12 +206,19 @@
         {#        语法高亮#}
         hljs.initHighlightingOnLoad();
 
- {#    编辑器支持#}
-        {% if not answered %}
-            {% if name %}
-                var editor = new EpicEditor().load();
-            {% endif %}
-        {% endif %}
+        {#    编辑器支持#}
+
+
+        {##}
+        {#            {% if name %}#}
+        {#                var editor = new EpicEditor().load();#}
+        {#            {% endif %}           #}
+        if(document.getElementById('epiceditor')){
+            var editor = new EpicEditor().load();
+
+        };
+
+
 
         $(document).ready(function(){
             {#            鼠标不在焦点时隐藏span#}
@@ -199,11 +231,17 @@
                 $(this).children('span').attr('class','invisible');
             });
         });
-        {#再次编辑待改#}
+
+        {#再次编辑完成#}
         $('.redit').click(function(){
-{#            $(this).parents('.myanswer').children('.apanel').html('<div id="epiceditor"></div><button>提交</button>');#}
+            {#            $(this).parents('.myanswer').children('.apanel').html('<div id="epiceditor"></div><button>提交</button>');#}
+            var edit_aid = $('.redit').attr('name');
+
+            $('.a'+edit_aid).css('display','none');
+
+            $('.apanel-edit').css('display','block');
             var editor = new EpicEditor().load();
-            equalhtml =equalhtml.replace(/\n/g,"</br>")
+            equalhtml =equalhtml.replace(/\n/g,"</br>");
             editor.getElement('editor').body.innerHTML=equalhtml
 
         });
@@ -214,25 +252,6 @@
 
         };
 
-        {#富文本编辑框只有在登陆没评论的时候出现#}
-        {#        $('#editor').summernote({#}
-        {#            toolbar: [#}
-        {#                ['style', ['bold', 'italic', 'underline']],#}
-        {#                ['font', ['strikethrough']],#}
-        {#                ['para', ['ul', 'ol']],#}
-        {#                ['Layout',['fullscreen']],#}
-        {#                ['link',['link']],#}
-        {#                ['insert',['picture']],#}
-        {#                    ['Misc',['codeview']]#}
-        {#            ],#}
-        {#            height: 300,                 // set editor height#}
-        {#            lang: 'zh-CN',#}
-        {#            minHeight: null,             // set minimum height of editor#}
-        {#            maxHeight: null,             // set maximum height of editor#}
-        {##}
-        {#  focus: true#}
-        {##}
-        {#        });#}
 
 
         // 图片自适应可能存在兼容问题

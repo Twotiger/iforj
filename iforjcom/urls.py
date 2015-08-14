@@ -32,7 +32,8 @@ urlpatterns = [
     url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
     url(r'^commit/post/getcomment$', 'qa.views.getcomment'),
 
-    url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),
+    url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案
+    url(r'^commit/post/updateanswer$','qa.views.commit_post_update'),   # update答案
     url(r'^admin/', include(admin.site.urls)),
 ]
 #/commit/post/getcomment'

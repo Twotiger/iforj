@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from django import forms
 
 from models import User, QuestionType
@@ -73,9 +74,32 @@ class QuestionForm(forms.Form):
     text = forms.CharField(max_length=1023)
     q_type = forms.ChoiceField(label=u'类型',choices=QTYPE_CHOICES)
 
-    # def clean_text(self):
-    #     html = self.clean_data['text']
-    #
-    #     text = html.replace('<', '&lt;').replace('>', '&gt;')
-    #
-    #     return text
+    def clean_text(self):
+        html = self.cleaned_data['text']
+
+        text = re.sub('<\s*script\s*>', '&ltscript&gt;',html)
+
+        return text
+
+
+class AnswerForm(forms.Form):
+    qid = forms.IntegerField()
+    text = forms.CharField(max_length=1023)
+
+    def clean_text(self):
+        html = self.cleaned_data['text']
+        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
+        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
+        return text
+
+
+class UpAnswerForm(forms.Form):
+    get_id = forms.IntegerField()
+    text = forms.CharField(max_length=1023)
+
+    def clean_text(self):
+        html = self.cleaned_data['text']
+        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
+        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
+        return text
+

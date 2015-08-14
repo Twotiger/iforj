@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from form import LoginForm, RegisterForm, QuestionForm
+from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm
 from models import User, Question, Answer,QuestionType
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -81,9 +81,11 @@ def getquestion(request, n):
 def commit_post_add(request):
     """ajax提交答案"""
     name = request.session.get('name')
-    if request.method == "POST" and name:
-        qid = request.POST.get('qid')
-        text = request.POST.get('text')
+    form = AnswerForm(request.POST)
+    if request.method == "POST" and name and form.is_valid():
+        data = form.cleaned_data
+        qid = data['qid']
+        text = data['text']
         # text = html.replace('<', '&lt;').replace('>', '&gt;') #待改
         question = Question.objects.get(id=int(qid))
         # 答案数 + 1
@@ -97,6 +99,23 @@ def commit_post_add(request):
         return HttpResponse('ok')
     else:
         return HttpResponse('error')
+
+def commit_post_update(request):
+    """ajax更新答案"""
+    name = request.session.get('name').split()
+    form = UpAnswerForm(request.POST)
+
+    if request.method == "POST" and name and form.is_valid():
+        data = form.cleaned_data
+        aid = data['get_id']
+        text = data['text']
+        answer = Answer.objects.get(id=aid)
+        if answer:
+            answer.text = text
+            answer.save()
+            return JsonResponse({'status':'ok'})
+    else:
+        return HttpResponse('ERROR')
 
 
 
