@@ -27,6 +27,9 @@
         .qpanel{margin:0 3em}
         .apanel-edit{margin:0 3em}
         .afooter{margin:0 3em}
+        .cpanel{margin:0 3em}
+        .addcomment{padding:1em 1em}
+        hr{margin:0 3em}
     </style>
 {% endblock css %}
 
@@ -122,12 +125,52 @@
                         评论</a>
 
                 {% endifequal %}
-
             </span>
         </div>
 
+        {#            评论面板#}
+        <br/>
+        <div class="panel panel-default cpanel">
 
-        <hr style="margin-bottom: 2em;margin-left: 2em"/>
+            <div class="panel-body">
+                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"
+                     class="img-circle pull-left" style="height: 30px;">
+                <div>
+                    <a href="">认得你</a></div>
+                这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面
+                板这是一个基本的面板这是一个基本的面板这是一个基本的面板
+            </div>
+            <div >
+
+
+            </div>
+            <hr>
+
+            <div class="panel-body">
+                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"
+                     class="img-circle pull-left" style="height: 30px;">
+                <div>
+                    <a href="">认得你</a></div>
+                这是一个基本的面板
+            </div>
+            <div >
+
+                <div style="padding: 1em">
+                    <input type="text" class="form-control addcomment" id="comment"
+                           placeholder="输入评论">
+                </div>
+
+
+                <div class="cbutton" style="display: none;padding: 0.5em 1em;" value={{ answer.id }}>
+                    <button type="button" class="btn" style="" value="34">评论</button>
+                </div>
+
+            </div>
+
+
+
+        </div>
+        <hr style="margin-bottom: 2em;"/>
     {% endfor %}
 <br/>
 
@@ -178,6 +221,20 @@
 
 {% block js %}
     <script>
+        {#    评论支持#}
+
+        $("#comment").focus(function(){
+            $('.cbutton').css('display','block');
+        });
+{#        $("#comment").blur(function(){#}
+{#            $('.cbutton').css('display','none');#}
+{#        });#}
+        $(".cbutton").click(function(){
+            var aid = $('.cbutton').val();
+           alert(aid)
+        });
+
+
         {#    update答案#}
         $('.r_commit').click(function(){
             var aid =$('.redit').attr('name');
@@ -256,7 +313,7 @@
 
         // 图片自适应可能存在兼容问题
         {#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
-        $("img").addClass("img-responsive");
+        {#        $("img").addClass("img-responsive");#}
 
         {# 提交问答#}
         $(".commit").click(function() {
