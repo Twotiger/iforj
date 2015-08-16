@@ -15,8 +15,10 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('text', models.TextField()),
-                ('a_time', models.DateTimeField(auto_now=True)),
+                ('agree_num', models.SmallIntegerField(default=0)),
+                ('a_time', models.DateTimeField(auto_now_add=True)),
                 ('weight', models.PositiveSmallIntegerField(null=True)),
+                ('waring', models.PositiveSmallIntegerField(null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -24,7 +26,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('text', models.TextField()),
-                ('answer', models.ManyToManyField(related_name='comment_answer', to='qa.Answer')),
+                ('c_time', models.DateTimeField(auto_now_add=True)),
+                ('answer', models.ForeignKey(to='qa.Answer')),
             ],
         ),
         migrations.CreateModel(
@@ -33,11 +36,11 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('title', models.CharField(max_length=127)),
                 ('text', models.TextField()),
-                ('q_datetime', models.DateTimeField(auto_now=True)),
+                ('q_datetime', models.DateTimeField(auto_now_add=True)),
                 ('q_times', models.PositiveSmallIntegerField(default=0)),
             ],
             options={
-                'ordering': ('q_datetime',),
+                'ordering': ('-q_datetime',),
             },
         ),
         migrations.CreateModel(
@@ -61,7 +64,7 @@ class Migration(migrations.Migration):
                 ('introduction', models.CharField(max_length=127, null=True, blank=True)),
                 ('image', models.URLField(null=True, blank=True)),
                 ('login_error', models.PositiveSmallIntegerField(default=0)),
-                ('agree_num', models.PositiveIntegerField(default=0)),
+                ('agree_num', models.IntegerField(default=0)),
                 ('viewed', models.PositiveIntegerField(default=0)),
             ],
         ),

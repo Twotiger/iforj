@@ -36,7 +36,7 @@ error_messages = {
 class RegisterForm(forms.ModelForm):
     # name = forms.RegexField(min_length=3, max_length=30, regex=r'^[a-zA-Z][a-zA-Z0-9_]*$',
     #                         error_messages=error_messages.get("name"))
-    name = forms.CharField(min_length=3, max_length=30,
+    name = forms.CharField(min_length=2, max_length=30,
                            error_messages=error_messages.get("name"))
     email = forms.EmailField(min_length=8, max_length=64, error_messages=error_messages.get("email"))
     psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
@@ -63,16 +63,16 @@ class RegisterForm(forms.ModelForm):
 
 
 
-CHOICES = []
-questiontype = QuestionType.objects.all()
-for qtype in questiontype:
-    CHOICES.append([qtype.id, qtype.name])
-QTYPE_CHOICES = tuple(CHOICES)
+# CHOICES = []
+# questiontype = QuestionType.objects.all()
+# for qtype in questiontype:
+#     CHOICES.append([qtype.id, qtype.name])
+# QTYPE_CHOICES = tuple(CHOICES)
 
 class QuestionForm(forms.Form):
     title = forms.CharField(min_length=5, max_length=127)
     text = forms.CharField(max_length=1023)
-    q_type = forms.ChoiceField(label=u'类型',choices=QTYPE_CHOICES)
+    q_type = forms.CharField(min_length=2, max_length=15)
 
     def clean_text(self):
         html = self.cleaned_data['text']

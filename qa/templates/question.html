@@ -130,6 +130,11 @@
 
         {#            评论面板#}
         <br/>
+
+{#        {{ answer.comment_set.all }}#}
+        {% for comment in answer.comment_set.all %}
+            {{ comment }}
+        {% endfor %}
         <div class="panel panel-default cpanel">
 
             <div class="panel-body">
@@ -150,26 +155,25 @@
                 <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"
                      class="img-circle pull-left" style="height: 30px;">
                 <div>
-                    <a href="">认得你</a></div>
+                    <a href="">认的你</a></div>
                 这是一个基本的面板
             </div>
             <div >
 
                 <div style="padding: 1em">
-                    <input type="text" class="form-control addcomment" id="comment"
+                    <input type="text" class="form-control addcomment" id="c{{ answer.id }}"
                            placeholder="输入评论">
+                     <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>
                 </div>
 
 
-                <div class="cbutton" style="display: none;padding: 0.5em 1em;" value={{ answer.id }}>
-                    <button type="button" class="btn" style="" value="34">评论</button>
-                </div>
 
             </div>
 
 
 
         </div>
+        <br/>
         <hr style="margin-bottom: 2em;"/>
     {% endfor %}
 <br/>
@@ -196,7 +200,7 @@
                 <div id="container">
                     <a class="btn btn-default btn-lg" id="pickfiles" href="#" >
                         <i class="glyphicon glyphicon-plus"></i>
-                        <sapn>上传图片</sapn>
+                        <span>上传图片</span>
                     </a>
                 </div>
                 <button type="button" class="btn btn-primary btn-lg btn-block commit">提交</button>
@@ -222,16 +226,25 @@
 {% block js %}
     <script>
         {#    评论支持#}
-
-        $("#comment").focus(function(){
-            $('.cbutton').css('display','block');
+{#焦点#}
+        $(".addcomment").focus(function(){
+            $(this).next().css('display','block');
         });
-{#        $("#comment").blur(function(){#}
-{#            $('.cbutton').css('display','none');#}
-{#        });#}
+{#提交评论#}
         $(".cbutton").click(function(){
-            var aid = $('.cbutton').val();
-           alert(aid)
+            var aid=$(this).attr('id');
+            var text = $('#c'+aid.substr(2, 10)).val();
+
+             $.ajax({
+                type:'POST',
+                url:'/commit/post/addcomment',
+                data:{'aid':aid.substr(2,10), 'text':text},
+                dataType:'json',
+                success:function(){
+                    window.location.reload();
+                }
+
+            });
         });
 
 
@@ -264,12 +277,6 @@
         hljs.initHighlightingOnLoad();
 
         {#    编辑器支持#}
-
-
-        {##}
-        {#            {% if name %}#}
-        {#                var editor = new EpicEditor().load();#}
-        {#            {% endif %}           #}
         if(document.getElementById('epiceditor')){
             var editor = new EpicEditor().load();
 

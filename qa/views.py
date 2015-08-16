@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm
-from models import User, Question, Answer,QuestionType
+from models import User, Question, Answer, QuestionType, Comment
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 # from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage ,Page
@@ -186,9 +186,7 @@ def logout(request):
     return HttpResponseRedirect('/')    # 改成刷新 或者 js
 
 
-def getcomment(request):
-    # 得到评论
-    return HttpResponse('ok')
+
 
 
 def askquestion(request):
@@ -201,17 +199,13 @@ def askquestion(request):
             title = data['title']
             text = data['text']
             qtype = data['q_type']
-            # title = request.POST.get('title')
-            # text = request.POST.get('text')
-            # q_type = data['q_type']
             user = User.objects.get(name=name.split()[0])
-            questiontype = QuestionType.objects.get(id=qtype)
-
+            questiontype = QuestionType(name=qtype)
+            questiontype.save()
             question = Question(user=user, title=title, text=text, q_type=questiontype)
-
             question.save()
             # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-            return HttpResponseRedirect("/") #待改
+            return JsonResponse({'status':'ok'})
         else:
             # return HttpResponse(request.POST.get('title'))
             return render(request, 'askquestion.html')
@@ -264,3 +258,21 @@ def agree_answer(request):
                 return HttpResponse("已经取消赞同啦")
     else:
         return HttpResponse("可以麻烦您登陆下么⊙︿⊙")
+
+def getcomment(request):
+    # 得到评论
+    return HttpResponse('ok')
+
+def addcomment(request):
+    name = request.session.get('name')
+    if name and request.method == 'POST':
+        aid = request.POST.get('aid')
+        text = request.POST.get('text')
+        user = User.objects.get(name=name.split()[0])
+        answer = Answer.objects.get(id=aid)
+        comment = Comment(user=user, text=text, answer=answer)
+        comment.save()
+        return JsonResponse({'status':'ok'})
+    else:
+        return HttpResponse('not login')
+

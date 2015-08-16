@@ -11,13 +11,13 @@
 
 
 
-{#    <style type="text/css">#}
-{##}
-{##}
-{#        @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');#}
-{#        @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');#}
-{#        @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');#}
-{#    </style>#}
+    {#    <style type="text/css">#}
+    {##}
+    {##}
+    {#        @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');#}
+    {#        @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');#}
+    {#        @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');#}
+    {#    </style>#}
 
 {% endblock css %}
 
@@ -28,26 +28,32 @@
     <div class="col-md-6 col-md-offset-3" >
         <div class="input-group">
             <span class="input-group-addon">标题</span>
-            <input id="qtitle" type="text" class="form-control" placeholder="问题">
+            <input id="qtitle" type="text" class="form-control" maxlength="127" placeholder="问题">
         </div>
+        <br/>
+
+
+        <div class="input-group">
+            <span class="input-group-addon">标签</span>
+            <input id="qtype" type="text" class="form-control span" placeholder="输入标签">
+        </div>
+
         <br/>
 
         <div id="epiceditor"></div>
         <br/>
 
-        <!-- <textarea class="form-control" rows="8"></textarea> -->
 
 
-        {{ QuestionForm.q_type }}
 
 
-    <div id="container">
-                <a class="btn btn-default btn-lg " id="pickfiles" href="#" >
-                    <i class="glyphicon glyphicon-plus"></i>
-                    <sapn>选择文件</sapn>
-                </a>
-            </div>
-    <button id="qsubmit" type="button" class="btn btn-default pull-right">提交</button>
+        <div id="container">
+            <a class="btn btn-default btn-lg " id="pickfiles" href="#" >
+                <i class="glyphicon glyphicon-plus"></i>
+                <sapn>选择文件</sapn>
+            </a>
+        </div>
+        <button id="qsubmit" type="button" class="btn btn-default pull-right">提交</button>
     </div>
 
 
@@ -60,10 +66,10 @@
 
         var editor = new EpicEditor().load();
 
-{#        $('#addimage').click(function(){#}
-{#            // editor.getElement('editor').body.innerHTML#}
-{#            editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text](http://7xkozr.com1.z0.glb.clouddn.com/o_19s0a7ij11m7s19a71s511noj156a9.png)'#}
-{#        });#}
+        {#        $('#addimage').click(function(){#}
+        {#            // editor.getElement('editor').body.innerHTML#}
+        {#            editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text](http://7xkozr.com1.z0.glb.clouddn.com/o_19s0a7ij11m7s19a71s511noj156a9.png)'#}
+        {#        });#}
 
         {#七牛云支持#}
         var uploader = Qiniu.uploader({
@@ -156,15 +162,19 @@
         {#提交问题#}
         $("#qsubmit").click(function() {
             var qtitle =$("#qtitle").val();
-            var qtype = $('select').val();
+            var qtype = $('#qtype').val();
             var theContent = editor.exportFile();
 
             $.ajax({
                 type:'POST',
                 url:'/askquestion/',
                 data:{"title":qtitle,"text":theContent, "q_type":qtype},
+                dataType:'json',
                 success:function(){
                     window.location.href="/";
+                },
+                error:function(){
+                    window.location.reload();
                 }
             });
             // alert(theContent)

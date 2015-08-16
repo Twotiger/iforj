@@ -80,8 +80,11 @@ class Comment(models.Model):
     """评论"""
     user = models.ForeignKey(User)
     text = models.TextField()
-    answer = models.ManyToManyField(Answer, related_name='comment_answer')
+    c_time = models.DateTimeField(auto_now_add=True) # 创建时间
+    answer = models.ForeignKey(Answer)
 
+    def __unicode__(self):
+        return self.text
 
 
 admin.site.register((User, Question , Answer, QuestionType))
