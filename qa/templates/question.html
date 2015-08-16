@@ -105,7 +105,7 @@
 
         </div>
         {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
-        <br/>
+{#        <br/>#}
 
         <div class="afooter">
             <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
@@ -116,26 +116,21 @@
                     <a class='pull-right redit' name="{{ answer.id }}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         编辑</a>
-                    <a href="#" class='pull-right opencomment' style="padding-right: 10px">
+                    <a href="#" name="{{ answer.id }}" class='pull-right opencomment' style="padding-right: 10px">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        评论</a>
+                        {{ answer.comment_set.all|length}}个评论</a>
                 {% else %}
-                    <a class='pull-right opencomment'>
+                    <a name="{{ answer.id }}" class='pull-right opencomment'>
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                        评论</a>
+                        {{ answer.comment_set.all|length}}个评论</a>
 
                 {% endifequal %}
             </span>
         </div>
-
-        {#            评论面板#}
         <br/>
-
-        {#        {{ answer.comment_set.all }}#}
-        <div class="panel panel-default cpanel">
+{# 评论面板#}
+        <div class="panel panel-default cpanel" style="display: none" id="cp{{ answer.id }}">
             {% for comment in answer.comment_set.all %}
-
-
                 <div class="panel-body">
                     <a href="/programmer/{{ comment.user.id }}">{{ comment.user}}</a>:
                     {{ comment.text }}
@@ -150,43 +145,6 @@
                 <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>
             </div>
         </div>
-
-        {#        <div class="panel panel-default cpanel">#}
-        {##}
-        {#            <div class="panel-body">#}
-        {#                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"#}
-        {#                     class="img-circle pull-left" style="height: 30px;">#}
-        {#                <div>#}
-        {#                    <a href="">认得你</a></div>#}
-        {#                这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面#}
-        {#                板这是一个基本的面板这是一个基本的面板这是一个基本的面板#}
-        {#            </div>#}
-        {#            <div >#}
-        {##}
-        {##}
-        {#            </div>#}
-        {#            <hr>#}
-        {##}
-        {#            <div class="panel-body">#}
-        {#                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"#}
-        {#                     class="img-circle pull-left" style="height: 30px;">#}
-        {#                <div>#}
-        {#                    <a href="">认的你</a></div>#}
-        {#                这是一个基本的面板#}
-        {#            </div>#}
-        {#            <div >#}
-        {##}
-        {#                <div style="padding: 1em">#}
-        {#                    <input type="text" class="form-control addcomment" id="c{{ answer.id }}"#}
-        {#                           placeholder="输入评论">#}
-        {#                     <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>#}
-        {#                </div>#}
-        {##}
-        {##}
-        {##}
-        {#            </div>#}
-
-
 
 
         <br/>
@@ -242,33 +200,42 @@
 {% block js %}
     <script>
         {#    评论支持#}
+
+        $(".opencomment").click(function () {
+            var id = $(this).attr('name');
+            $('#cp'+id).css('display','block');
+{#            $(this).parent('.afooter').css('display','block');#}
+        });
         {#焦点#}
         $(".addcomment").focus(function(){
             $(this).next().css('display','block');
         });
 
-        $(".addcomment").blur(function(){
-           $('.cbutton').css('display','none');
 
-        });
         {#提交评论#}
         $(".cbutton").click(function(){
+            var me = $(this);
             var aid=$(this).attr('id');
             var text = $('#c'+aid.substr(2, 10)).val();
-
             $.ajax({
                 type:'POST',
                 url:'/commit/post/addcomment',
                 data:{'aid':aid.substr(2,10), 'text':text},
                 dataType:'json',
                 success:function(){
-                    window.location.reload();
+                    me.parent().before('<div class="panel-body"> <a href="/programmer/{{ name.1 }}">'+'{{ name.0 }}'+':</a>'+text+'</div>')
+                },
+                error:function(msg){
+                    alert(msg.responseText)
                 }
 
             });
         });
 
-
+        $(".addcomment").blur(function(){
+{#            setInterval("",5000);#}
+            setTimeout(function(){$('.cbutton').css('display','none')},1000);
+        });
         {#    update答案#}
         $('.r_commit').click(function(){
             var aid =$('.redit').attr('name');
@@ -341,7 +308,7 @@
 
         // 图片自适应可能存在兼容问题
         {#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
-        {#        $("img").addClass("img-responsive");#}
+                $("img").addClass("img-responsive");
 
         {# 提交问答#}
         $(".commit").click(function() {
