@@ -131,48 +131,64 @@
         {#            评论面板#}
         <br/>
 
-{#        {{ answer.comment_set.all }}#}
-        {% for comment in answer.comment_set.all %}
-            {{ comment }}
-        {% endfor %}
+        {#        {{ answer.comment_set.all }}#}
         <div class="panel panel-default cpanel">
-
-            <div class="panel-body">
-                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"
-                     class="img-circle pull-left" style="height: 30px;">
-                <div>
-                    <a href="">认得你</a></div>
-                这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面
-                板这是一个基本的面板这是一个基本的面板这是一个基本的面板
-            </div>
-            <div >
+            {% for comment in answer.comment_set.all %}
 
 
-            </div>
-            <hr>
-
-            <div class="panel-body">
-                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"
-                     class="img-circle pull-left" style="height: 30px;">
-                <div>
-                    <a href="">认的你</a></div>
-                这是一个基本的面板
-            </div>
-            <div >
-
-                <div style="padding: 1em">
-                    <input type="text" class="form-control addcomment" id="c{{ answer.id }}"
-                           placeholder="输入评论">
-                     <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>
+                <div class="panel-body">
+                    <a href="/programmer/{{ comment.user.id }}">{{ comment.user}}</a>:
+                    {{ comment.text }}
                 </div>
 
+                <hr/>
 
-
+            {% endfor %}
+            <div style="padding: 1em">
+                <input type="text" class="form-control addcomment" id="c{{ answer.id }}"
+                       placeholder="">
+                <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>
             </div>
-
-
-
         </div>
+
+        {#        <div class="panel panel-default cpanel">#}
+        {##}
+        {#            <div class="panel-body">#}
+        {#                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"#}
+        {#                     class="img-circle pull-left" style="height: 30px;">#}
+        {#                <div>#}
+        {#                    <a href="">认得你</a></div>#}
+        {#                这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面板,这是一个基本的面#}
+        {#                板这是一个基本的面板这是一个基本的面板这是一个基本的面板#}
+        {#            </div>#}
+        {#            <div >#}
+        {##}
+        {##}
+        {#            </div>#}
+        {#            <hr>#}
+        {##}
+        {#            <div class="panel-body">#}
+        {#                <img src="http://www.touxiang.com/Data/Image/Articles/2013-08-15/2483434106.jpg"#}
+        {#                     class="img-circle pull-left" style="height: 30px;">#}
+        {#                <div>#}
+        {#                    <a href="">认的你</a></div>#}
+        {#                这是一个基本的面板#}
+        {#            </div>#}
+        {#            <div >#}
+        {##}
+        {#                <div style="padding: 1em">#}
+        {#                    <input type="text" class="form-control addcomment" id="c{{ answer.id }}"#}
+        {#                           placeholder="输入评论">#}
+        {#                     <button type="button" style="display: none;padding: 0.5em 1em;" class="btn cbutton" id="cb{{ answer.id }}" >评论</button>#}
+        {#                </div>#}
+        {##}
+        {##}
+        {##}
+        {#            </div>#}
+
+
+
+
         <br/>
         <hr style="margin-bottom: 2em;"/>
     {% endfor %}
@@ -226,16 +242,21 @@
 {% block js %}
     <script>
         {#    评论支持#}
-{#焦点#}
+        {#焦点#}
         $(".addcomment").focus(function(){
             $(this).next().css('display','block');
         });
-{#提交评论#}
+
+        $(".addcomment").blur(function(){
+           $('.cbutton').css('display','none');
+
+        });
+        {#提交评论#}
         $(".cbutton").click(function(){
             var aid=$(this).attr('id');
             var text = $('#c'+aid.substr(2, 10)).val();
 
-             $.ajax({
+            $.ajax({
                 type:'POST',
                 url:'/commit/post/addcomment',
                 data:{'aid':aid.substr(2,10), 'text':text},
