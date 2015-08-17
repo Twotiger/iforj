@@ -4,7 +4,6 @@ from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm
 from models import User, Question, Answer, QuestionType, Comment
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
-# from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage ,Page
 import hashlib
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
@@ -16,13 +15,9 @@ def index(request):
     """Q&A首页"""
     name =request.session.get('name')
 
-    qtype = request.GET.get('type')
-    if qtype == "top":
 
-        questions = Question.objects.all()
-    else:
         # 显示最新
-        questions = Question.objects.all()
+    questions = Question.objects.all()
     # 分页
     paginator  = MyPaginator(questions, 10)
     page = request.GET.get('page')
@@ -32,6 +27,31 @@ def index(request):
         paginator.page(1)
     except EmptyPage:
         paginator.page(paginator.num_pages)
+
+    gol_error = request.GET.get('error')
+    if name:
+        # 当登陆时传递名字
+        return render(request,'index.html',{'questions': paginator, 'name': name.split()})
+
+    return render(request,'index.html',{'questions': paginator, 'error':gol_error})
+
+
+def top(request):
+    """TOP"""
+    name =request.session.get('name')
+    qtype = request.GET.get('type')
+
+    questions = Question.objects.all().order_by('-q_times')
+    # 分页
+    paginator  = MyPaginator(questions, 10)
+    page = request.GET.get('page')
+    try:
+        paginator.page(page)
+    except PageNotAnInteger:
+        paginator.page(1)
+    except EmptyPage:
+        paginator.page(paginator.num_pages)
+
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
@@ -170,20 +190,20 @@ def search(request):
         name = None
 
     if search_type == "question":
-        questions = Question.objects.filter(title__contains=q)
+        questions = Question.objects.filter(title__icontains=q)
         return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name})
     elif search_type == "people":
         users = User.objects.filter(name__contains=q)
         return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name})
     else:
-        topics = QuestionType.objects.filter(name__contains=q)
+        topics = QuestionType.objects.filter(name__icontains=q)
         return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name})
 
 
 def logout(request):
     """登出"""
     del request.session['name']
-    return HttpResponseRedirect('/')    # 改成刷新 或者 js
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成刷新 或者 js
 
 
 

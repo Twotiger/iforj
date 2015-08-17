@@ -1,2 +1,2 @@
-python manage.py runserver 0.0.0.0:80
+python manage.py runserver --insecure 0.0.0.0:80
 pause

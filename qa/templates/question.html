@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block css %}
-    {% load staticfiles %}
+
     {#七牛云支持#}
     <script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
     <script src="http://jssdk.demo.qiniu.io/js/qiniu.js"></script>
 
     {#富文本支持#}
-    <script src="/static/js/epiceditor.js"></script>
+    {% load staticfiles %}
+    <script src="{%  static "js/epiceditor.js"%}"></script>
+{#    <script src="/static/js/epiceditor.js"></script>#}
 
 
     {#    代码markdown编辑#}

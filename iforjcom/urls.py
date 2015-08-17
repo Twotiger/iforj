@@ -20,6 +20,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', 'qa.views.index', name='index'),
+    url(r'^top/$', 'qa.views.top'),
     url(r'^login/$', 'qa.views.login'),
     url(r'^logout/$', 'qa.views.logout'),
     url(r'^register/$', 'qa.views.register', name='register'),                  # 注册

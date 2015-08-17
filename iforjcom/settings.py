@@ -23,9 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0v_76m%z1xz$+q1te0*$7-1$0l1&05#=*nu6hv5g)lh_=43&_b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
+
+# ALLOWED_HOSTS = ['.iforj.com',
+#                  '.iforj.com.']
 
 
 # Application definition
