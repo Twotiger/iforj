@@ -28,7 +28,7 @@ def index(request):
     except EmptyPage:
         paginator.page(paginator.num_pages)
 
-    gol_error = request.GET.get('error')
+    gol_error = request.GET.get('error') # 全局变量
     if name:
         # 当登陆时传递名字
         return render(request,'index.html',{'questions': paginator, 'name': name.split()})
@@ -176,13 +176,25 @@ def register(request):
             return render(request,"register.html",{'errors': f.errors})
     return render(request,"register.html")
 
+def mypaginator(request, questions, n):
+    paginator  = MyPaginator(questions, n)
+    page = request.GET.get('page')
+    try:
+        paginator.page(page)
+    except PageNotAnInteger:
+        paginator.page(1)
+    except EmptyPage:
+        paginator.page(paginator.num_pages)
+    return paginator
+    
+
+
 def search(request):
     """搜索问题"""
     search_type = request.GET.get('type')
     q = request.GET.get('q')
     if not search_type:
         search_type = "question"
-
 
     if request.session.get("name"):
         name = request.session.get("name").split()
@@ -191,15 +203,32 @@ def search(request):
 
     if search_type == "question":
         questions = Question.objects.filter(title__icontains=q)
-        return render(request,'search.html',{'questions': questions,'q':q,'flag':'question',"name":name})
+        paginator = mypaginator(request, questions, 10)
+        return render(request,'search.html',{'questions': paginator,'q':q,'flag':'question',"name":name})
+
     elif search_type == "people":
         users = User.objects.filter(name__contains=q)
         return render(request,"search.html",{'users': users,'q': q,'flag':'people',"name":name})
     else:
+
         topics = QuestionType.objects.filter(name__icontains=q)
-        return render(request,"search.html",{'topics': topics,"q": q,'flag':'topic',"name":name})
+        questiontype = QuestionType.objects.get(name = q)
+        questions = questiontype.question_set.all()
 
+        paginator  = MyPaginator(questions, 10)
+        page = request.GET.get('page')
+        try:
+            paginator.page(page)
+        except PageNotAnInteger:
+            paginator.page(1)
+        except EmptyPage:
+            paginator.page(paginator.num_pages)
 
+#        questions = Question.objects.filter(q_type = q)
+        return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic', 
+                                "name":name, 'questions': paginator })
+ 
+ 
 def logout(request):
     """登出"""
     del request.session['name']

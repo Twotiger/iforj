@@ -11,21 +11,8 @@
     </div>
     <br/>
 
-    <div id="questions" class="col-md-6 col-md-offset-3" style="disabled:block; margin-top: 10px">
-        {% for question in questions %}
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title" style="color:#337ab7">
-                        <a href="{% url 'question' question.id %}" >{{ question.title }}</a>
-                    </h3><a href="#"><span class="badge">{{ question.q_type }}</span></a>
-                </div>
-                <div class="panel-body">
-                    回复:{{ question.q_times }}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+
 
     <div id="users" class="col-md-6 col-md-offset-3" style="disabled:none;">
         <ul class="list users">
@@ -74,6 +61,44 @@
             </div>
         {% endfor %}
     </div>
+    
+    
+    <div class="col-md-6 col-md-offset-3" >
+        {% for question in questions.page_list %}
+    
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h1 class="panel-title" style="color:#337ab7;">
+                        <a href="{% url 'question' question.id %}" ><b>{{ question.title }}</b></a>
+    
+                        <a href="/search/?type=topic&q={{ question.q_type }}">
+                            <span class="label label-default">{{ question.q_type }}</span>
+                        </a>
+                    </h1>
+    
+                </div>
+                <div class="panel-body">
+                    回复:{{ question.q_times }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+ 
+    {% if questions.num_pages > 1 %}
+        <div class="col-md-6 col-md-offset-5" >
+            <ul class="pagination">
+    
+                <li><a href="?page=1">&laquo;</a></li>
+    
+                {%  for i in questions.page_range %}
+                    <li {% ifequal i questions.number %}class="active"{% endifequal %}>
+                        <a href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+                <li><a href="?page={{ questions.num_pages }}">&raquo;</a></li>
+            </ul>
+    </div>
+    {% endif %}
 {% endblock %}
 
 
