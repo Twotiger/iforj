@@ -296,3 +296,6 @@ def addcomment(request):
     else:
         return HttpResponse('not login')
 
+
+def test(request):
+    return render(request,'test.html')

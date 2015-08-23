@@ -74,32 +74,32 @@ class QuestionForm(forms.Form):
     text = forms.CharField(max_length=1023)
     q_type = forms.CharField(min_length=2, max_length=15)
 
-    def clean_text(self):
-        html = self.cleaned_data['text']
-
-        text = re.sub('<\s*script\s*>', '&ltscript&gt;',html)
-
-        return text
+#    def clean_text(self):
+#        html = self.cleaned_data['text']
+#
+#        text = re.sub('<\s*script\s*>', '&ltscript&gt;',html)
+#
+#        return text
 
 
 class AnswerForm(forms.Form):
     qid = forms.IntegerField()
     text = forms.CharField(max_length=1023)
 
-    def clean_text(self):
-        html = self.cleaned_data['text']
-        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
-        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
-        return text
+#    def clean_text(self):
+#        html = self.cleaned_data['text']
+#        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
+#        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
+#        return text
 
 
 class UpAnswerForm(forms.Form):
     get_id = forms.IntegerField()
     text = forms.CharField(max_length=1023)
 
-    def clean_text(self):
-        html = self.cleaned_data['text']
-        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
-        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
-        return text
+#    def clean_text(self):
+#        html = self.cleaned_data['text']
+#        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
+#        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
+#        return text
 

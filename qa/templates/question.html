@@ -12,8 +12,11 @@
 {#    <script src="/static/js/epiceditor.js"></script>#}
 
 
-    {#    代码markdown编辑#}
+    {#    代码markdown编辑及过滤#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
+    <script src="http://jsxss.com/assets/xss.js"></script>
+    <script src="{% static 'js/showdown-xss-filter.js' %}"></script>
+
 
 
     {#    高亮#}
@@ -87,7 +90,7 @@
         <div class="apanel a{{ answer.id }}">
             {#渲染答案#}
             <script>
-                var converter = new showdown.Converter(),
+                var converter = new showdown.Converter({ extensions: ['xssfilter'] });
                         html = converter.makeHtml('{{ answer.text|escapejs  }}');
                 document.write(html)
             </script>
@@ -98,7 +101,7 @@
             {% ifequal answered answer.user.id %}
                 <div id="epiceditor"></div>
                 <script>
-                    var equalhtml ="{{ answer.text|escape|escapejs }}"
+                    var equalhtml ="{{ answer.text|escapejs }}"
                 </script>
                 <button class="btn pull-right r_commit">完成</button>
             {% endifequal %}
@@ -107,7 +110,7 @@
 
         </div>
         {#                  <img src="{{ answer.user.image }}" class="img-circle" alt="" style="height: 30px;" />#}
-{#        <br/>#}
+        {#        <br/>#}
 
         <div class="afooter">
             <a href="{% url 'programmer' answer.user_id %}">{{ answer.user }}</a>
