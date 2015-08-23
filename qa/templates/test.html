@@ -21,6 +21,24 @@ var converter = new showdown.Converter({ extensions: ['xssfilter'] });
 var text = "<h1 id='title'>XSS Demo</h1>";
 document.write(converter.makeHtml(text));
 
+var x ="{% filter removetags:"br" %}\
+    AA<br/>\
+    BB<br/>\
+    CC<br/>\
+    DD<br/>\
+{% endfilter %}"
+
+
 </script>
+
+
+{% filter removetags:"br" %}
+    AA<br/>
+    BB<br/>
+    CC<br/>
+    DD<br/>
+{% endfilter %}
+
+
 </body>
 </html>

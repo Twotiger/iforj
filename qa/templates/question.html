@@ -101,11 +101,10 @@
             {% ifequal answered answer.user.id %}
                 <div id="epiceditor"></div>
                 <script>
-                    var equalhtml ="{{ answer.text|escapejs }}"
+                    var equalhtml ="{{ answer.text|linebreaksbr }}"
                 </script>
                 <button class="btn pull-right r_commit">完成</button>
             {% endifequal %}
-
 
 
         </div>
@@ -121,7 +120,7 @@
                     <a class='pull-right redit' name="{{ answer.id }}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         编辑</a>
-                    <a href="#" name="{{ answer.id }}" class='pull-right opencomment' style="padding-right: 10px">
+                    <a  name="{{ answer.id }}" class='pull-right opencomment' style="padding-right: 10px">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                         {{ answer.comment_set.all|length}}个评论</a>
                 {% else %}
@@ -298,7 +297,8 @@
 
             $('.apanel-edit').css('display','block');
             var editor = new EpicEditor().load();
-            equalhtml =equalhtml.replace(/\n/g,"</br>");
+//            equalhtml =equalhtml.replace(/\n/g,"</br>");
+//            equalhtml = '```&lt;table border="1">    <tr>      <th>Month</th>      <th>Savings</th>    </tr>    <tr>      <td>January</td>      <td>$100</td>    </tr>  </table>```'
             editor.getElement('editor').body.innerHTML=equalhtml
 
         });
@@ -327,7 +327,7 @@
             });
             {#       alert(sHTML)#}
         });
-        //打开评论(有人在做)
+        //打开评论
         $(".opencomment").click(function () {
             var comments = "<div>asdfasdf<div>asdfasdf</div><div>asdfasdf</div></div>";
             var cid = $(this).parent().next().attr('cid');
