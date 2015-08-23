@@ -39,8 +39,6 @@ urlpatterns = [
     url(r'^commit/post/getcomment$', 'qa.views.getcomment'), # 废除
     url(r'^commit/post/addcomment$', 'qa.views.addcomment'),   # 提交答案
 
-    #url(r'^test/$','qa.views.test'),    # test markdown
-
     url(r'^admin/', include(admin.site.urls)),
 ]
 #/commit/post/getcomment'
