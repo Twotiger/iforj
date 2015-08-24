@@ -9,27 +9,25 @@
     {#富文本支持#}
     {% load staticfiles %}
     <script src="{%  static "js/epiceditor.js"%}"></script>
-{#    <script src="/static/js/epiceditor.js"></script>#}
-
 
     {#    代码markdown编辑及过滤#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
     <script src="http://jsxss.com/assets/xss.js"></script>
     <script src="{% static 'js/showdown-xss-filter.js' %}"></script>
 
-
-
     {#    高亮#}
     {#    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">#}
-
     {#<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>#}
-
     <script src="/static/highlight.pack.js"></script>
     <link rel="stylesheet" href="/static/styles/github.css">
 
     <style type="text/css">
+    body{font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,STHeiti,"Microsoft Yahei",sans-serif;}
+    .navbar{margin-bottom: 0em}
         .apanel{margin:0 3em}
-        .qpanel{margin:0 3em}
+        .panel-title{background-color: #f6f6f6;padding-bottom: 50px;
+        }
+        .qtitle{font-size: 3em}
         .apanel-edit{margin:0 3em}
         .afooter{margin:0 3em}
         .cpanel{margin:0 3em}
@@ -43,23 +41,32 @@
 {% block content %}
 
 
-    <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
+    <div class="questions" id="{{ questions.id }}">
 
-        <div class="panel panel-default qpanel">
+   
+            <div class="panel-title">
+                <div class="col-md-6 col-md-offset-3">
+                {{ questions.title }}
+                </div>
 
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ questions.title }}</h3>
             </div>
-            <div class="panel-body qmarkdown">
-                {{ questions.text |safe}}
-            </div>
-            <div class="panel-footer">
+
+            <div>
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
                 <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
             </div>
+
+        <div class="panel panel-default col-md-6 col-md-offset-3 qpanel">
+
+         
+            
+            <div class="panel-body qmarkdown">
+                {{ questions.text |safe}}
+            </div>
+```
         </div>
     </div>
 
@@ -71,7 +78,6 @@
         <br/>
         <div class="myanswer">
         <div class="btn-group-xs btn-group-vertical pull-left">
-
             {#                点赞区#}
             <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
                     title="赞同这个答案" value="{{ answer.id }}">
@@ -196,7 +202,7 @@
     {% endif %}
     </div>
 {% endif %}
-
+</div>
 
 {% endblock %}
 
