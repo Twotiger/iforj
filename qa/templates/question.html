@@ -30,14 +30,18 @@
     <style type="text/css">
         body {font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,STHeiti,"Microsoft Yahei",sans-serif;
         }
-        
+        .qtophead{padding:1em}
+        .navbar{margin-bottom:0px}
+        .qtitle{font-size:2em;font-weight: 700;}
         .apanel{margin:0 3em}
         .qpanel{margin:0 3em}
         .apanel-edit{margin:0 3em}
         .afooter{margin:0 3em}
         .cpanel{margin:0 3em}
         .addcomment{padding:1em 1em}
+        
         hr{margin:0 3em}
+        #qhr{border-bottom: 0.25em solid #ccc;padding:1em 0em;font-weight: 700}
     </style>
 {% endblock css %}
 
@@ -45,26 +49,40 @@
 
 {% block content %}
 
+<div class="col-md-12" style="background-color: #f8f8f8;">
+    <div class="col-md-6 col-md-offset-3 qtophead">
+        <div class="qtitle">
+        {{ questions.title }}
+        </div>
+    <div class="">
+                   {#            <img src="{{ questions.user.image }}"#}
+                   {#               class="img-circle" style="height: 30px;">#}
+                   <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
+                   
+                   <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
+               </div>
+    
+        
+    </div>
+</div>
+
+
 
     <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
-
-        <div class="panel panel-default qpanel">
-
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ questions.title }}</h3>
-            </div>
-            <div class="panel-body qmarkdown">
+        <div class="qpanel">
+            <div class=" qmarkdown">
                 {{ questions.text |safe}}
             </div>
-            <div class="panel-footer">
-                {#            <img src="{{ questions.user.image }}"#}
-                {#               class="img-circle" style="height: 30px;">#}
-                <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
-                共{{ questions.q_times }}个回答
-                <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
-            </div>
+<div id="qhr">
+{{ questions.q_times }}个回答
+</div>
+
         </div>
+
+
     </div>
+
+
 
     {{ agreed }}
     {#  循环打印所有答案#}
