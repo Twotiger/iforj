@@ -20,6 +20,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', 'qa.views.index', name='index'),
+    url(r'^qntoken/$','qa.views.qntoken'),
     url(r'^top/$', 'qa.views.top'),
     url(r'^login/$', 'qa.views.login'),
     url(r'^logout/$', 'qa.views.logout'),
@@ -30,7 +31,7 @@ urlpatterns = [
     url(r'^agreeanswer/$','qa.views.agree_answer'), # ajax提交 赞同的回答
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
-    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
+#    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
 
 
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案

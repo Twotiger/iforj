@@ -8,7 +8,7 @@ import hashlib
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu
-
+from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME
 
 # Create your views here.
 def index(request):
@@ -59,18 +59,6 @@ def top(request):
 
     return render(request,'index.html',{'questions': paginator, 'error':gol_error})
 
-
-#后期再改
-def testtwo():
-    access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
-    secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
-    bucket_name = "iforj"
-    q = qiniu.Auth(access_key, secret_key)
-    token = q.upload_token(bucket_name)
-    return token
-
-
-
 def getquestion(request, n):
     """问题页面"""
     questions = Question.objects.get(id=n)
@@ -91,7 +79,7 @@ def getquestion(request, n):
         else:
             # 没回答过显示文本编辑框
             return render(request,'question.html', {'questions': questions,
-                                                    'answers': answers, 'uptoken':testtwo(),
+                                                    'answers': answers,
                                                     'name': name.split()})
     else:
         # 没登陆
@@ -259,12 +247,7 @@ def askquestion(request):
             # return HttpResponse(request.POST.get('title'))
             return render(request, 'askquestion.html')
     if name:
-        access_key = "wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2"
-        secret_key = "IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y"
-        bucket_name = "iforj"
-        q = qiniu.Auth(access_key, secret_key)
-        token = q.upload_token(bucket_name)
-        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'uptoken':token,'name':name.split()})
+        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'name':name.split()})
     else:
         return HttpResponseRedirect("/")
 
@@ -328,3 +311,9 @@ def addcomment(request):
 
 def test(request):
     return render(request,'test.html')
+
+def qntoken(request):
+    q = qiniu.Auth(ACCESS_KEY, SECRET_KEY)
+    token = q.upload_token(BUCKET_NAME)
+    jsonData = {"uptoken":token}
+    return JsonResponse(jsonData)
