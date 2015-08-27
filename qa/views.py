@@ -8,7 +8,8 @@ import hashlib
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu
-from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME
+from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME
+from send_email import sendMail
 
 # Create your views here.
 def index(request):
@@ -157,6 +158,7 @@ def register(request):
             introduction = f.cleaned_data["introduction"]
             user = User.objects.create(name=name, email=email, psd=psd, introduction=introduction)
             user.save()
+            sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=user.vericode))
             return HttpResponseRedirect("/")
         else:
             return render(request,"register.html",{'errors': f.errors})
@@ -210,7 +212,7 @@ def search(request):
             paginator.page(paginator.num_pages)
 
 #        questions = Question.objects.filter(q_type = q)
-        return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic', 
+        return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic',
                                 "name":name, 'questions': paginator })
 def logout(request):
     """登出"""
@@ -310,3 +312,11 @@ def qntoken(request):
     token = q.upload_token(BUCKET_NAME)
     jsonData = {"uptoken":token}
     return JsonResponse(jsonData)
+
+def validate(request, code):
+    user = User.objects.filter(vericode=code)
+    if user:
+        user[0].is_veri = True
+        user[0].save()
+    return HttpResponse(code)
+

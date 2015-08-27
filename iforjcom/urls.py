@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'^search/$', 'qa.views.search'),
     url(r'^programmer/(\d+)$', 'qa.views.programmer', name='programmer'),
     url(r'^agreeanswer/$','qa.views.agree_answer'), # ajax提交 赞同的回答
+    url(r'^validate/(\w+)$', 'qa.views.validate'),   # 验证用户
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
 #    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
