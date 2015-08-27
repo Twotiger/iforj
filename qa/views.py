@@ -14,9 +14,7 @@ from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME
 def index(request):
     """Q&A首页"""
     name =request.session.get('name')
-
-
-        # 显示最新
+    # 显示最新
     questions = Question.objects.all()
     # 分页
     paginator  = MyPaginator(questions, 10)
@@ -40,7 +38,7 @@ def top(request):
     """TOP"""
     name =request.session.get('name')
     qtype = request.GET.get('type')
-
+ 
     questions = Question.objects.all().order_by('-q_times')
     # 分页
     paginator  = MyPaginator(questions, 10)
@@ -174,7 +172,6 @@ def mypaginator(request, questions, n):
     except EmptyPage:
         paginator.page(paginator.num_pages)
     return paginator
-    
 
 
 def search(request):
@@ -215,14 +212,10 @@ def search(request):
 #        questions = Question.objects.filter(q_type = q)
         return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic', 
                                 "name":name, 'questions': paginator })
- 
- 
 def logout(request):
     """登出"""
     del request.session['name']
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成刷新 或者 js
-
-
 
 
 
