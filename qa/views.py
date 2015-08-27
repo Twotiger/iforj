@@ -8,7 +8,7 @@ import hashlib
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu
-from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME
+from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT
 from send_email import sendMail
 
 # Create your views here.
@@ -136,7 +136,8 @@ def login(request):
             u_email = data['email']
             u_psd = data['password']
 
-            user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()).hexdigest())
+            #user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()).hexdigest())
+            user = User.objects.filter(email=u_email, psd=hashlib.sha1(u_psd).hexdigest())
             if user:
                 # response = HttpResponseRedirect('/')
                 response =HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
@@ -156,9 +157,13 @@ def register(request):
             email = f.cleaned_data["email"]
             psd = f.cleaned_data["psd"]
             introduction = f.cleaned_data["introduction"]
-            user = User.objects.create(name=name, email=email, psd=psd, introduction=introduction)
-            user.save()
-            sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=user.vericode))
+            vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
+            user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
+                    introduction=introduction, vericode=vericode)
+            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=vericode)):
+                user.save()
+            else:
+                pass# 邮件发送失败
             return HttpResponseRedirect("/")
         else:
             return render(request,"register.html",{'errors': f.errors})
@@ -217,7 +222,7 @@ def search(request):
 def logout(request):
     """登出"""
     del request.session['name']
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成刷新 或者 js
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成 js
 
 
 
@@ -314,6 +319,7 @@ def qntoken(request):
     return JsonResponse(jsonData)
 
 def validate(request, code):
+    """验证"""
     user = User.objects.filter(vericode=code)
     if user:
         user[0].is_veri = True

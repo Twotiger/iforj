@@ -24,4 +24,4 @@ def sendMail(to_list,sub,content):  #to_list：收件人；sub：主题；content：邮件内
         return False
 
 if __name__ == "__main__":
-	send_mail(['501362431@qq.com'], 'asdf', 'xxxxxxxxxxxxx')
+    sendMail(['501362431@qq.com'], 'asdf', '<a href="http:///127.0.0.1/versiton/adfasdf">hit me</a>')
