@@ -135,31 +135,58 @@ def login(request):
             data = form.cleaned_data
             u_email = data['email']
             u_psd = data['password']
+            return render(request, 'index.html',{'login_error':request.META.get('HTTP_REFERER', '/')})
+            try:
+                user = User.objects.get(email=u_email)
+                # 登录错误检查
+                login_error = user.login_error
+                if login_error > 3:
+                    return JsonResponse({'status':'错误次数过多,已经帮您锁定,不用谢!'})
+                if user.psd != hashlib.sha1(u_psd).hexdigest():
+                    # 如果密码不正确查询错误次数,如果超过3次就锁定账户
+                    user.login_error += 1
+                    user.save()
+                else:
+                    return JsonResponse({'status': 'ok'})
 
-            #user = User.objects.filter(email=u_email, psd= hashlib.sha1(hashlib.sha1(u_psd).hexdigest()).hexdigest())
-            user = User.objects.filter(email=u_email, psd=hashlib.sha1(u_psd).hexdigest())
+
+            except User.DoesNotExist:
+                return JsonResponse({'status': '邮箱或密码错误'})
+
+
+
+
+            # user = User.objects.filter(email=u_email, psd=hashlib.sha1(u_psd).hexdigest())
             if user:
+                if user.psd != hashlib.sha1(u_psd).hexdigest():
+                    # 如果密码不正确查询错误次数,如果超过3次就锁定账户
+                    login_error = user.login_error
+                    if login_error > 3:
+                        return JsonResponse({'status':'错误次数过多,放过我把- -'})
+                    user.save()
+                else:
+                    return JsonResponse({'status': '邮箱或密码错误'})
                 # response = HttpResponseRedirect('/')
-                response =HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+                response = HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
                 name = user[0].name
                 request.session['name'] = name+" "+str(user[0].id)
                 return response
             else:
-                # return HttpResponseRedirect("/"+"?error=loginerror&a=%s"%hashlib.sha1(u_psd).hexdigest())
-                return HttpResponseRedirect("/"+"?error=loginerror")
+                return JsonResponse({'status':'错误次数过多,放过我把- -'})
 
 def register(request):
     """注册用户"""
     if request.method == "POST":
         f = RegisterForm(request.POST)
         if f.is_valid():
-            name = f.cleaned_data["name"]
-            email = f.cleaned_data["email"]
-            psd = f.cleaned_data["psd"]
+            name = f.cleaned_data["name"]   # 用户名
+            email = f.cleaned_data["email"] # 邮箱
+            psd = f.cleaned_data["psd"] # 密码
+            real_ip = request.META['REMOTE_ADDR']   #ip
             introduction = f.cleaned_data["introduction"]
             vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
             user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
-                    introduction=introduction, vericode=vericode)
+                                        introduction=introduction, vericode=vericode, real_ip=real_ip)
             if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=vericode)):
                 user.save()
             else:
@@ -229,7 +256,7 @@ def logout(request):
 def askquestion(request):
     """提问模板"""
     name =request.session.get('name')
-    if request.method == "POST":
+    if request.method == "POST" and request.is_ajax():
         form = QuestionForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -310,7 +337,9 @@ def addcomment(request):
 
 
 def test(request):
-    return render(request,'test.html')
+    # ip = request.META['HTTP_X_FORWARDED_FOR']
+    ip = request.META['REMOTE_ADDR']
+    return render(request,'test.html', {'ip':ip})
 
 def qntoken(request):
     q = qiniu.Auth(ACCESS_KEY, SECRET_KEY)

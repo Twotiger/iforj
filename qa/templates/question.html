@@ -30,7 +30,7 @@
         .afooter{margin:0 3em}
         .cpanel{margin:0 3em}
         .addcomment{padding:1em 1em}
-        
+
         hr{margin:0 3em}
         #qhr{border-bottom: 0.25em solid #ccc;padding:1em 0em;font-weight: 700}
     </style>
@@ -40,28 +40,28 @@
 
 {% block content %}
 
-<div class="col-md-12" style="background-color: #f8f8f8;">
-    <div class="col-md-6 col-md-offset-3 qtophead">
-        <div class="qtitle">
-        {{ questions.title }}
+    <div class="col-md-12" style="background-color: #eee;">
+        <div class="col-md-6 col-md-offset-3 qtophead">
+            <div class="qtitle">
+                {{ questions.title }}
+            </div>
+            <div class="">
+                {#            <img src="{{ questions.user.image }}"#}
+                {#               class="img-circle" style="height: 30px;">#}
+                <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
+
+                <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
+            </div>
         </div>
-    <div class="">
-                   {#            <img src="{{ questions.user.image }}"#}
-                   {#               class="img-circle" style="height: 30px;">#}
-                   <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
-                   
-                   <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
-               </div>
     </div>
-</div>
     <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
         <div class="qpanel">
             <div class=" qmarkdown">
                 {{ questions.text |safe}}
             </div>
-<div id="qhr">
-{{ questions.q_times }}个回答
-</div>
+            <div id="qhr">
+                {{ questions.q_times }}个回答
+            </div>
 
         </div>
 
@@ -98,7 +98,7 @@
             {#渲染答案#}
             <script>
                 var converter = new showdown.Converter({ extensions: ['xssfilter'] });
-                        html = converter.makeHtml('{{ answer.text|escapejs  }}');
+                html = converter.makeHtml('{{ answer.text|escapejs  }}');
                 document.write(html)
             </script>
         </div>
@@ -109,7 +109,7 @@
                 <div id="epiceditor"></div>
                 <script>
                     var equalhtml ="{{ answer.text|linebreaksbr }}"
-				</script>
+                </script>
                 <button class="btn pull-right r_commit">完成</button>
             {% endifequal %}
 
@@ -139,7 +139,7 @@
             </span>
         </div>
         <br/>
-{# 评论面板#}
+        {# 评论面板#}
         <div class="panel panel-default cpanel" style="display: none" id="cp{{ answer.id }}">
             {% for comment in answer.comment_set.all %}
                 <div class="panel-body">
@@ -195,10 +195,10 @@
 
     {% else %}
 
-            <div class="panel panel-default apanel">
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
-                        data-target="#login">加入我们</button>
-            </div>
+        <div class="panel panel-default apanel">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                    data-target="#login">加入我们</button>
+        </div>
 
     {% endif %}
     </div>
@@ -215,7 +215,7 @@
         $(".opencomment").click(function () {
             var id = $(this).attr('name');
             $('#cp'+id).css('display','block');
-{#            $(this).parent('.afooter').css('display','block');#}
+            {#            $(this).parent('.afooter').css('display','block');#}
         });
         {#焦点#}
         $(".addcomment").focus(function(){
@@ -243,7 +243,7 @@
         });
 
         $(".addcomment").blur(function(){
-{#            setInterval("",5000);#}
+            {#            setInterval("",5000);#}
             setTimeout(function(){$('.cbutton').css('display','none')},1000);
         });
         {#    update答案#}
@@ -311,7 +311,7 @@
 
         // 图片自适应可能存在兼容问题
         {#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
-                $("img").addClass("img-responsive");
+        $("img").addClass("img-responsive");
 
         {# 提交问答#}
         $(".commit").click(function() {

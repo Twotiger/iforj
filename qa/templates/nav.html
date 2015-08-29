@@ -59,7 +59,6 @@
 
             </ul>
         </div><!-- /.navbar-collapse -->
-
 </nav>
 
 
@@ -81,6 +80,7 @@
 
                 <form  method="post" action="/login/">
                     {% csrf_token %}
+                    {{ login_error }}
                     <div class="form-group">
                         <label class="control-label">Email</label>
                         <input type="email" class="form-control" name="email" required="" placeholder="邮箱">
