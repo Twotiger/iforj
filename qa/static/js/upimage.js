@@ -59,4 +59,4 @@
                     xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
                 }
             }
-        })
+        });

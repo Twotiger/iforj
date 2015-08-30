@@ -6,6 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 import hashlib
 
+from django.utils.timezone import utc
+import datetime
+
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu
 from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT
@@ -39,7 +42,7 @@ def top(request):
     """TOP"""
     name =request.session.get('name')
     qtype = request.GET.get('type')
- 
+
     questions = Question.objects.all().order_by('-q_times')
     # 分页
     paginator  = MyPaginator(questions, 10)
@@ -135,44 +138,28 @@ def login(request):
             data = form.cleaned_data
             u_email = data['email']
             u_psd = data['password']
-            return render(request, 'index.html',{'login_error':request.META.get('HTTP_REFERER', '/')})
+            # return render(request, 'index.html',{'login_error':request.META.get('HTTP_REFERER', '/')})
             try:
                 user = User.objects.get(email=u_email)
                 # 登录错误检查
                 login_error = user.login_error
                 if login_error > 3:
-                    return JsonResponse({'status':'错误次数过多,已经帮您锁定,不用谢!'})
+                    last_time = user.last_time
+                    now = datetime.datetime.utcnow()
+
+                    return HttpResponse(now)
                 if user.psd != hashlib.sha1(u_psd).hexdigest():
                     # 如果密码不正确查询错误次数,如果超过3次就锁定账户
                     user.login_error += 1
                     user.save()
+                    return HttpResponse('邮箱或密码错误')
                 else:
+                    name = user.name
+                    request.session['name'] = name+" "+str(user.id)
                     return JsonResponse({'status': 'ok'})
-
-
             except User.DoesNotExist:
-                return JsonResponse({'status': '邮箱或密码错误'})
+                return HttpResponse('邮箱或密码错误')
 
-
-
-
-            # user = User.objects.filter(email=u_email, psd=hashlib.sha1(u_psd).hexdigest())
-            if user:
-                if user.psd != hashlib.sha1(u_psd).hexdigest():
-                    # 如果密码不正确查询错误次数,如果超过3次就锁定账户
-                    login_error = user.login_error
-                    if login_error > 3:
-                        return JsonResponse({'status':'错误次数过多,放过我把- -'})
-                    user.save()
-                else:
-                    return JsonResponse({'status': '邮箱或密码错误'})
-                # response = HttpResponseRedirect('/')
-                response = HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-                name = user[0].name
-                request.session['name'] = name+" "+str(user[0].id)
-                return response
-            else:
-                return JsonResponse({'status':'错误次数过多,放过我把- -'})
 
 def register(request):
     """注册用户"""
@@ -186,7 +173,7 @@ def register(request):
             introduction = f.cleaned_data["introduction"]
             vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
             user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
-                                        introduction=introduction, vericode=vericode, real_ip=real_ip)
+                                       introduction=introduction, vericode=vericode, real_ip=real_ip)
             if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=vericode)):
                 user.save()
             else:
@@ -243,9 +230,9 @@ def search(request):
         except EmptyPage:
             paginator.page(paginator.num_pages)
 
-#        questions = Question.objects.filter(q_type = q)
+        #        questions = Question.objects.filter(q_type = q)
         return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic',
-                                "name":name, 'questions': paginator })
+                                             "name":name, 'questions': paginator })
 def logout(request):
     """登出"""
     del request.session['name']
