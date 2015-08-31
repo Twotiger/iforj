@@ -143,19 +143,28 @@ def login(request):
                 user = User.objects.get(email=u_email)
                 # 登录错误检查
                 login_error = user.login_error
-                if login_error > 3:
-                    last_time = user.last_time
-                    now = datetime.datetime.utcnow()
-
-                    return HttpResponse(now)
+                last_time = user.last_time
+                now = datetime.datetime.utcnow().replace(tzinfo=utc)
+                del_s = now - last_time
+                wait_time = (login_error - 3) * 5
+                if del_s.seconds > wait_time * 60:
+                    # 如果相差的时间大于必须等待的秒数,可以正常登录一次
+                    pass
+                else:
+                    if login_error > 3 :
+                        return HttpResponse('由于错误次数过多,已经帮您锁住.请%s分钟之后再试'% wait_time)
                 if user.psd != hashlib.sha1(u_psd).hexdigest():
-                    # 如果密码不正确查询错误次数,如果超过3次就锁定账户
+                    # 如果密码不正确查询错误次数
                     user.login_error += 1
                     user.save()
+                    # remainder = 4 - login_error
                     return HttpResponse('邮箱或密码错误')
                 else:
+                    # 登录成功
                     name = user.name
                     request.session['name'] = name+" "+str(user.id)
+                    user.last_time = 0
+                    user.save()
                     return JsonResponse({'status': 'ok'})
             except User.DoesNotExist:
                 return HttpResponse('邮箱或密码错误')
@@ -220,7 +229,7 @@ def search(request):
         topics = QuestionType.objects.filter(name__icontains=q)
         questiontype = QuestionType.objects.get(name = q)
         questions = questiontype.question_set.all()
-
+        questions_num = len(questions) # 共多少问题
         paginator  = MyPaginator(questions, 10)
         page = request.GET.get('page')
         try:
@@ -232,7 +241,7 @@ def search(request):
 
         #        questions = Question.objects.filter(q_type = q)
         return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic',
-                                             "name":name, 'questions': paginator })
+                                             "name":name, 'questions': paginator, 'questions_num':questions_num })
 def logout(request):
     """登出"""
     del request.session['name']
@@ -249,12 +258,18 @@ def askquestion(request):
             data = form.cleaned_data
             title = data['title']
             text = data['text']
-            qtype = data['q_type']
+            qtype = data['q_type'].lower()
             user = User.objects.get(name=name.split()[0])
-            questiontype = QuestionType(name=qtype)
-            questiontype.save()
+            try:
+                questiontype = QuestionType.objects.get(name=qtype)
+            except QuestionType.DoesNotExist:
+                questiontype = QuestionType(name=qtype)
+                questiontype.save()
+
             question = Question(user=user, title=title, text=text, q_type=questiontype)
             question.save()
+
+
             # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             return JsonResponse({'status':'ok'})
         else:

@@ -15,7 +15,6 @@ class User(models.Model):
     is_veri = models.BooleanField(default=False)    # 是否验证过
     vericode = models.CharField(max_length=40,  null=True, blank=True)  # 验证码编码,发送到邮箱验证
     real_ip = models.GenericIPAddressField(null=True, blank=True)  # 注册时的ip地址
-    # real_ip = models.IPAddressField(null=True, blank=True)  # 注册时的ip地址
     # url = models.CharField(max_length=127) # 存储成好看的拼音
     introduction = models.CharField(max_length=127,null=True, blank=True) # 简介
     image = models.URLField(null=True, blank=True)   # 头像
