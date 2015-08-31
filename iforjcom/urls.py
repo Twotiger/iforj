@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^question/(\d+)$', 'qa.views.getquestion', name='question'),          # 问题
     url(r'^search/$', 'qa.views.search'),
     url(r'^programmer/(\d+)$', 'qa.views.programmer', name='programmer'),
-    url(r'^agreeanswer/$', 'qa.views.agree_answer'),  # ajax提交 赞同的回答
+    url(r'^agreeanswer/$','qa.views.agree_answer'), # ajax提交 赞同的回答
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
     url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
@@ -36,12 +36,9 @@ urlpatterns = [
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案
     url(r'^commit/post/updateanswer$','qa.views.commit_post_update'),   #
 
-    url(r'^commit/post/getcomment$', 'qa.views.getcomment'),  # 废除
+    url(r'^commit/post/getcomment$', 'qa.views.getcomment'), # 废除
     url(r'^commit/post/addcomment$', 'qa.views.addcomment'),   # 提交答案
 
     url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^about/', 'qa.views.about_us'),
-
 ]
-# /commit/post/getcomment'
+#/commit/post/getcomment'

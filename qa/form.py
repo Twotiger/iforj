@@ -4,11 +4,12 @@ from django import forms
 
 from models import User, QuestionType
 
-
 class LoginForm(forms.Form):
     """简单的登陆"""
     email = forms.CharField(max_length=254)
     password = forms.CharField(max_length=127)
+
+
 
 
 error_messages = {
@@ -58,6 +59,8 @@ class RegisterForm(forms.ModelForm):
         if user:
             raise forms.ValidationError(u'所填邮箱已经被注册过')
         return email
+
+
 
 
 # CHOICES = []

@@ -9,10 +9,10 @@
     {#富文本支持#}
     {% load staticfiles %}
     <script src="{%  static "js/epiceditor.js"%}"></script>
-{# <script src="/static/js/epiceditor.js"></script> #}
+{#    <script src="/static/js/epiceditor.js"></script>#}
 
 
-    {#    代码markdown编辑及过滤 #}
+    {#    代码markdown编辑及过滤#}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
     <script src="http://jsxss.com/assets/xss.js"></script>
     <script src="{% static 'js/showdown-xss-filter.js' %}"></script>
@@ -56,7 +56,7 @@
             <div class="panel-footer">
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
-                <a href="{% url 'programmer' questions.user_id %}">{{ questions.user }}</a>
+                <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
             </div>
