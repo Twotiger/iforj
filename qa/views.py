@@ -21,7 +21,7 @@ def index(request):
     # 显示最新
     questions = Question.objects.all()
     # 分页
-    paginator  = MyPaginator(questions, 10)
+    paginator  = MyPaginator(questions, 2)
     page = request.GET.get('page')
     try:
         paginator.page(page)
@@ -29,7 +29,6 @@ def index(request):
         paginator.page(1)
     except EmptyPage:
         paginator.page(paginator.num_pages)
-
     gol_error = request.GET.get('error') # 全局变量
     if name:
         # 当登陆时传递名字
@@ -53,7 +52,6 @@ def top(request):
         paginator.page(1)
     except EmptyPage:
         paginator.page(paginator.num_pages)
-
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
