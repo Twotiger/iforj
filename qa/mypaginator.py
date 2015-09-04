@@ -15,10 +15,13 @@ class MyPaginator(object):
     def __init__(self, object_list, per_page):
         self.object_list = object_list
         self.per_page = int(per_page)   # 多少个一分
-        self.num_pages = None   # 能拆多少个
+
+        self.num_pages = 1   # 能拆多少个
         self.num = None
         self.number = None
         self.page_list = None
+        self.page_range = None
+
 
     def validate_number(self, number):
         """

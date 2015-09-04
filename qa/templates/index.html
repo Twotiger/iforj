@@ -3,25 +3,11 @@
 
 {% endblock %}
 
-{% block title %}python{% endblock %}
+{% block title %}IFORJ{% endblock %}
 {% block content %}
-    {{  questPage}}
-    {% if error %}
-        <div class="col-md-6 col-md-offset-3">
-            <div class="alert alert-danger alert-dismissable">
-                <button type="button" class="close" data-dismiss="alert"
-                        aria-hidden="true">
-                    &times;
-                </button>
-                用户名或密码错误
-            </div>
-        </div>
-    {% endif %}
-
 
     <div class="col-md-6 col-md-offset-3" >
         {% for question in questions.page_list %}
-
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -44,9 +30,7 @@
 
     <div class="col-md-6 col-md-offset-5" >
         <ul class="pagination">
-
             <li><a href="?page=1">&laquo;</a></li>
-
             {%  for i in questions.page_range %}
                 <li {% ifequal i questions.number %}class="active"{% endifequal %}>
                     <a href="?page={{ i }}">{{ i }}</a>
@@ -54,16 +38,13 @@
             {% endfor %}
             <li><a href="?page={{ questions.num_pages }}">&raquo;</a></li>
         </ul>
-</div>
+    </div>
 
 
-<div class="col-md-12">
-
-    <hr style="border-top-width: 1px;border-top-style: solid;border-top-color: rgb(90, 44, 44);margin-top: 2em">
-</div>
-
+    <div class="col-md-12">
+        <hr style="border-top-width: 1px;border-top-style: solid;border-top-color: rgb(90, 44, 44);margin-top: 2em">
+    </div>
     <footer class="footer">
-
         <div class="col-md-5 col-md-offset-1">
             <h4>Python社区</h4>
             <p class="lead"  style="color:#777;font-size: 1em">本社区专业维修核潜艇，核弹头翻新,保养,租赁,改装,抛光,喷漆.内饰,
@@ -71,32 +52,54 @@
                 F22 ,F35 ,B2,,T50轰炸机，有源相控雷达，各类核弹头。量大从优！有发票!全面接受预定歼20歼30，3个月内提机，送两年保养，
                 送前风玻璃贴膜。还有惊喜小礼品钥匙扣，打火机等，另外还可以参加店庆抽奖，意外惊喜等着你。</p>
         </div>
-    <div class="col-lg-5 col-lg-offset-1">
+        <div class="col-lg-5 col-lg-offset-1">
             <div class="row about">
-              <div class="col-xs-3">
-                <h4>关于</h4>
-                <ul class="list-unstyled">
-                  <li><a href="/about/">关于我们</a></li>
-                  <li><a href="/ad/">广告合作</a></li>
-                  <li><a href="/links/">友情链接</a></li>
-                  <li><a href="https://github.com/Twotiger/iforj" target="_blank">GITHUB</a></li>
-                </ul>
-              </div>
-              <div class="col-xs-3">
-                <h4>联系方式</h4>
-                <ul class="list-unstyled">
-                  <li><a href="http://weibo.com/" title="官方微博" target="_blank">新浪微博</a></li>
-                  <li><a href="#">电子邮件</a></li>
-                </ul>
-              </div>
-
-
+                <div class="col-xs-3">
+                    <h4>关于</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="/about/">关于我们</a></li>
+                        <li><a href="/ad/">广告合作</a></li>
+                        <li><a href="/links/">友情链接</a></li>
+                        <li><a href="https://github.com/Twotiger/iforj" target="_blank">GITHUB</a></li>
+                    </ul>
+                </div>
+                <div class="col-xs-3">
+                    <h4>联系方式</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="http://weibo.com/" title="官方微博" target="_blank">新浪微博</a></li>
+                        <li><a href="#">电子邮件</a></li>
+                    </ul>
+                </div>
             </div>
-
-          </div>
-
+        </div>
     </footer>
+
 {% endblock %}
 
 
-
+{% block js %}
+    <script>
+        $('#login').modal({ backdrop: false ,show:false}){# 有导航的都要加 #}
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+    </script>
+{% endblock js %}

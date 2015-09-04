@@ -1,43 +1,7 @@
 <html>
-<head>
-{% load staticfiles %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
-<script src="http://jsxss.com/assets/xss.js"></script>
-<script src="{% static 'js/showdown-xss-filter.js' %}"></script>
-
-
-</head>
+<head> </head>
 <body>
-ok
-<script>
-var html = filterXSS('<a href="#" onclick="alert(/xss/)">click me</a>');
-
-document.write(html);
-console.log(filterXSS('<a href="#" onclick="alert(/xss/)">click me</a>'));
-
-
-var converter = new showdown.Converter({ extensions: ['xssfilter'] });
-
-var text = "<h1 id='title'>XSS Demo</h1>";
-document.write(converter.makeHtml(text));
-
-var x ="{% filter removetags:"br" %}\
-    AA<br/>\
-    BB<br/>\
-    CC<br/>\
-    DD<br/>\
-{% endfilter %}"
-
-
-</script>
-
-
-{% filter removetags:"br" %}
-    AA<br/>
-    BB<br/>
-    CC<br/>
-    DD<br/>
-{% endfilter %}
+    {{ ip }}
 
 
 </body>

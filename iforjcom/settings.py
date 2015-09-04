@@ -23,14 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0v_76m%z1xz$+q1te0*$7-1$0l1&05#=*nu6hv5g)lh_=43&_b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
-# ALLOWED_HOSTS = ['.iforj.com',
-#                  '.iforj.com.']
-
 
 # Application definition
 
@@ -115,6 +111,3 @@ STATIC_URL = '/static/'
 
 #
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-QINIU_ACCESS_KEY = 'wmN715-Lo5SC1jYIkuqObCLl1bhZoURTxewUGyq2'
-QINIU_SECRET_KEY = 'IXXeA4-Rzu9RB6nkf687UjQt9YCOp1JpWptm0C0y'
-QINIU_BUCKET_DEFAULT = '7xkozr.com1.z0.glb.clouddn.com'

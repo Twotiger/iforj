@@ -20,6 +20,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', 'qa.views.index', name='index'),
+    url(r'^qntoken/$','qa.views.qntoken'),
     url(r'^top/$', 'qa.views.top'),
     url(r'^login/$', 'qa.views.login'),
     url(r'^logout/$', 'qa.views.logout'),
@@ -27,10 +28,13 @@ urlpatterns = [
     url(r'^question/(\d+)$', 'qa.views.getquestion', name='question'),          # 问题
     url(r'^search/$', 'qa.views.search'),
     url(r'^programmer/(\d+)$', 'qa.views.programmer', name='programmer'),
-    url(r'^agreeanswer/$', 'qa.views.agree_answer'),  # ajax提交 赞同的回答
+
+    url(r'^agreeanswer/$','qa.views.agree_answer'), # ajax提交 赞同的回答
+    url(r'^validate/(\w+)$', 'qa.views.validate'),   # 验证用户
+
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
-    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
+#    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
 
 
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案
@@ -39,11 +43,10 @@ urlpatterns = [
     url(r'^commit/post/getcomment$', 'qa.views.getcomment'),  # 废除
     url(r'^commit/post/addcomment$', 'qa.views.addcomment'),   # 提交答案
 
-    #url(r'^test/$','qa.views.test'),    # test markdown
+    url(r'^test/$','qa.views.test'),    # test markdown
 
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^about/', 'qa.views.about_us'),
 
 ]
-# /commit/post/getcomment'

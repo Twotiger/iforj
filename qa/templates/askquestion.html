@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block css %}
     {#七牛云支持#}
     <script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
@@ -8,23 +7,9 @@
     {#富文本支持#}
     {% load staticfiles %}
     <script src="/static/js/epiceditor.js"></script>
-
-
-
-    {#    <style type="text/css">#}
-    {##}
-    {##}
-    {#        @import url('http://cdn.gbtags.com/twitter-bootstrap/3.2.0/css/bootstrap.css');#}
-    {#        @import url('http://cdn.gbtags.com/font-awesome/4.1.0/css/font-awesome.min.css');#}
-    {#        @import url('http://cdn.gbtags.com/summernote/0.5.2/summernote.css');#}
-    {#    </style>#}
-
 {% endblock css %}
 
-
 {% block content %}
-
-
     <div class="col-md-6 col-md-offset-3" >
         <div class="input-group">
             <span class="input-group-addon">标题</span>
@@ -44,9 +29,6 @@
         <br/>
 
 
-
-
-
         <div id="container">
             <a class="btn btn-default btn-lg " id="pickfiles" href="#" >
                 <i class="glyphicon glyphicon-plus"></i>
@@ -55,109 +37,12 @@
         </div>
         <button id="qsubmit" type="button" class="btn btn-default pull-right">提交</button>
     </div>
-
-
-
-
 {% endblock %}
 
 {% block js %}
+    <script src="/static/js/upimage.js"></script>
     <script>
-
         var editor = new EpicEditor().load();
-
-        {#        $('#addimage').click(function(){#}
-        {#            // editor.getElement('editor').body.innerHTML#}
-        {#            editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text](http://7xkozr.com1.z0.glb.clouddn.com/o_19s0a7ij11m7s19a71s511noj156a9.png)'#}
-        {#        });#}
-
-        {#七牛云支持#}
-        var uploader = Qiniu.uploader({
-            runtimes: 'html5,flash,html4',    //上传模式,依次退化
-            browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-            //  uptoken_url: 'upload.qiniu.com',
-            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-            uptoken : '{{uptoken}}',
-            //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-            unique_names: true,
-            // 默认 false，key为文件名。若开启该选项，SDK会为每个文件自动生成key（文件名）
-            // save_key: true,
-            // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK在前端将不对key进行任何处理
-            domain: 'http://7xkozr.com1.z0.glb.clouddn.com/',
-            //bucket 域名，下载资源时用到，**必需**
-            container: 'container',           //上传区域DOM ID，默认是browser_button的父元素，
-            max_file_size: '4mb',           //最大文件体积限制
-            flash_swf_url: 'js/plupload/Moxie.swf',  //引入flash,相对路径
-            max_retries: 3,                   //上传失败最大重试次数
-            dragdrop: true,                   //开启可拖曳上传
-            drop_element: 'container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-            chunk_size: '4mb',                //分块上传时，每片的体积
-            auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
-            init: {
-                'FilesAdded': function(up, files) {
-                    plupload.each(files, function(file) {
-                        // 文件添加进队列后,处理相关的事情
-                    });
-                },
-                'BeforeUpload': function(up, file) {
-                    // 每个文件上传前,处理相关的事情
-                    console.log('ok')
-                },
-                'UploadProgress': function(up, file) {
-                    // 每个文件上传时,处理相关的事情
-                },
-                'FileUploaded': function(up, file, info) {
-                    var domain = up.getOption('domain');
-                    var res = $.parseJSON(info);
-                    var sourceLink = domain + res.key; //获取上传成功后的文件的Url
-                    editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text]('+sourceLink+')'
-                },
-                'Error': function(up, err, errTip) {
-                    //上传出错时,处理相关的事情
-                    alert('上传图片出现错误,检查系统时间,再次重新上传');
-                },
-                'UploadComplete': function() {
-                    //队列文件处理完毕后,处理相关的事情
-                },
-                'Key': function(up, file) {
-                    // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                    // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                    var key = "";
-                    // do something with key here
-                    return key
-                }
-            }
-        });
-        // domain 为七牛空间（bucket)对应的域名，选择某个空间后，可通过"空间设置->基本设置->域名设置"查看获取
-
-        // uploader 为一个plupload对象，继承了所有plupload的方法，参考http://plupload.com/docs
-
-
-
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                function getCookie(name) {
-                    var cookieValue = null;
-                    if (document.cookie && document.cookie != '') {
-                        var cookies = document.cookie.split(';');
-                        for (var i = 0; i < cookies.length; i++) {
-                            var cookie = jQuery.trim(cookies[i]);
-                            // Does this cookie string begin with the name we want?
-                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                break;
-                            }
-                        }
-                    }
-                    return cookieValue;
-                }
-                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-                    // Only send the token to relative URLs i.e. locally.
-                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                }
-            }
-        });
-
 
         {#提交问题#}
         $("#qsubmit").click(function() {

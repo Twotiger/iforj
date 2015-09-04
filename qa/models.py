@@ -10,11 +10,11 @@ class User(models.Model):
     name = models.CharField(max_length=80, unique=True)  # 名字
     psd = models.CharField(max_length=127)   # 密码
     email = models.CharField(max_length=254, unique=True)
-    register_time = models.DateTimeField(auto_now=True) # 注册时间
+    register_time = models.DateTimeField(auto_now_add=True) # 注册时间
     last_time = models.DateTimeField(auto_now=True)     # 最后次登陆时间
     is_veri = models.BooleanField(default=False)    # 是否验证过
-    vericode = models.CharField(max_length=40,  null=True, blank=True)  # 验证码
-
+    vericode = models.CharField(max_length=40,  null=True, blank=True)  # 验证码编码,发送到邮箱验证
+    real_ip = models.GenericIPAddressField(null=True, blank=True)  # 注册时的ip地址
     # url = models.CharField(max_length=127) # 存储成好看的拼音
     introduction = models.CharField(max_length=127,null=True, blank=True) # 简介
     image = models.URLField(null=True, blank=True)   # 头像
@@ -22,18 +22,8 @@ class User(models.Model):
     agree_num = models.IntegerField(default=0)  # 赞同数(当问答问题的时候被赞+1)
     viewed = models.PositiveIntegerField(default=0)   # 被浏览次数
 
-
-
-    def save(self, *args, **kwargs):
-        self.psd = hashlib.sha1(self.psd).hexdigest()
-        self.vericode = hashlib.sha1(self.email+'4646868').hexdigest()
-        super(User,self).save(*args,**kwargs)
-
-
-
     def __unicode__(self):
         return self.name
-
 
 class QuestionType(models.Model):
     """问题类型 比如 django/爬虫"""
@@ -60,7 +50,6 @@ class Question(models.Model):
         return self.title
 
 
-
 class Answer(models.Model):
     """答案表"""
     question = models.ForeignKey(Question)
@@ -72,9 +61,9 @@ class Answer(models.Model):
     weight = models.PositiveSmallIntegerField(null=True)    # 权重.
     waring = models.PositiveSmallIntegerField(null=True)    # 有人举报+1
 
-
     def __unicode__(self):
         return "%s"%self.text
+
 
 class Comment(models.Model):
     """评论"""

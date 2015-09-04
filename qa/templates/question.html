@@ -1,40 +1,43 @@
 {% extends 'base.html' %}
-
 {% block css %}
 
     {#七牛云支持#}
     <script src="//cdn.bootcss.com/plupload/2.1.7/plupload.full.min.js"></script>
-    <script src="http://jssdk.demo.qiniu.io/js/qiniu.js"></script>
+    <script src="/static/js/qiniu.js"></script>
 
     {#富文本支持#}
     {% load staticfiles %}
     <script src="{%  static "js/epiceditor.js"%}"></script>
+<<<<<<< HEAD
 {# <script src="/static/js/epiceditor.js"></script> #}
 
+=======
+>>>>>>> develop
 
     {#    代码markdown编辑及过滤 #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
     <script src="http://jsxss.com/assets/xss.js"></script>
     <script src="{% static 'js/showdown-xss-filter.js' %}"></script>
 
-
-
     {#    高亮#}
-    {#    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/default.min.css">#}
-
-    {#<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>#}
-
     <script src="/static/highlight.pack.js"></script>
     <link rel="stylesheet" href="/static/styles/github.css">
 
     <style type="text/css">
+        body {font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,STHeiti,"Microsoft Yahei",sans-serif;
+        }
+        .qtophead{padding:1em}
+        .navbar{margin-bottom:0px}
+        .qtitle{font-size:2em;font-weight: 700;}
         .apanel{margin:0 3em}
         .qpanel{margin:0 3em}
         .apanel-edit{margin:0 3em}
         .afooter{margin:0 3em}
         .cpanel{margin:0 3em}
         .addcomment{padding:1em 1em}
+
         hr{margin:0 3em}
+        #qhr{border-bottom: 0.25em solid #ccc;padding:1em 0em;font-weight: 700}
     </style>
 {% endblock css %}
 
@@ -42,26 +45,40 @@
 
 {% block content %}
 
-
-    <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
-
-        <div class="panel panel-default qpanel">
-
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ questions.title }}</h3>
+    <div class="col-md-12" style="background-color: #eee;">
+        <div class="col-md-6 col-md-offset-3 qtophead">
+            <div class="qtitle">
+                {{ questions.title }}
             </div>
-            <div class="panel-body qmarkdown">
-                {{ questions.text |safe}}
-            </div>
-            <div class="panel-footer">
+            <div class="">
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
+<<<<<<< HEAD
                 <a href="{% url 'programmer' questions.user_id %}">{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
+=======
+                <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
+
+>>>>>>> develop
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
             </div>
         </div>
     </div>
+    <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
+        <div class="qpanel">
+            <div class=" qmarkdown">
+                {{ questions.text |safe}}
+            </div>
+            <div id="qhr">
+                {{ questions.q_times }}个回答
+            </div>
+
+        </div>
+
+
+    </div>
+
+
 
     {{ agreed }}
     {#  循环打印所有答案#}
@@ -85,13 +102,13 @@
         </div>
 
 
-        {#如果是我写的评论,添加个可编辑属性#}
+        {#如果是我写的评论,添加个可编辑属性 #}
 
         <div class="apanel a{{ answer.id }}">
             {#渲染答案#}
             <script>
                 var converter = new showdown.Converter({ extensions: ['xssfilter'] });
-                        html = converter.makeHtml('{{ answer.text|escapejs  }}');
+                html = converter.makeHtml('{{ answer.text|escapejs  }}');
                 document.write(html)
             </script>
         </div>
@@ -132,7 +149,7 @@
             </span>
         </div>
         <br/>
-{# 评论面板#}
+        {# 评论面板#}
         <div class="panel panel-default cpanel" style="display: none" id="cp{{ answer.id }}">
             {% for comment in answer.comment_set.all %}
                 <div class="panel-body">
@@ -188,10 +205,10 @@
 
     {% else %}
 
-            <div class="panel panel-default apanel">
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
-                        data-target="#login">加入我们</button>
-            </div>
+        <div class="panel panel-default apanel">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                    data-target="#login">加入我们</button>
+        </div>
 
     {% endif %}
     </div>
@@ -202,19 +219,18 @@
 
 
 {% block js %}
+    <script src="/static/js/upimage.js"></script>
     <script>
         {#    评论支持#}
-
         $(".opencomment").click(function () {
             var id = $(this).attr('name');
             $('#cp'+id).css('display','block');
-{#            $(this).parent('.afooter').css('display','block');#}
+            {#            $(this).parent('.afooter').css('display','block');#}
         });
         {#焦点#}
         $(".addcomment").focus(function(){
             $(this).next().css('display','block');
         });
-
 
         {#提交评论#}
         $(".cbutton").click(function(){
@@ -237,7 +253,7 @@
         });
 
         $(".addcomment").blur(function(){
-{#            setInterval("",5000);#}
+            {#            setInterval("",5000);#}
             setTimeout(function(){$('.cbutton').css('display','none')},1000);
         });
         {#    update答案#}
@@ -303,17 +319,9 @@
 
         });
 
-
-        function saveanswer(id){
-            alert('真的未完成');
-
-        };
-
-
-
         // 图片自适应可能存在兼容问题
         {#        $("img").addClass("carousel-inner img-responsive img-rounded");#}
-                $("img").addClass("img-responsive");
+        $("img").addClass("img-responsive");
 
         {# 提交问答#}
         $(".commit").click(function() {
@@ -382,88 +390,7 @@
                 }
             });
         });
-        {#七牛云支持#}
-        var uploader = Qiniu.uploader({
-            runtimes: 'html5,flash,html4',    //上传模式,依次退化
-            browse_button: 'pickfiles',       //上传选择的点选按钮，**必需**
-            //  uptoken_url: 'upload.qiniu.com',
-            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
-            uptoken : '{{uptoken}}',
-            //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
-            unique_names: true,
-            // 默认 false，key为文件名。若开启该选项，SDK会为每个文件自动生成key（文件名）
-            // save_key: true,
-            // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK在前端将不对key进行任何处理
-            domain: 'http://7xkozr.com1.z0.glb.clouddn.com/',
-            //bucket 域名，下载资源时用到，**必需**
-            container: 'container',           //上传区域DOM ID，默认是browser_button的父元素，
-            max_file_size: '4mb',           //最大文件体积限制
-            flash_swf_url: 'js/plupload/Moxie.swf',  //引入flash,相对路径
-            max_retries: 3,                   //上传失败最大重试次数
-            dragdrop: true,                   //开启可拖曳上传
-            drop_element: 'container',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
-            chunk_size: '4mb',                //分块上传时，每片的体积
-            auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
-            init: {
-                'FilesAdded': function(up, files) {
-                    plupload.each(files, function(file) {
-                        // 文件添加进队列后,处理相关的事情
-                    });
-                },
-                'BeforeUpload': function(up, file) {
-                    // 每个文件上传前,处理相关的事情
-                    console.log('ok')
-                },
-                'UploadProgress': function(up, file) {
-                    // 每个文件上传时,处理相关的事情
-                },
-                'FileUploaded': function(up, file, info) {
-                    var domain = up.getOption('domain');
-                    var res = $.parseJSON(info);
-                    var sourceLink = domain + res.key; //获取上传成功后的文件的Url
-                    editor.getElement('editor').body.innerHTML=editor.getElement('editor').body.innerHTML+'![Alt text]('+sourceLink+')'
-                },
-                'Error': function(up, err, errTip) {
-                    //上传出错时,处理相关的事情
-                    alert('上传图片出现错误,检查系统时间,再次重新上传');
-                },
-                'UploadComplete': function() {
-                    //队列文件处理完毕后,处理相关的事情
-                    {#                    alert('ok');#}
-                },
-                'Key': function(up, file) {
-                    // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
-                    // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                    var key = "";
-                    // do something with key here
-                    return key
-                }
-            }
-        });
 
 
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                function getCookie(name) {
-                    var cookieValue = null;
-                    if (document.cookie && document.cookie != '') {
-                        var cookies = document.cookie.split(';');
-                        for (var i = 0; i < cookies.length; i++) {
-                            var cookie = jQuery.trim(cookies[i]);
-                            // Does this cookie string begin with the name we want?
-                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                break;
-                            }
-                        }
-                    }
-                    return cookieValue;
-                }
-                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-                    // Only send the token to relative URLs i.e. locally.
-                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                }
-            }
-        });
     </script>
 {% endblock %}
