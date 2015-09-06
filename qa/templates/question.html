@@ -8,11 +8,7 @@
     {#富文本支持#}
     {% load staticfiles %}
     <script src="{%  static "js/epiceditor.js"%}"></script>
-<<<<<<< HEAD
-{# <script src="/static/js/epiceditor.js"></script> #}
 
-=======
->>>>>>> develop
 
     {#    代码markdown编辑及过滤 #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
@@ -53,13 +49,9 @@
             <div class="">
                 {#            <img src="{{ questions.user.image }}"#}
                 {#               class="img-circle" style="height: 30px;">#}
-<<<<<<< HEAD
-                <a href="{% url 'programmer' questions.user_id %}">{{ questions.user }}</a>
-                共{{ questions.q_times }}个回答
-=======
+
                 <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
 
->>>>>>> develop
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
             </div>
         </div>

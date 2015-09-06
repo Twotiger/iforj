@@ -184,7 +184,8 @@ def register(request):
             vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
             user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
                                        introduction=introduction, vericode=vericode, real_ip=real_ip)
-            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=vericode)):
+            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'
+                    .format(HOSTNAME=HOSTNAME, vericode=vericode)):
                 user.save()
             else:
                 pass# 邮件发送失败
