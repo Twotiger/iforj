@@ -169,6 +169,8 @@ def login(request):
                     return JsonResponse({'status': 'ok'})
             except User.DoesNotExist:
                 return HttpResponse('邮箱或密码错误')
+        else:
+            return HttpResponse('邮箱或密码错误')
 
 
 def register(request):
