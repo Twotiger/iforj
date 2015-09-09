@@ -34,7 +34,7 @@ urlpatterns = [
 
 
     url(r'^askquestion/$', 'qa.views.askquestion'),
-#    url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
+    # url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
 
 
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案

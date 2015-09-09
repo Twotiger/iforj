@@ -10,7 +10,8 @@ MAIL_USER = "duangguangmoon"
 MAIL_PASS = "duangguang"
 MAIL_POSTFIX = "163.com"    # 邮箱的后半段
 HOSTNAME = "127.0.0.1"  # HOSTNAME
-#EMAIL_CONTENT = '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=user.vericode)
+# EMAIL_CONTENT = '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'
+# .format(HOSTNAME=HOSTNAME, vericode=user.vericode)
 
 # 注册
 EMAIL_SALT = "AF4E%W8-9"    # 随机生成
