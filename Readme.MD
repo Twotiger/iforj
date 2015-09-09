@@ -25,4 +25,5 @@ pip install django
 
 pip install qiniu
 ``` 
-客服邮箱：318748600@qq.com   ifojcom@163.com
+
+####E-Mail: ifojcom@163.com
