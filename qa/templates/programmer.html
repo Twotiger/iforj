@@ -1,1 +1,119 @@
-{{ user.name }} 这就是你的主页了.
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="profile-header">
+    <div class="profile-header-main">
+        <div class="top">
+            <h4 style="float:left"><strong>{{ user.name }}</strong>
+            &nbsp;&nbsp;{{ user.introduction }}</h4>
+
+        </div>
+        <div class="body clearfix">
+            <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            <a class="btn btn-success" href="#" style="float:right;">
+                <sapn class="glyphicon glyphicon-arrow-right"></sapn>&nbsp;关注
+            </a>
+        </div>
+        <div class="bottom">
+            <p style="float:left;">获得赞同数&nbsp;
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                &nbsp;{{ user.agree_num }}
+            </p>
+            {% ifequal name.0 user.name %}
+            <a href="#" class="edit-profile" style="float:right">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                编辑个人资料</a>
+            {% endifequal %}
+        </div>
+    </div>
+</div>
+<div style="height:20px;"></div>
+<div class="profile-section-wrap profile-answer-page">
+    <div class="profile-section-nav">
+        <nav class="navbar navbar-default" role="navigation">
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> </a>
+   </div>
+   <div>
+      <ul class="nav navbar-nav">
+         <li><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
+         <li class="active"><a href="?q=answers">回答&nbsp;{{ answers_count }}</a></li>
+         <li><a href="#">关注</a> </li>
+      </ul>
+   </div>
+</nav>
+    </div>
+
+    <div class="section-detail">
+        <div class="profile-section-head" style="display:block;">
+            <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的回答</p></div>
+        </div>
+        {% for answer in answers %}
+            <div class="profile-section-list">
+                <div class="question-name"><p><strong style="color:#259;"><a href="{% url 'question' answer.question.id %}">{{ answer.question.title }}</a></strong></p></div>
+                <div class="question-answer">
+                    <div class="question-answer-detail" style="float:left;">
+                        <div class="btn-group-xs btn-group-vertical pull-left">
+                            {#                点赞区#}
+                            <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
+                                    title="赞同这个答案" value="{{ answer.id }}">
+                                <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
+                                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
+                            </button>
+                            <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
+                                    title="取消赞同"  value="{{ answer.id }}">
+                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="question-answer-info" style="float:left;"><p style="color:black;margin-left:12px;">{{ answer.text }}</p></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    {#赞同+#}
+        $(".upnum").click(function(){
+            var aid = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'/agreeanswer/',
+                data:{'aid':aid, 'tag':1},
+                dataType:'json',
+                success:function(){
+                    $('#a'+aid).html(function(i,oldText){
+                        return + oldText + 1;
+                    })
+                },
+
+                error:function(msg){
+                    alert(msg.responseText);
+                }
+            });
+        });
+        {#不赞同-#}
+        $(".downnum").click(function(){
+            var aid = $(this).val();
+            $.ajax({
+                type:'GET',
+                url:'/agreeanswer/',
+                data:{'aid':aid, 'tag':0},
+                dataType:'json',
+                success:function(){
+                    $('#a'+aid).html(function(i,oldText){
+                        return + oldText - 1;
+                    })
+                },
+                error:function(msg){
+                    alert(msg.responseText);
+                }
+            });
+        });
+</script>
+
+{% endblock %}
+
+
+
