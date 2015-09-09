@@ -290,6 +290,7 @@ def askquestion(request):
 def programmer(request, n):
     # 个人主页
     user = User.objects.filter(id=n)
+    answer = user[0].answer_set.all()
     if user:
         return render(request, 'programmer.html', {'user': user[0]})
     else:
