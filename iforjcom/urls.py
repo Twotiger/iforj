@@ -49,4 +49,6 @@ urlpatterns = [
 
     url(r'^about/', 'qa.views.about_us'),
 
+    url(r'^uploadImage$', 'qa.views.uploadImage', name="uploadImage"),
+
 ]

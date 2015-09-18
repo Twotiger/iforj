@@ -20,6 +20,7 @@
 .profile-header-main .clearfix {
     padding:12px 2px;
     height:178px;
+    position: relative;
 }
 
 .profile-header-main .bottom {

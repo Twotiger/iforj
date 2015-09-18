@@ -1,17 +1,20 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm
+from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm, UploadImageForm
 from models import User, Question, Answer, QuestionType, Comment
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
 import hashlib
+import tempfile
 
 from django.utils.timezone import utc
+from PIL import Image
 import datetime
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
-import qiniu
-from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT
+import qiniu, os
+from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, PORT, EMAIL_SALT, IMAGE_BASE_PATH, \
+                                    IMAGE_APPLICATION_PATH, DEFAULT_IMAGE_PATH
 from send_email import sendMail
 
 # Create your views here.
@@ -33,10 +36,10 @@ def index(request):
         paginator.page(1)
     except EmptyPage:
         paginator.page(paginator.num_pages)
-    gol_error = request.GET.get('error') # 全局变量
+    gol_error = request.GET.get('error')  # 全局变量
     if name:
         # 当登陆时传递名字
-        return render(request, 'index.html', {'questions': paginator, 'name': name.split()})
+        return render(request, 'index.html', {'questions': paginator, 'name': name.split("&")})
 
     return render(request, 'index.html', {'questions': paginator, 'error': gol_error})
 
@@ -59,7 +62,7 @@ def top(request):
     gol_error = request.GET.get('error')
     if name:
         # 当登陆时传递名字
-        return render(request, 'index.html', {'questions': paginator, 'name': name.split()})
+        return render(request, 'index.html', {'questions': paginator, 'name': name.split("&")})
 
     return render(request, 'index.html', {'questions': paginator, 'error': gol_error})
 
@@ -71,7 +74,7 @@ def getquestion(request, n):
     name = request.session.get('name')
     if name:
         # 当登陆时传递名字
-        user = User.objects.get(name=name.split()[0])
+        user = User.objects.get(name=name.split("&")[0])
         answered = Answer.objects.filter(user=user).filter(question=questions)
         # a = Answer.objects.get(user=user)
 
@@ -79,13 +82,13 @@ def getquestion(request, n):
             # 如果回答过了传递用户id
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers,
-                                                    'name': name.split(),
+                                                    'name': name.split("&"),
                                                     'answered': user.id})
         else:
             # 没回答过显示文本编辑框
             return render(request,'question.html', {'questions': questions,
                                                     'answers': answers,
-                                                    'name': name.split()})
+                                                    'name': name.split("&")})
     else:
         # 没登陆
         return render(request,'question.html', {'questions': questions,
@@ -106,7 +109,7 @@ def commit_post_add(request):
         question.q_times += 1
         question.save()
         # 保存到数据库
-        user = User.objects.get(name=name.split()[0])
+        user = User.objects.get(name=name.split("&")[0])
         answer = Answer(user=user, question=question, text=text)
         answer.save()
         # 待修改
@@ -117,7 +120,7 @@ def commit_post_add(request):
 
 def commit_post_update(request):
     """ajax更新答案"""
-    name = request.session.get('name').split()
+    name = request.session.get('name').split("&")
     form = UpAnswerForm(request.POST)
 
     if request.method == "POST" and name and form.is_valid():
@@ -154,7 +157,7 @@ def login(request):
                     # 如果相差的时间大于必须等待的秒数,可以正常登录一次
                     pass
                 else:
-                    if login_error > 3 :
+                    if login_error > 3:
                         return HttpResponse('由于错误次数过多,已经帮您锁住.请%s分钟之后再试'% wait_time)
                 if user.psd != hashlib.sha1(u_psd).hexdigest():
                     # 如果密码不正确查询错误次数
@@ -163,12 +166,17 @@ def login(request):
                     # remainder = 4 - login_error
                     return HttpResponse('邮箱或密码错误')
                 else:
-                    # 登录成功
-                    name = user.name
-                    request.session['name'] = name+" "+str(user.id)
-                    user.last_time = 0
-                    user.save()
-                    return JsonResponse({'status': 'ok'})
+                    # 检查是否验证了邮箱
+                    if not user.is_veri:
+                        return HttpResponse("可以麻烦您验证一下邮箱么⊙︿⊙")
+                    else:
+                        # 登录成功
+                        name = user.name
+                        request.session['name'] = name + "&" + str(user.id)  # 总觉得空格不太好
+                        # print name
+                        user.last_time = 0
+                        user.save()
+                        return JsonResponse({'status': 'ok'})
             except User.DoesNotExist:
                 return HttpResponse('邮箱或密码错误')
 
@@ -185,11 +193,13 @@ def register(request):
             introduction = f.cleaned_data["introduction"]
             vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
             user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
-                                       introduction=introduction, vericode=vericode, real_ip=real_ip)
-            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, vericode=vericode)):
+                                       introduction=introduction, vericode=vericode, real_ip=real_ip,
+                                       image=DEFAULT_IMAGE_PATH)
+
+            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}:{PORT}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, PORT=PORT, vericode=vericode)):
                 user.save()
             else:
-                pass# 邮件发送失败
+                pass  # 邮件发送失败
             return HttpResponseRedirect("/")
         else:
             return render(request, "register.html", {'errors': f.errors})
@@ -216,7 +226,7 @@ def search(request):
         search_type = "question"
 
     if request.session.get("name"):
-        name = request.session.get("name").split()
+        name = request.session.get("name").split("&")
     else:
         name = None
 
@@ -253,6 +263,7 @@ def search(request):
 
 def logout(request):
     """登出"""
+
     del request.session['name']
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成 js
 
@@ -268,7 +279,7 @@ def askquestion(request):
             title = data['title']
             text = data['text']
             qtype = data['q_type'].lower()
-            user = User.objects.get(name=name.split()[0])
+            user = User.objects.get(name=name.split("&")[0])
             try:
                 questiontype = QuestionType.objects.get(name=qtype)
             except QuestionType.DoesNotExist:
@@ -284,7 +295,7 @@ def askquestion(request):
             # return HttpResponse(request.POST.get('title'))
             return render(request, 'askquestion.html')
     if name:
-        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'name':name.split()})
+        return render(request,'askquestion.html',{'QuestionForm':QuestionForm, 'name':name.split("&")})
     else:
         return HttpResponseRedirect("/")
 
@@ -296,15 +307,18 @@ def programmer(request, n):
     answers_count = len(answers)
     questions = user[0].question_set.all()
     questions_count = len(questions)
-    name = request.session.get("name")
+    if request.session.get("name"):
+        name = request.session.get("name").split("&")
+    else:
+        name = None
     q = request.GET.get('q')
     if user:
         if not q or q == 'answers':
-            return render(request, 'programmer.html', {'user': user[0], 'answers': answers, 'name': name.split(),
+            return render(request, 'programmer.html', {'user': user[0], 'answers': answers, 'name': name,
                                                        "answers_count": answers_count,
                                                        "questions_count": questions_count})
         elif q == 'questions':
-            return render(request, 'programmer_questions.html', {'user': user[0], 'name': name.split(),
+            return render(request, 'programmer_questions.html', {'user': user[0], 'name': name,
                                                                  'questions': questions,
                                                                  "questions_count": questions_count,
                                                                  "answers_count": answers_count})
@@ -312,6 +326,37 @@ def programmer(request, n):
             pass  # 还要添加一些东西
     else:
         return HttpResponseRedirect("/")
+
+
+def uploadImage(request):
+    if request.method == "POST":
+        form = UploadImageForm(request.POST, request.FILES)
+        # print form
+        if form.is_valid():
+            n = form.cleaned_data["user_id"]
+            user = User.objects.get(id=n)
+            f = request.FILES["user_image"]
+            name = f.name
+            size = f.size / (1024.0*1024.0)
+
+            # 判断图片大小
+            if size > 2.0:
+                return HttpResponse("<p>图片大小不能超过2M!</p>")
+
+            image = Image.open(f)
+            image.thumbnail((128, 128), Image.ANTIALIAS)
+            image_newname = "%s." % str(n) + name.split(".")[1]
+            image_path = IMAGE_BASE_PATH + image_newname
+            image.save(image_path)
+            user.image = IMAGE_APPLICATION_PATH + image_newname
+            user.save()
+            return HttpResponseRedirect("/programmer/%s" % str(n))
+        elif "请上传一张有效的图片".decode("utf-8") in form.errors["user_image"][0]:
+            return HttpResponse("<p>请上传一张有效的图片。您所上传的文件不是图片或者是已损坏的图片!<p>")
+        elif "这个字段是必填项".decode("utf-8") in form.errors["user_image"][0]:
+            return HttpResponse("<p>请选择文件!</p>")
+        else:
+            return HttpResponse("<p>发生未知错误!</p>")
 
 
 def agree_answer(request):
@@ -322,7 +367,7 @@ def agree_answer(request):
         answer_id = request.GET.get('aid')
         tag = request.GET.get('tag')    # 加还是减
         answer = Answer.objects.get(id=answer_id)
-        user = User.objects.get(id=name.split()[1])
+        user = User.objects.get(id=name.split("&")[1])
         # 如果传递1就加
         if tag == '1':
             if not Answer.objects.filter(agree_user=user).filter(id=answer_id):
@@ -356,7 +401,7 @@ def addcomment(request):
     if name and request.method == 'POST':
         aid = request.POST.get('aid')
         text = request.POST.get('text')
-        user = User.objects.get(name=name.split()[0])
+        user = User.objects.get(name=name.split("&")[0])
         answer = Answer.objects.get(id=aid)
         comment = Comment(user=user, text=text, answer=answer)
         comment.save()
@@ -388,4 +433,4 @@ def validate(request, code):
     if user:
         user[0].is_veri = True
         user[0].save()
-    return HttpResponse(code)
+    return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")

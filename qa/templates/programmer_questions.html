@@ -6,13 +6,51 @@
         <div class="top">
             <h4 style="float:left"><strong>{{ user.name }}</strong>
             &nbsp;&nbsp;{{ user.introduction }}</h4>
-
-        </div>
-        <div class="body clearfix">
-            <img src="{{ user.image }}" style="width:100px;height:100px;" />
-            <a class="btn btn-success" href="#" style="float:right;">
-                <sapn class="glyphicon glyphicon-arrow-right"></sapn>&nbsp;关注
+            {% ifequal name.0 user.name %}
+            {% else %}
+            <a class="btn-sm btn-success" href="#" style="float:right;text-decoration:none;">
+                <span class="glyphicon glyphicon-arrow-right"></span>&nbsp;关注
             </a>
+            {% endifequal %}
+        </div>
+        <div class="body clearfix" id="image">
+            {% ifequal name.0 user.name %}
+                <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            <a href="#" data-toggle="modal" data-target="#myModal" style="float:right;">
+                修改头像<span class="glyphicon glyphicon-plus-sign" aria-hidden="true" style="margin-left:-72px;"></span></a>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+               aria-labelledby="myModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close"
+                           data-dismiss="modal" aria-hidden="true">
+                              &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                           修改头像
+                        </h4>
+                     </div>
+                     <div class="modal-body">
+                         <input type="file" value="选择图片">
+                     </div>
+                      <div style="margin-top:50px;float:left;" id="scale"></div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default"
+                           data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary" id="submit">
+                           提交
+                        </button>
+                     </div>
+                  </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+            </div><!-- end -->
+            {% else %}
+            <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            {% endifequal %}
+
         </div>
         <div class="bottom">
             <p style="float:left;">赞同数&nbsp;
@@ -57,3 +95,67 @@
 </div>
 
 {% endblock %}
+
+<script>
+    $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+
+       //修改图片
+$(document).ready(function(){
+    $("#submit").click(function(){
+
+        var imgPath = $("#file").val();
+        if (imgPath == "") {
+            alert("请选择上传图片！");
+            return;
+        }
+        //判断上传文件的后缀名
+        var strExtension = imgPath.substr(imgPath.lastIndexOf('.') + 1);
+        if (strExtension != 'jpg' && strExtension != 'gif'
+        && strExtension != 'png' && strExtension != 'jpeg') {
+            alert("请选择图片文件");
+            return;
+        }
+
+        $.ajax({
+            url: "http://127.0.0.1:8000/uploadImage",
+            type: 'post',
+            enctype: 'multipart/form-data',
+            data: {
+                'user_id' : {{ user.id }},
+               'image': imgPath
+            },
+            success: function(data){
+                alert("修改头像成功!");
+            },
+             error: function(XMLHttpRequest, textStatus, errorThrown) {
+                 alert(XMLHttpRequest.status);
+                 alert(XMLHttpRequest.readyState);
+                 alert(textStatus);
+                 alert(errorThrown);
+             }
+        })
+    });
+});
+</script>

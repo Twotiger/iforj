@@ -100,3 +100,7 @@ class UpAnswerForm(forms.Form):
 #        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
 #        return text
 
+
+class UploadImageForm(forms.Form):
+    user_id = forms.CharField()
+    user_image = forms.ImageField()
