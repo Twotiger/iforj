@@ -11,7 +11,8 @@
 ![Alt text](http://i3.tietuku.com/6d1165a13be688df.png)
 
 
-
+##Demo
+[www.iforj.com](http://101.200.73.231 "Demo")
 
 ###Requirement
 
@@ -24,4 +25,5 @@ pip install django
 
 pip install qiniu
 ``` 
-客服邮箱：318748600@qq.com   ifojcom@163.com
+
+####E-Mail: ifojcom@163.com
