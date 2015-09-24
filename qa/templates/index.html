@@ -6,6 +6,7 @@
 {% block title %}IFORJ{% endblock %}
 {% block content %}
 {% load iforjfilter %}
+
     <div class="col-md-6 col-md-offset-3">
         {% for question in questions.page_list %}
 
@@ -23,6 +24,7 @@
                 <div class="panel-body">
                     回复:{{ question.q_times }}
                     <div class="pull-right">
+
                     发表于:{{ question.q_datetime | isince }}</div>
                 </div>
             </div>

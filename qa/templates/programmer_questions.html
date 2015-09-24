@@ -1,0 +1,59 @@
+{% extends 'programmer.html' %}
+
+{% block content %}
+    <div class="profile-header">
+    <div class="profile-header-main">
+        <div class="top">
+            <h4 style="float:left"><strong>{{ user.name }}</strong>
+            &nbsp;&nbsp;{{ user.introduction }}</h4>
+
+        </div>
+        <div class="body clearfix">
+            <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            <a class="btn btn-success" href="#" style="float:right;">
+                <sapn class="glyphicon glyphicon-arrow-right"></sapn>&nbsp;关注
+            </a>
+        </div>
+        <div class="bottom">
+            <p style="float:left;">赞同数&nbsp;
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                &nbsp;{{ user.agree_num }}
+            </p>
+            {% ifequal name.0 user.name %}
+            <a href="#" class="edit-profile" style="float:right">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                编辑个人资料</a>
+            {% endifequal %}
+        </div>
+    </div>
+</div>
+<div style="height:20px;"></div>
+<div class="profile-section-wrap profile-answer-page">
+    <div class="profile-section-nav">
+        <nav class="navbar navbar-default" role="navigation">
+   <div class="navbar-header">
+      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> </a>
+   </div>
+   <div>
+      <ul class="nav navbar-nav">
+         <li class="active"><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
+         <li><a href="?q=answers">回答&nbsp;{{ answers_count }}</a></li>
+         <li><a href="#">关注</a> </li>
+      </ul>
+   </div>
+</nav>
+    </div>
+
+   <div class="section-detail">
+        <div class="profile-section-head" style="display:block;">
+            <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的问题</p></div>
+        </div>
+        {% for question in questions %}
+            <div class="profile-section-list" style="height:60px;">
+                <div class="question-name"><p><strong><a href="{% url 'question' question.id %}">{{ question.title }}</a></strong></p></div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

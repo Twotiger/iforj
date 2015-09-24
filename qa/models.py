@@ -5,6 +5,7 @@ import hashlib
 
 # Create your models here.
 
+
 class User(models.Model):
     """用户表"""
     name = models.CharField(max_length=80, unique=True)  # 名字
@@ -25,9 +26,10 @@ class User(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class QuestionType(models.Model):
     """问题类型 比如 django/爬虫"""
-    name = models.CharField(max_length=15)
+    name = models.CharField(max_length=15, null=True)
 
     def __unicode__(self):
         return self.name
@@ -62,7 +64,7 @@ class Answer(models.Model):
     waring = models.PositiveSmallIntegerField(null=True)    # 有人举报+1
 
     def __unicode__(self):
-        return "%s"%self.text
+        return "%s" % self.text
 
 
 class Comment(models.Model):

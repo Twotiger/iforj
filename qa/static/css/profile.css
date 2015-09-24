@@ -1,0 +1,50 @@
+.profile-header{
+    border:1px solid #ddd;
+    border-radius:4px;
+    box-shadow:0px 1px 0 #f2f4f5;
+    color:#666;
+    width: 589px;
+    height:267px;
+    align:center;
+    margin-left: auto;
+    margin-right: auto;
+}
+.profile-header-main {
+    padding:12px 18px;
+    height: 400px;
+}
+.profile-header-main .top{
+    font-size:1.4em;
+    height:30px;
+}
+.profile-header-main .clearfix {
+    padding:12px 2px;
+    height:178px;
+}
+
+.profile-header-main .bottom {
+    border-top: 1px solid #ddd;
+    padding:17px;
+    position: relative;
+    height:20px;
+}
+.profile-answer-page {
+    border:1px solid #ddd;
+    border-radius:4px;
+    box-shadow:0px 1px 0 #f2f4f5;
+    color:#666;
+    width: 589px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 256px;
+}
+.profile-section-name {
+    border-bottom: 1px solid #ddd;
+    height:30px;
+    padding-bottom: 10px;
+}
+.profile-section-list {
+    border-bottom: 1px solid #ddd;
+    height: 144px;
+    padding: 12px;
+}

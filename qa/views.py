@@ -15,6 +15,8 @@ from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT
 from send_email import sendMail
 
 # Create your views here.
+
+
 def index(request):
     """Q&A首页"""
     name =request.session.get('name')
@@ -232,10 +234,13 @@ def search(request):
         return render(request, "search.html", {'users': users, 'q': q, 'flag': 'people', "name": name})
     else:
         topics = QuestionType.objects.filter(name__icontains=q)
-        questiontype = QuestionType.objects.get(name = q)
-        questions = questiontype.question_set.all()
+        try:
+            questiontype = QuestionType.objects.get(name=q)
+            questions = questiontype.question_set.all()
+        except Exception:
+            questions = []
         questions_num = len(questions) # 共多少问题
-        paginator  = MyPaginator(questions, 10)
+        paginator = MyPaginator(questions, 10)
         page = request.GET.get('page')
         try:
             paginator.page(page)
@@ -247,11 +252,12 @@ def search(request):
         #        questions = Question.objects.filter(q_type = q)
         return render(request,"search.html",{'topics': topics, "q": q, 'flag':'topic',
                                              "name":name, 'questions': paginator, 'questions_num':questions_num })
+
+
 def logout(request):
     """登出"""
     del request.session['name']
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))   # 改成 js
-
 
 
 def askquestion(request):
@@ -275,7 +281,6 @@ def askquestion(request):
             question = Question(user=user, title=title, text=text, q_type=questiontype)
             question.save()
 
-
             # return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
             return JsonResponse({'status':'ok'})
         else:
@@ -289,10 +294,27 @@ def askquestion(request):
 
 def programmer(request, n):
     # 个人主页
-    user = User.objects.filter(id=n)
-    answer = user[0].answer_set.all()
+
+    user = User.objects.filter(id=n)            # 这个返回的是数组
+    answers = user[0].answer_set.all()          # 一定要加[0]编程一个对象
+    answers_count = len(answers)
+    questions = user[0].question_set.all()
+    questions_count = len(questions)
+    name = request.session.get("name")
+    q = request.GET.get('q')
+
     if user:
-        return render(request, 'programmer.html', {'user': user[0]})
+        if not q or q == 'answers':
+            return render(request, 'programmer.html', {'user': user[0], 'answers': answers, 'name': name.split(),
+                                                       "answers_count": answers_count,
+                                                       "questions_count": questions_count})
+        elif q == 'questions':
+            return render(request, 'programmer_questions.html', {'user': user[0], 'name': name.split(),
+                                                                 'questions': questions,
+                                                                 "questions_count": questions_count,
+                                                                 "answers_count": answers_count})
+        else:
+            pass  # 还要添加一些东西
     else:
         return HttpResponseRedirect("/")
 
@@ -357,11 +379,13 @@ def test(request):
     ip = request.META['REMOTE_ADDR']
     return render(request,'test.html', {'ip':ip})
 
+
 def qntoken(request):
     q = qiniu.Auth(ACCESS_KEY, SECRET_KEY)
     token = q.upload_token(BUCKET_NAME)
     jsonData = {"uptoken":token}
     return JsonResponse(jsonData)
+
 
 def validate(request, code):
     """验证"""
