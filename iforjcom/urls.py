@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^askquestion/$', 'qa.views.askquestion'),
 
 
+
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案
     url(r'^commit/post/updateanswer$','qa.views.commit_post_update'),   #
 
@@ -45,4 +46,10 @@ urlpatterns = [
     url(r'^about/', 'qa.views.about_us'),   # 关于我们
 
     url(r'^admin/', include(admin.site.urls)),
+
+
+    url(r'^about/', 'qa.views.about_us'),
+
+    url(r'^uploadImage$', 'qa.views.uploadImage', name="uploadImage"),
+
 ]

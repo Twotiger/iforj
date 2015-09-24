@@ -10,6 +10,7 @@
     <script src="{%  static "js/epiceditor.js"%}"></script>
 
 
+
     {#    代码markdown编辑及过滤 #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
     <script src="http://jsxss.com/assets/xss.js"></script>
@@ -41,12 +42,10 @@
 
 {% block content %}
 
-
 <div class="col-md-12" style="background-color: #f8f8f8;">
     <div class="col-md-6 col-md-offset-3 qtophead">
         <div class="qtitle">
         {{ questions.title }}
-
         </div>
     <div class="">
                    {#            <img src="{{ questions.user.image }}"#}
@@ -229,14 +228,10 @@
         {% endifequal %}
 
     {% else %}
-
-
         <div class="panel panel-default apanel">
             <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
                     data-target="#login">帮助他...</button>
         </div>
-
-
     {% endif %}
     </div>
 
