@@ -1,7 +1,76 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<<<<<<< HEAD
 {% include 'profile-header.html' %}
+=======
+
+<div class="profile-header">
+    <div class="profile-header-main">
+        <div class="top">
+            <h4 style="float:left"><strong>{{ user.name }}</strong>
+            &nbsp;&nbsp;{{ user.introduction }}</h4>
+
+            {% ifequal name.0 user.name %}
+            {% else %}
+            <a class="btn-sm btn-success" href="#" style="float:right;text-decoration:none;">
+                <span class="glyphicon glyphicon-arrow-right"></span>&nbsp;关注
+            </a>
+            {% endifequal %}
+        </div>
+        <div class="body clearfix" id="image">
+            {% ifequal name.0 user.name %}
+                <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            <a href="#" data-toggle="modal" data-target="#upload" style="float:right;">
+                修改头像<span class="glyphicon glyphicon-plus-sign" aria-hidden="true" style="margin-left:-72px;"></span></a>
+            <!-- 模态框（Modal） -->
+            <div class="modal fade" id="upload" tabindex="-1" role="dialog"
+               aria-labelledby="myModalLabel" aria-hidden="true">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close"
+                           data-dismiss="modal" aria-hidden="true">
+                              &times;
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel2">
+                           修改头像
+                        </h4>
+                     </div>
+
+                     <div class="modal-body" style="height:60px;">
+                         <form action="http://127.0.0.1:8000/uploadImage" enctype="multipart/form-data" method="post">
+                             <input type="file" id="user_file" name="user_image" style="float:left">
+                             <input type="hidden" name="user_id" class="userid" value="{{ user.id }}">
+                         <input type="submit" class="btn btn-primary" id="submit" value="提交" style="float:right">
+                     </div>
+                      <div style="margin-top:50px;float:left;" id="scale"></div>
+                     <div class="modal-footer">
+                     </div>
+                      </form>
+                  </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+            </div><!-- end -->
+            {% else %}
+            <img src="{{ user.image }}" style="width:100px;height:100px;" />
+            {% endifequal %}
+
+        </div>
+        <div class="bottom">
+            <p style="float:left;">获得赞同数&nbsp;
+                <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                &nbsp;{{ user.agree_num }}
+            </p>
+            {% ifequal name.0 user.name %}
+            <a href="#" class="edit-profile" style="float:right">
+            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                编辑个人资料</a>
+            {% endifequal %}
+        </div>
+    </div>
+</div>
+<div style="height:20px;"></div>
+>>>>>>> a0bd86aab75ed2c15f690e233e37a2919a9b27d8
 <div class="profile-section-wrap profile-answer-page">
     <div class="profile-section-nav">
         <nav class="navbar navbar-default" role="navigation">
@@ -49,6 +118,7 @@
 </div>
 
 <script>
+
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         function getCookie(name) {
@@ -138,6 +208,7 @@ window.onload=function(){
 //修改图片
 $('#upload').modal({ backdrop: false ,show:false}){# 有导航的都要加 #}
 
+<<<<<<< HEAD
 //关注和取消关注
 function follow() {
     $.getJSON("/follow/{{ user.id }}", function(data){
@@ -156,6 +227,9 @@ function unfollow() {
         }
     });
 }
+=======
+
+>>>>>>> a0bd86aab75ed2c15f690e233e37a2919a9b27d8
 </script>
 
 {% endblock %}

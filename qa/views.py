@@ -183,6 +183,8 @@ def login(request):
                         return JsonResponse({'status': 'ok'})
             except User.DoesNotExist:
                 return HttpResponse('邮箱或密码错误')
+        else:
+            return HttpResponse('邮箱或密码错误')
 
 
 def register(request):
@@ -334,10 +336,14 @@ def programmer(request, n):
     answers_count = len(answers)
     questions = user[0].question_set.all()
     questions_count = len(questions)
+<<<<<<< HEAD
     followings = user[0].following.all()
     fans = user[0].follower.all()
     following_count = len(followings)
     followed_count = len(fans)
+=======
+
+>>>>>>> a0bd86aab75ed2c15f690e233e37a2919a9b27d8
     if request.session.get("name"):
         name = request.session.get("name").split("&")
     else:

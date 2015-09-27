@@ -15,8 +15,8 @@ error_messages = {
     'name': {
         'required': u'必须填写用户名',
         'min_length': u'用户名长度过短（3-12个字符）',
-        'max_length': u'用户名长度过长（3-12个字符）'
-        # 'invalid': u'用户名格式错误（英文字母开头，数字，下划线构成）'
+        'max_length': u'用户名长度过长（3-12个字符）',
+        'invalid': u'用户名格式错误（只能包含汉字,英文字母，数字，下划线）'
     },
     'email': {
         'required': u'必须填写E-mail',
@@ -35,9 +35,9 @@ error_messages = {
 class RegisterForm(forms.ModelForm):
     # name = forms.RegexField(min_length=3, max_length=30, regex=r'^[a-zA-Z][a-zA-Z0-9_]*$',
     #                         error_messages=error_messages.get("name"))
-    name = forms.CharField(min_length=2, max_length=30,
-                           error_messages=error_messages.get("name"))
-    email = forms.EmailField(min_length=8, max_length=64, error_messages=error_messages.get("email"))
+    name = forms.RegexField(min_length=2, max_length=30, regex='^\w+$',
+                            error_messages=error_messages.get("name"))
+    email = forms.EmailField(min_length=8, max_length=84, error_messages=error_messages.get("email"))
     psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
     introduction = forms.CharField(required=False)
 
@@ -82,12 +82,6 @@ class QuestionForm(forms.Form):
 class AnswerForm(forms.Form):
     qid = forms.IntegerField()
     text = forms.CharField(max_length=1023)
-
-#    def clean_text(self):
-#        html = self.cleaned_data['text']
-#        text = re.sub('<\s*script\s*>', '&lt;script&gt;',html)
-#        # text = html.replace('<script>', '&ltscript>;').replace('>', '&gt;')
-#        return text
 
 
 class UpAnswerForm(forms.Form):

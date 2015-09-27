@@ -32,9 +32,8 @@ urlpatterns = [
     url(r'^agreeanswer/$','qa.views.agree_answer'), # ajax提交 赞同的回答
     url(r'^validate/(\w+)$', 'qa.views.validate'),   # 验证用户
 
-
     url(r'^askquestion/$', 'qa.views.askquestion'),
-    # url(r'^testtwo/$', 'qa.views.testtwo'), # will be del
+
 
 
     url(r'^commit/post/addanswer$', 'qa.views.commit_post_add'),    # 提交答案
@@ -43,9 +42,11 @@ urlpatterns = [
     url(r'^commit/post/getcomment$', 'qa.views.getcomment'),  # 废除
     url(r'^commit/post/addcomment$', 'qa.views.addcomment'),   # 提交答案
 
-    url(r'^test/$','qa.views.test'),    # test markdown
+    #url(r'^test/$','qa.views.test'),    # test markdown
+    url(r'^about/', 'qa.views.about_us'),   # 关于我们
 
     url(r'^admin/', include(admin.site.urls)),
+
 
     url(r'^about/', 'qa.views.about_us'),
 

@@ -9,7 +9,7 @@
     {% load staticfiles %}
     <script src="{%  static "js/epiceditor.js"%}"></script>
 
-{# <script src="/static/js/epiceditor.js"></script> #}
+
 
     {#    代码markdown编辑及过滤 #}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.2.2/showdown.min.js"></script>
@@ -18,7 +18,7 @@
 
     {#    高亮#}
     <script src="/static/highlight.pack.js"></script>
-    <link rel="stylesheet" href="/static/styles/github.css">
+    <link rel="stylesheet" href="/static/styles/vs.css">
 
     <style type="text/css">
         body {font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,STHeiti,"Microsoft Yahei",sans-serif;
@@ -60,7 +60,11 @@
     <div class="col-md-6 col-md-offset-3 questions" id="{{ questions.id }}">
         <div class="qpanel">
             <div class=" qmarkdown">
-                {{ questions.text |safe}}
+                <script>
+                    var converter = new showdown.Converter({ extensions: ['xssfilter'] });
+                    html = converter.makeHtml('{{  questions.text|escapejs  }}');
+                    document.write(html)
+                </script>
             </div>
 
 <div id="qhr">
@@ -104,7 +108,7 @@
             <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
                     title="赞同这个答案" value="{{ answer.id }}">
                 <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
+                <div id="a{{ answer.id }}"><a href='#a'></a>{{ answer.agree_num }}</div>
             </button>
             <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
                     title="取消赞同"  value="{{ answer.id }}">
@@ -113,7 +117,7 @@
         </div>
 
 
-        {#如果是我写的评论,添加个可编辑属性 #}
+        {#如果是我写的答案,添加个可编辑属性 #}
 
         <div class="apanel a{{ answer.id }}">
             {#渲染答案#}
@@ -226,12 +230,10 @@
         {% endifequal %}
 
     {% else %}
-
-            <div class="panel panel-default apanel">
-                <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
-                        data-target="#login">加入我们</button>
-            </div>
-
+        <div class="panel panel-default apanel">
+            <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal"
+                    data-target="#login">帮助他...</button>
+        </div>
     {% endif %}
     </div>
 
@@ -309,12 +311,6 @@
             });
 
         });
-
-        var converter = new showdown.Converter();
-        text = $('.qmarkdown').html();
-        html = converter.makeHtml('{{ questions.text| escapejs  }}');
-        $('.qmarkdown').html(html);
-
         {#        语法高亮#}
         hljs.initHighlightingOnLoad();
 
@@ -322,8 +318,7 @@
         if(document.getElementById('epiceditor')){
             var editor = new EpicEditor().load();
 
-        };
-
+        }
 
 
         $(document).ready(function(){
