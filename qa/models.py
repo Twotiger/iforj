@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib import admin
-import hashlib
 
 # Create your models here.
 
@@ -17,11 +16,13 @@ class User(models.Model):
     vericode = models.CharField(max_length=40,  null=True, blank=True)  # 验证码编码,发送到邮箱验证
     real_ip = models.GenericIPAddressField(null=True, blank=True)  # 注册时的ip地址
     # url = models.CharField(max_length=127) # 存储成好看的拼音
-    introduction = models.CharField(max_length=127,null=True, blank=True) # 简介
+    introduction = models.CharField(max_length=127, null=True, blank=True) # 简介
     image = models.URLField(null=True, blank=True)   # 头像
     login_error = models.PositiveSmallIntegerField(default=0)   # 当错误登陆+1
     agree_num = models.IntegerField(default=0)  # 赞同数(当问答问题的时候被赞+1)
     viewed = models.PositiveIntegerField(default=0)   # 被浏览次数
+    # 关注,自引用关系
+    following = models.ManyToManyField("self", symmetrical=False, related_name="follower")
 
     def __unicode__(self):
         return self.name
@@ -57,9 +58,9 @@ class Answer(models.Model):
     question = models.ForeignKey(Question)
     user = models.ForeignKey(User)  # 回答者
     text = models.TextField()   # 答案
-    agree_user = models.ManyToManyField(User, related_name='answer_user') # 赞同的人
-    agree_num = models.SmallIntegerField(default=0) # 赞同人的数量
-    a_time = models.DateTimeField(auto_now_add=True)    #创建时间
+    agree_user = models.ManyToManyField(User, related_name='answer_user')  # 赞同的人
+    agree_num = models.SmallIntegerField(default=0)  # 赞同人的数量
+    a_time = models.DateTimeField(auto_now_add=True)    # 创建时间
     weight = models.PositiveSmallIntegerField(null=True)    # 权重.
     waring = models.PositiveSmallIntegerField(null=True)    # 有人举报+1
 

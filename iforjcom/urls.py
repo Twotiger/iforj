@@ -50,5 +50,7 @@ urlpatterns = [
     url(r'^about/', 'qa.views.about_us'),
 
     url(r'^uploadImage$', 'qa.views.uploadImage', name="uploadImage"),
-
+    url(r'^follow/(\d+)$', 'qa.views.follow', name='follow'),
+    url(r'^unfollow/(\d+)$', 'qa.views.unfollow', name='unfollow'),
+    url(r'^edit-profile/$', 'qa.views.editProfile', name="edit-profile"),
 ]

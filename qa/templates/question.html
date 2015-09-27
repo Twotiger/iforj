@@ -50,7 +50,7 @@
     <div class="">
                    {#            <img src="{{ questions.user.image }}"#}
                    {#               class="img-circle" style="height: 30px;">#}
-                   <a href="{% url 'programmer' questions.user_id%}">{{ questions.user }}</a>
+                   <a href="{% url 'programmer' questions.user_id %}">{{ questions.user }}</a>
                    
                    <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
                </div>
@@ -77,7 +77,8 @@
                         data-container="body" data-toggle="popover"
                         data-content="<div style='height:35px;width:310px;'><strong>{{ questions.user.question_set.count }}</strong>&nbsp;<a href='#' class='col'>问题</a>&nbsp;&nbsp;
                                 <strong>{{ questions.user.answer_set.count }}</strong>&nbsp;<a href='' class=col'>回答</a>&nbsp;&nbsp;
-                                <strong>0</strong>&nbsp;<a href='' class='col'>关注者</a></div><button class='btn btn-primary'>关注</button>"
+                                <strong>{{ questions.user.following.count }}</strong>&nbsp;<a href='' class='col'>关注</a>
+                                <strong>{{ questions.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>"
                         >{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
@@ -146,7 +147,8 @@
                         data-container="body" data-toggle="popover"
                         data-content="<div style='height:35px;width:310px;'><strong>{{ answer.user.question_set.count }}</strong>&nbsp;<a href='#' class='col'>问题</a>&nbsp;&nbsp;
                                 <strong>{{ answer.user.answer_set.count }}</strong>&nbsp;<a href='' class=col'>回答</a>&nbsp;&nbsp;
-                                <strong>0</strong>&nbsp;<a href='' class='col'>关注者</a></div><button class='btn btn-primary'>关注</button>"
+                                 <strong>{{ answer.user.following.count }}</strong>&nbsp;<a href='' class='col'>关注</a>
+                                <strong>{{ answer.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>""
                         >{{ answer.user }}</a>
             <span class="invisible">
                 {{ answer.a_time|date:"Y-m-d H:i:s" }}

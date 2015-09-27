@@ -2,7 +2,7 @@
 import re
 from django import forms
 
-from models import User, QuestionType
+from models import User
 
 
 class LoginForm(forms.Form):
@@ -22,7 +22,7 @@ error_messages = {
         'required': u'必须填写E-mail',
         'min_length': u'Email长度有误',
         'max_length': u'Email长度有误',
-        # 'invalid': u'Email地址无效'
+        'invalid': u'Email地址无效'
     },
     'psd': {
         'required': u'必须填写密码',
@@ -104,3 +104,21 @@ class UpAnswerForm(forms.Form):
 class UploadImageForm(forms.Form):
     user_id = forms.CharField()
     user_image = forms.ImageField()
+
+
+class EditProfileForm(forms.Form):
+    new_email = forms.EmailField()
+    new_introduction = forms.CharField(required=False)
+
+    class Meta:
+        model = User
+        fields = ("email",)
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        user = User.objects.filter(email=email)
+        if user:
+            raise forms.ValidationError(u'所填邮箱已经被注册过')
+        return email
+
+

@@ -11,9 +11,9 @@
    <div>
       <ul class="nav navbar-nav">
          <li><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
-         <li class="active"><a href="?q=answers">回答&nbsp;{{ answers_count }}</a></li>
+         <li><a href="?q=answers">回答&nbsp;{{ answers_count }}</a></li>
          <li><a href="?q=following">关注&nbsp;{{ following_count }}</a> </li>
-          <li><a href="?q=fan">粉丝&nbsp;{{ followed_count }}</a> </li>
+          <li class="active"><a href="?q=fan">粉丝&nbsp;{{ followed_count }}</a> </li>
       </ul>
    </div>
 </nav>
@@ -23,28 +23,11 @@
         <div class="profile-section-head" style="display:block;">
             <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的回答</p></div>
         </div>
-        {% for answer in answers %}
-            <div class="profile-section-list">
-                <div class="question-name"><p><strong style="color:#259;"><a href="{% url 'question' answer.question.id %}">{{ answer.question.title }}</a></strong></p></div>
-                <div class="question-answer">
-                    <div class="question-answer-detail" style="float:left;">
-                        <div class="btn-group-xs btn-group-vertical pull-left">
-                            {#                点赞区#}
-                            <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
-                                    title="赞同这个答案" value="{{ answer.id }}">
-                                <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
-                            </button>
-                            <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
-                                    title="取消赞同"  value="{{ answer.id }}">
-                                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="question-answer-info" style="float:left;"><p style="color:black;margin-left:12px;">{{ answer.text }}</p></div>
-                </div>
-            </div>
-        {% endfor %}
+        <div style="color:#3C3C3C">
+            {% for fan in fans %}
+                {{ fan.name }}&nbsp;
+            {% endfor %}
+        </div>
     </div>
 </div>
 
@@ -156,6 +139,7 @@ function unfollow() {
         }
     });
 }
+
 </script>
 
 {% endblock %}

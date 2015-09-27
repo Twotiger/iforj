@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
-from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm, UploadImageForm
+from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm, UploadImageForm, EditProfileForm
 from models import User, Question, Answer, QuestionType, Comment
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -75,6 +75,10 @@ def getquestion(request, n):
     if name:
         # 当登陆时传递名字
         user = User.objects.get(name=name.split("&")[0])
+        followings = user.following.all()
+        fans = user.follower.all()
+        following_count = len(followings)
+        followed_count = len(fans)
         answered = Answer.objects.filter(user=user).filter(question=questions)
         # a = Answer.objects.get(user=user)
 
@@ -186,10 +190,10 @@ def register(request):
     if request.method == "POST":
         f = RegisterForm(request.POST)
         if f.is_valid():
-            name = f.cleaned_data["name"]   # 用户名
-            email = f.cleaned_data["email"] # 邮箱
-            psd = f.cleaned_data["psd"] # 密码
-            real_ip = request.META['REMOTE_ADDR']   #ip
+            name = f.cleaned_data["name"]    # 用户名
+            email = f.cleaned_data["email"]  # 邮箱
+            psd = f.cleaned_data["psd"]  # 密码
+            real_ip = request.META['REMOTE_ADDR']   # ip
             introduction = f.cleaned_data["introduction"]
             vericode = hashlib.sha1(email+EMAIL_SALT).hexdigest()
             user = User.objects.create(name=name, email=email, psd=hashlib.sha1(psd).hexdigest(),
@@ -204,6 +208,29 @@ def register(request):
         else:
             return render(request, "register.html", {'errors': f.errors})
     return render(request, "register.html")
+
+
+def editProfile(request):
+    if request.session.get("name"):
+        user_id = request.session.get("name").split("&")[1]
+    else:
+        user_id = None
+    user = User.objects.get(id=user_id)
+    old_email = user.email
+    old_introduction = user.introduction
+    if request.method == "POST":
+        f = EditProfileForm(request.POST)
+        if f.is_valid():
+            new_email = f.cleaned_data["new_email"]
+            new_introduction = f.cleaned_data["new_introduction"]
+            user.email = new_email
+            user.vericode = hashlib.sha1(new_email+EMAIL_SALT).hexdigest()
+            user.introduction = new_introduction
+            user.save()
+            return HttpResponseRedirect("/programmer/%s" % str(user_id))
+        else:
+            return render(request, "edit-profile.html", {'errors': f.errors})
+    return render(request, "edit-profile.html", {"email": old_email, "introduction": old_introduction})
 
 
 def mypaginator(request, questions, n):
@@ -307,6 +334,10 @@ def programmer(request, n):
     answers_count = len(answers)
     questions = user[0].question_set.all()
     questions_count = len(questions)
+    followings = user[0].following.all()
+    fans = user[0].follower.all()
+    following_count = len(followings)
+    followed_count = len(fans)
     if request.session.get("name"):
         name = request.session.get("name").split("&")
     else:
@@ -316,14 +347,34 @@ def programmer(request, n):
         if not q or q == 'answers':
             return render(request, 'programmer.html', {'user': user[0], 'answers': answers, 'name': name,
                                                        "answers_count": answers_count,
-                                                       "questions_count": questions_count})
+                                                       "questions_count": questions_count,
+                                                       "following_count": following_count,
+                                                       "followed_count": followed_count})
         elif q == 'questions':
             return render(request, 'programmer_questions.html', {'user': user[0], 'name': name,
                                                                  'questions': questions,
                                                                  "questions_count": questions_count,
-                                                                 "answers_count": answers_count})
+                                                                 "answers_count": answers_count,
+                                                                 "following_count": following_count,
+                                                                 "followed_count": followed_count})
+        elif q == "following":
+            return render(request, "programmer_following.html", {'user': user[0], 'name': name,
+                                                                 "followings": followings,
+                                                                 "questions_count": questions_count,
+                                                                 "answers_count": answers_count,
+                                                                 "following_count": following_count,
+                                                                 "followed_count": followed_count})
+        elif q == "fan":
+            return render(request, "programmer_fan.html", {'user': user[0],
+                                                           'name': name,
+                                                           "fans": fans,
+                                                           "questions_count": questions_count,
+                                                           "answers_count": answers_count,
+                                                           "following_count": following_count,
+                                                           "followed_count": followed_count})
         else:
-            pass  # 还要添加一些东西
+            pass
+
     else:
         return HttpResponseRedirect("/")
 
@@ -391,6 +442,42 @@ def agree_answer(request):
         return HttpResponse("可以麻烦您登陆下么⊙︿⊙")
 
 
+def follow(request, n):
+    if request.session.get("name"):
+        name = request.session.get("name").split("&")
+    else:
+        name = None
+    followed = User.objects.filter(id=n)
+    following = User.objects.filter(id=name[1])
+    if not following.filter(following=followed):
+        following[0].following.add(followed[0])
+        followed[0].follower.add(following[0])
+        following[0].save()
+        followed[0].save()
+        jsonData = {"status": "ok"}
+        return JsonResponse(jsonData)
+    else:
+        return HttpResponse("wrong")
+
+
+def unfollow(request, n):
+    if request.session.get("name"):
+        name = request.session.get("name").split("&")
+    else:
+        name = None
+    followed = User.objects.filter(id=n)
+    following = User.objects.filter(id=name[1])
+    if following.filter(following=followed):
+        following[0].following.remove(followed[0])
+        followed[0].follower.remove(following[0])
+        following[0].save()
+        followed[0].save()
+        jsonData = {"status": "ok"}
+        return JsonResponse(jsonData)
+    else:
+        return HttpResponse("wrong")
+
+
 def getcomment(request):
     # 得到评论
     return HttpResponse('ok')
@@ -431,6 +518,7 @@ def validate(request, code):
     """验证"""
     user = User.objects.filter(vericode=code)
     if user:
+        print user[0].name
         user[0].is_veri = True
         user[0].save()
-    return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")
+        return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")
