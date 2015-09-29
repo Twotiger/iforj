@@ -108,7 +108,7 @@
             <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
                     title="赞同这个答案" value="{{ answer.id }}">
                 <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                <div id="a{{ answer.id }}"><a href='#a'></a>{{ answer.agree_num }}</div>
+                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
             </button>
             <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
                     title="取消赞同"  value="{{ answer.id }}">
@@ -152,7 +152,7 @@
                         data-content="<div style='height:35px;width:310px;'><strong>{{ answer.user.question_set.count }}</strong>&nbsp;<a href='#' class='col'>问题</a>&nbsp;&nbsp;
                                 <strong>{{ answer.user.answer_set.count }}</strong>&nbsp;<a href='' class=col'>回答</a>&nbsp;&nbsp;
                                  <strong>{{ answer.user.following.count }}</strong>&nbsp;<a href='' class='col'>关注</a>
-                                <strong>{{ answer.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>""
+                                <strong>{{ answer.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>"
                         >{{ answer.user }}</a>
             <span class="invisible">
                 {{ answer.a_time|date:"Y-m-d H:i:s" }}
