@@ -79,9 +79,9 @@ WSGI_APPLICATION = 'iforjcom.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':  'django.db.backends.mysql',
-        'NAME': 'iforj',
+        'NAME': 'question',
         'USER': 'root',
-        'PASSWORD': '1234567890',
+        'PASSWORD': 'g',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }

@@ -7,7 +7,7 @@
 
     {#富文本支持#}
     {% load staticfiles %}
-    <script src="{%  static "js/epiceditor.js"%}"></script>
+    <script src="{%  static 'js/epiceditor.js' %}"></script>
 
 
 
@@ -79,10 +79,10 @@
                     style='width:50px;height:50px;float:left;' />&nbsp;&nbsp;&nbsp;<span style='float:left;margin-left:9px;'><a href='{% url 'programmer' questions.user_id %}'
                             style='text-decoration: none;font-size:15px;'>{{ questions.user }}</a><br><br><p>{{ questions.user.introduction }}</p></span></div>"
                         data-container="body" data-toggle="popover"
-                        data-content="<div style='height:35px;width:310px;'><strong>{{ questions.user.question_set.count }}</strong>&nbsp;<a href='#' class='col'>问题</a>&nbsp;&nbsp;
-                                <strong>{{ questions.user.answer_set.count }}</strong>&nbsp;<a href='' class=col'>回答</a>&nbsp;&nbsp;
-                                <strong>{{ questions.user.following.count }}</strong>&nbsp;<a href='' class='col'>关注</a>
-                                <strong>{{ questions.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>"
+                        data-content="<div style='height:35px;width:310px;'><strong>{{ questions.user.question_set.count }}</strong>&nbsp;<a href='/programmer/{{ questions.user_id }}?q=questions' class='col'>问题</a>&nbsp;&nbsp;
+
+                                <strong>{{ questions.user.following.count }}</strong>&nbsp;<a href='/programmer/{{ questions.user_id }}?q=following' class='col'>关注</a>&nbsp;&nbsp;
+                                <strong>{{ questions.user.follower.count }}</strong>&nbsp;<a href='/programmer/{{ questions.user_id }}?q=fan' class='col'>粉丝</a>"
                         >{{ questions.user }}</a>
                 共{{ questions.q_times }}个回答
                 <div class="pull-right">{{ questions.q_datetime|date:"Y-m-d H:i:s"}}</div>
@@ -107,12 +107,12 @@
             {#                点赞区#}
             <button type="button" class="btn btn-default upnum" data-toggle="tooltip"
                     title="赞同这个答案" value="{{ answer.id }}">
-                <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ></span>
-                <div id="a{{ answer.id }}"><a href='#a'></a>{{ answer.agree_num }}</div>
+                <span class="glyphicon glyphicon-chevron-up" aria-hidden="true" ></span>
+                <div id="a{{ answer.id }}">{{ answer.agree_num }}</div>
             </button>
             <button type="button" class="btn btn-default downnum" data-toggle="tooltip"
                     title="取消赞同"  value="{{ answer.id }}">
-                <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
             </button>
         </div>
 
@@ -149,10 +149,9 @@
                     style='width:50px;height:50px;float:left;' />&nbsp;&nbsp;&nbsp;<span style='float:left;margin-left:9px;'><a href='{% url 'programmer' answer.user_id %}'
                             style='text-decoration: none;font-size:15px;'>{{ answer.user }}</a><br><br><p>{{ answer.user.introduction }}</p></span></div>"
                         data-container="body" data-toggle="popover"
-                        data-content="<div style='height:35px;width:310px;'><strong>{{ answer.user.question_set.count }}</strong>&nbsp;<a href='#' class='col'>问题</a>&nbsp;&nbsp;
-                                <strong>{{ answer.user.answer_set.count }}</strong>&nbsp;<a href='' class=col'>回答</a>&nbsp;&nbsp;
-                                 <strong>{{ answer.user.following.count }}</strong>&nbsp;<a href='' class='col'>关注</a>
-                                <strong>{{ answer.user.follower.count }}</strong>&nbsp;<a href='' class='col'>粉丝</a>""
+                        data-content="<div style='height:35px;width:310px;'><strong>{{ answer.user.question_set.count }}</strong>&nbsp;<a href='/programmer/{{ answer.user_id }}?q=questions' class='col'>问题</a>&nbsp;&nbsp;
+                                 <strong>{{ answer.user.following.count }}</strong>&nbsp;<a href='/programmer/{{ answer.user_id }}?q=following' class='col'>关注</a>&nbsp;&nbsp;
+                                <strong>{{ answer.user.follower.count }}</strong>&nbsp;<a href='/programmer/{{ answer.user_id }}?q=fan' class='col'>粉丝</a>"
                         >{{ answer.user }}</a>
             <span class="invisible">
                 {{ answer.a_time|date:"Y-m-d H:i:s" }}
@@ -412,7 +411,7 @@
                 success:function(){
                     $('#a'+aid).html(function(i,oldText){
                         return + oldText - 1;
-                    })
+                    });
                 },
                 error:function(msg){
                     alert(msg.responseText);

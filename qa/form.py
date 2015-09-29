@@ -101,18 +101,18 @@ class UploadImageForm(forms.Form):
 
 
 class EditProfileForm(forms.Form):
-    new_email = forms.EmailField()
+    new_email = forms.EmailField(min_length=8, max_length=84, error_messages=error_messages.get("email"))
     new_introduction = forms.CharField(required=False)
 
     class Meta:
         model = User
-        fields = ("email",)
+        fields = ("new_email",)
 
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        user = User.objects.filter(email=email)
+    def clean_new_email(self):
+        new_email = self.cleaned_data["new_email"]
+        user = User.objects.filter(email=new_email)
         if user:
             raise forms.ValidationError(u'所填邮箱已经被注册过')
-        return email
+        return new_email
 
 

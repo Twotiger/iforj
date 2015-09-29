@@ -11,7 +11,6 @@
    <div>
       <ul class="nav navbar-nav">
          <li><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
-         <li><a href="?q=answers">回答&nbsp;{{ answers_count }}</a></li>
          <li><a href="?q=following">关注&nbsp;{{ following_count }}</a> </li>
           <li class="active"><a href="?q=fan">粉丝&nbsp;{{ followed_count }}</a> </li>
       </ul>
@@ -21,7 +20,7 @@
 
     <div class="section-detail">
         <div class="profile-section-head" style="display:block;">
-            <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的回答</p></div>
+            <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的粉丝</p></div>
         </div>
         <div style="color:#3C3C3C">
             {% for fan in fans %}
@@ -31,116 +30,7 @@
     </div>
 </div>
 
-<script>
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie != '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-            // Only send the token to relative URLs i.e. locally.
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-        }
-    }
-});
-
-{#赞同+#}
-$(".upnum").click(function(){
-    var aid = $(this).val();
-    $.ajax({
-        type:'GET',
-        url:'/agreeanswer/',
-        data:{'aid':aid, 'tag':1},
-        dataType:'json',
-        success:function(){
-            $('#a'+aid).html(function(i,oldText){
-                return + oldText + 1;
-            })
-        },
-
-        error:function(msg){
-            alert(msg.responseText);
-        }
-    });
-});
-{#不赞同-#}
-$(".downnum").click(function(){
-    var aid = $(this).val();
-    $.ajax({
-        type:'GET',
-        url:'/agreeanswer/',
-        data:{'aid':aid, 'tag':0},
-        dataType:'json',
-        success:function(){
-            $('#a'+aid).html(function(i,oldText){
-                return + oldText - 1;
-            })
-        },
-        error:function(msg){
-            alert(msg.responseText);
-        }
-    });
-});
-/*
-function go(){
-    var t,tt;
-    var _div=document.getElementById("image");
-    var obj=_div.getElementsByTagName('h3')[0];
-    obj.style.bottom="-50px";
-    var change=function(){
-        var obj_h=parseInt(obj.style.bottom);
-        if(obj_h<0){obj.style.bottom=(obj_h+Math.floor((0-obj_h)*0.1))+"px"}//if
-        else{clearInterval(t)}
-    }
-    var back=function(){
-        var obj_hh=parseInt(obj.style.bottom);
-        if(obj_hh>-50){obj.style.bottom=(obj_hh+Math.floor((-50-obj_hh)*0.1))+"px"}
-        else{clearInterval(tt)}
-    }
-    _div.onmouseover=function(){clearInterval(tt);t=setInterval(change,10);}
-    _div.onmouseout=function(){clearInterval(t);tt=setInterval(back,10)}
-}
-
-window.onload=function(){
-    go();
-}
-*/
-
-//修改图片
-$('#upload').modal({ backdrop: false ,show:false}){# 有导航的都要加 #}
-
-//关注和取消关注
-function follow() {
-    $.getJSON("/follow/{{ user.id }}", function(data){
-        if (data.status == "ok") {
-            $(".follow").css("display", "none");
-            $(".unfollow").css("display", "block");
-        }
-    });
-}
-
-function unfollow() {
-    $.getJSON("/unfollow/{{ user.id }}", function(data){
-        if (data.status == "ok") {
-            $(".unfollow").css("display", "none");
-            $(".follow").css("display", "block");
-        }
-    });
-}
-
-</script>
+{% include 'profile-footer.html' %}
 
 {% endblock %}
 
