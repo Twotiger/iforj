@@ -13,7 +13,7 @@ import datetime
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu, os
-from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, PORT, EMAIL_SALT, IMAGE_BASE_PATH, \
+from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT, IMAGE_BASE_PATH, \
                                     IMAGE_APPLICATION_PATH, DEFAULT_IMAGE_PATH
 from send_email import sendMail
 
@@ -202,7 +202,12 @@ def register(request):
                                        introduction=introduction, vericode=vericode, real_ip=real_ip,
                                        image=DEFAULT_IMAGE_PATH)
 
-            if sendMail([email], '验证邮箱', '<a href="http://{HOSTNAME}:{PORT}/validate/{vericode}">验证邮箱</a>'.format(HOSTNAME=HOSTNAME, PORT=PORT, vericode=vericode)):
+            if sendMail([email], '验证邮箱', """IFORJ是致力于python的网络问答社区,帮助你寻找答案,分享知识。百度知道是由用户可以根据自身的需
+求,有针对性地提出问题;同时,这些答案又将作为搜索结果你可以搜索类似的问题，问题被分为，爬虫，数据分析，django，scrapy，
+python语法等基础分类，你可以按着分类搜索相关的问题。我们以打造最活跃的python问答社区为目的，很高兴为您提供便捷的服务。
+如果有的意见和建议，欢迎联系我们。
+<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>""".format(
+                    HOSTNAME=HOSTNAME, vericode=vericode)):
                 user.save()
             else:
                 pass  # 邮件发送失败
@@ -517,7 +522,6 @@ def validate(request, code):
     """验证"""
     user = User.objects.filter(vericode=code)
     if user:
-        print user[0].name
         user[0].is_veri = True
         user[0].save()
         return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")
