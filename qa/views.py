@@ -213,13 +213,15 @@ def register(request):
 
 
 def editProfile(request):
-    if request.session.get("name"):
-        user_id = request.session.get("name").split("&")[1]
+    name = request.session.get("name")
+    if name:
+        user_id = name.split("&")[1]
     else:
         user_id = None
     user = User.objects.get(id=user_id)
     old_email = user.email
     old_introduction = user.introduction
+
     if request.method == "POST":
         f = EditProfileForm(request.POST)
         if f.is_valid():
@@ -231,8 +233,9 @@ def editProfile(request):
             user.save()
             return HttpResponseRedirect("/programmer/%s" % str(user_id))
         else:
-            return render(request, "edit-profile.html", {'errors': f.errors})
-    return render(request, "edit-profile.html", {"email": old_email, "introduction": old_introduction})
+            return render(request, "edit-profile.html", {'errors': f.errors, "name": name.split("&")})
+    return render(request, "edit-profile.html", {"email": old_email, "introduction": old_introduction,
+                                                 "name": name.split("&")})
 
 
 def mypaginator(request, questions, n):
@@ -346,13 +349,7 @@ def programmer(request, n):
         name = None
     q = request.GET.get('q')
     if user:
-        if not q or q == 'answers':
-            return render(request, 'programmer.html', {'user': user[0], 'answers': answers, 'name': name,
-                                                       "answers_count": answers_count,
-                                                       "questions_count": questions_count,
-                                                       "following_count": following_count,
-                                                       "followed_count": followed_count})
-        elif q == 'questions':
+        if not q or q == 'questions':
             return render(request, 'programmer_questions.html', {'user': user[0], 'name': name,
                                                                  'questions': questions,
                                                                  "questions_count": questions_count,
@@ -448,7 +445,7 @@ def follow(request, n):
     if request.session.get("name"):
         name = request.session.get("name").split("&")
     else:
-        name = None
+        return HttpResponse("可以麻烦您登陆下么⊙︿⊙")
     followed = User.objects.filter(id=n)
     following = User.objects.filter(id=name[1])
     if not following.filter(following=followed):
@@ -466,7 +463,7 @@ def unfollow(request, n):
     if request.session.get("name"):
         name = request.session.get("name").split("&")
     else:
-        name = None
+        return HttpResponse("可以麻烦您登陆下么⊙︿⊙")
     followed = User.objects.filter(id=n)
     following = User.objects.filter(id=name[1])
     if following.filter(following=followed):

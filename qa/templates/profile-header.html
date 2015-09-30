@@ -5,10 +5,10 @@
             &nbsp;&nbsp;{{ user.introduction }}</h4>
             {% ifequal name.0 user.name %}
             {% else %}
-            <button class="btn btn-success follow" style="float:right;display:block;" onclick="javascript:follow()">
+            <button class="btn btn-success follow" style="float:right;display:block;">
                关注
             </button>
-            <button class="btn btn-success unfollow" style="float:right;display:none;" onclick="javascript:unfollow()">
+            <button class="btn btn-success unfollow" style="float:right;display:none;">
                 取消关注
             </button>
             {% endifequal %}

@@ -2,7 +2,7 @@
 import smtplib
 from email.mime.text import MIMEText
 from config import MAIL_HOST, MAIL_USER, MAIL_PASS, MAIL_POSTFIX
-#mailto_list=["501362431@qq.com"]
+
 
 
 def sendMail(to_list,sub,content):
@@ -22,6 +22,3 @@ def sendMail(to_list,sub,content):
     except Exception, e:
         print str(e)
         return False
-
-if __name__ == "__main__":
-    sendMail(['501362431@qq.com'], 'asdf', '<a href="http:///127.0.0.1/versiton/adfasdf">hit me</a>')

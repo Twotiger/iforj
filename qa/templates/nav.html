@@ -2,22 +2,24 @@
     <div class="container-fluid">
 
         <div class="navbar-nav">
-            <a class="navbar-brand" href="/">Python+</a>
+            <a class="navbar-brand" href="/">IFORJ</a>
         </div>
 
         <ul class="hidden-sm hidden-xs nav navbar-nav">
             <li><a href="#"></a></li>
             <li><a href="/top">热门问题</a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">帮助<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">其他<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">Separated link</a></li>
-                    <li role="separator" class="divider"></li>
-                    <li><a href="#">One more separated link</a></li>
+                    <li><a href="#">每日一练(Building...)</a></li>
+{#                    勿删--后期添加#}
+{#                    <li><a href="#">Another action</a></li>#}
+{#                    <li><a href="#">Something else here</a></li>#}
+{#                    <li role="separator" class="divider"></li>#}
+{#                    <li><a href="#">Separated link</a></li>#}
+{#                    <li role="separator" class="divider"></li>#}
+{#                    <li><a href="#">One more separated link</a></li>#}
                 </ul>
             </li>
         </ul>
@@ -37,45 +39,35 @@
                 <span class="sr-only">切换导航</span>
                 <span class="icon-bar">2</span>
                 <span class="icon-bar">2</span>
-
             </button>
         </div>
 
 
         {% if name %}
-
             <div class="collapse navbar-collapse" id="example-navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="active "><a href="/askquestion">提问</a></li>
-                    <li class="dropdown ">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ name.0 }} <span class="caret"></span></a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{{ name.0 }} <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{% url 'programmer' name.1  %}">我的主页</a></li>
                             <li><a href="#">消息</a></li>
                             <li><a href="#">设置</a></li>
-                            <li role="separator" class="divider"></li>
                             <li><a href="/logout/">退出</a></li>
                         </ul>
                     </li>
-{#<<<<<<< HEAD#}
-{#                </ul>#}
-{#            </div>#}
-{#        {% else %}#}
-{#            <div class="collapse navbar-collapse" id="example-navbar-collapse">#}
-{#                <ul class="nav navbar-nav navbar-right">#}
-{#                    <div class="btn-group">#}
-{#                        <button class="btn btn-primary btn-lg" data-toggle="modal"#}
-{#=======#}
-
+                </ul>
                 {%else%}
+                <div class="collapse navbar-collapse" id="example-navbar-collapse">
                     <div class="btn-group pull-right">
                         <button class="btn btn-success btn-lg" data-toggle="modal"
-
                                 data-target="#login" >
                             戳我登陆
                         </button>
                     </div>
-                </ul>
+                    </div>
+
             </div>
         {% endif %}
 
