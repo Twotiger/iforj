@@ -343,7 +343,9 @@
                 type:'POST',
                 url:'/commit/post/addanswer',
                 data:{"qid":qid,"text":theContent},
-                success: function(){window.location.reload();}
+                success: function(){
+                    editor.remove('epiceditor');
+                    window.location.reload();}
             });
             {#       alert(sHTML)#}
         });
