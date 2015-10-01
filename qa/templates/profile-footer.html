@@ -96,8 +96,8 @@ $(".follow").click(function (){
         dataType: "json",
         success:function(data){
             if (data.status == "ok") {
-                $(".follow").css("display", "none");
-                $(".unfollow").css("display", "block");
+                alert("关注成功");
+                window.location.reload();
         }
         },
         error:function(msg){
@@ -112,8 +112,8 @@ $(".unfollow").click(function (){
         dataType: "json",
         success:function(data){
             if (data.status == "ok") {
-                $(".unfollow").css("display", "none");
-                $(".follow").css("display", "block");
+                alert("已取消关注");
+                window.location.reload();
         }
         },
         error:function(msg){

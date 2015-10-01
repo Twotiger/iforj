@@ -347,6 +347,13 @@ def programmer(request, n):
         name = request.session.get("name").split("&")
     else:
         name = None
+    # 当前用户是否关注过此用户
+    followed = User.objects.filter(id=n)
+    following = User.objects.filter(id=name[1])
+    if following.filter(following=followed):
+        is_following = True
+    else:
+        is_following = False
     q = request.GET.get('q')
     if user:
         if not q or q == 'questions':
@@ -355,14 +362,16 @@ def programmer(request, n):
                                                                  "questions_count": questions_count,
                                                                  "answers_count": answers_count,
                                                                  "following_count": following_count,
-                                                                 "followed_count": followed_count})
+                                                                 "followed_count": followed_count,
+                                                                 "is_following": is_following})
         elif q == "following":
             return render(request, "programmer_following.html", {'user': user[0], 'name': name,
                                                                  "followings": followings,
                                                                  "questions_count": questions_count,
                                                                  "answers_count": answers_count,
                                                                  "following_count": following_count,
-                                                                 "followed_count": followed_count})
+                                                                 "followed_count": followed_count,
+                                                                 "is_following": is_following})
         elif q == "fan":
             return render(request, "programmer_fan.html", {'user': user[0],
                                                            'name': name,
@@ -370,7 +379,8 @@ def programmer(request, n):
                                                            "questions_count": questions_count,
                                                            "answers_count": answers_count,
                                                            "following_count": following_count,
-                                                           "followed_count": followed_count})
+                                                           "followed_count": followed_count,
+                                                           "is_following": is_following})
         else:
             pass
 
