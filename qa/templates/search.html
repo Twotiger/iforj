@@ -22,22 +22,21 @@
                         <div class="top">
                             <div class="panel-heading">
                                 <a href="#" class="left avatar-link">
-                                    <img src="/static/image/user.jpg" alt="{{ user }}" class="avatar" style="float:left;width:60px;heigth:60px;">
+                                    <img src="{{ user.image }}" alt="{{ user }}" class="avatar" style="float:left;width:60px;heigth:60px;">
                                 </a>
                                 <div class="info">
-                                    <a href="#"><strong>{{ user.name }}</strong></a>
+                                    <a href="/programmer/{{ user.id }}"><strong>{{ user.name }}</strong></a>
                                     <p>{{ user.introduction }}</p>
                                 </div>
                             </div>
                         </div>
                         <div class="panel-body">
-                            <a href="#" class="btn-sm btn-primary" style="text-decoration: none;">
-                                关注</a>
+{#                            <a href="#" class="btn-sm btn-primary" style="text-decoration: none;">#}
+{#                                关注</a>#}
                             <div class="panel-foot">
-                                <strong>{{ user.question_set.count }}</strong>&nbsp;<a href="#" class="col">问题</a>&nbsp;&nbsp;
-                                <strong>{{ user.answer_set.count }}</strong>&nbsp;<a href="#" class="col">回答</a>&nbsp;&nbsp;
-
-                                <strong>0</strong>&nbsp;<a href="#" class="col">关注者</a>
+                                <strong>{{ user.question_set.count }}</strong>&nbsp;问题&nbsp;&nbsp;
+                                <strong>{{ user.answer_set.count }}</strong>&nbsp;回答&nbsp;&nbsp;
+                                <strong>{{ user.agree_num }}</strong>&nbsp;赞同数
                             </div>
                         </div>
                     </div>

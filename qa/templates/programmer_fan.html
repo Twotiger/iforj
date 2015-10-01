@@ -1,36 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% include 'profile-header.html' %}
-<div class="profile-section-wrap profile-answer-page">
-    <div class="profile-section-nav">
-        <nav class="navbar navbar-default" role="navigation">
-   <div class="navbar-header">
-      <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> </a>
-   </div>
-   <div>
-      <ul class="nav navbar-nav">
-         <li><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
-         <li><a href="?q=following">关注&nbsp;{{ following_count }}</a> </li>
-          <li class="active"><a href="?q=fan">粉丝&nbsp;{{ followed_count }}</a> </li>
-      </ul>
-   </div>
-</nav>
+    {% include 'profile-header.html' %}
+    <div class="profile-section-wrap profile-answer-page">
+        <div class="profile-section-nav">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-user"></span> </a>
+                </div>
+                <div>
+                    <ul class="nav navbar-nav">
+                        <li><a href="?q=questions">问题&nbsp;{{ questions_count }}</a></li>
+                        <li><a href="?q=following">关注&nbsp;{{ following_count }}</a> </li>
+                        <li class="active"><a href="?q=fan">粉丝&nbsp;{{ followed_count }}</a> </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="section-detail">
+            <div class="profile-section-head" style="display:block;">
+                <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的粉丝</p></div>
+            </div>
+            <div style="color:#3C3C3C">
+                {% for fan in fans %}
+                    {{ fan.name }}&nbsp;
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
-    <div class="section-detail">
-        <div class="profile-section-head" style="display:block;">
-            <div class="profile-section-name"><p style="float:left;margin-left:15px;"><strong>{{ user.name }}</strong>&nbsp;的粉丝</p></div>
-        </div>
-        <div style="color:#3C3C3C">
-            {% for fan in fans %}
-                {{ fan.name }}&nbsp;
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-{% include 'profile-footer.html' %}
+    {% include 'profile-footer.html' %}
 
 {% endblock %}
 

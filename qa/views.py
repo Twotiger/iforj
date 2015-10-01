@@ -426,12 +426,13 @@ def uploadImage(request):
 
 def agree_answer(request):
     # 增加赞同的数 2增加赞同的人
+    # {'aid':aid, 'tag':1}
     name = request.session.get('name')
     # 如果登录了,就变动
     if name:
         answer_id = request.GET.get('aid')
         tag = request.GET.get('tag')    # 加还是减
-        answer = Answer.objects.get(id=answer_id)
+        answer = Answer.objects.get(id=answer_id)   # 得到答案
         user = User.objects.get(id=name.split("&")[1])
         # 如果传递1就加
         if tag == '1':
@@ -439,6 +440,11 @@ def agree_answer(request):
                 answer.agree_num += 1
                 answer.agree_user.add(user)
                 answer.save()
+
+                user = User.objects.get(id=answer.user.id)  # 给回答的用户添加agree_num
+                user.agree_num += 1
+                user.save()
+
                 jsonData = {'status': 'ok'}
                 return JsonResponse(jsonData)
             else:
@@ -448,6 +454,11 @@ def agree_answer(request):
                 answer.agree_num -= 1
                 answer.agree_user.remove(user)
                 answer.save()
+
+                user = User.objects.get(id=answer.user.id)  # 给回答的用户减agree_num
+                user.agree_num -= 1
+                user.save()
+
                 jsonData = {'status': 'ok'}
                 return JsonResponse(jsonData)
             else:
