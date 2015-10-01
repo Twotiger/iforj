@@ -5,12 +5,14 @@
             &nbsp;&nbsp;{{ user.introduction }}</h4>
             {% ifequal name.0 user.name %}
             {% else %}
-            <button class="btn btn-success follow" style="float:right;display:block;">
+            {% if not is_following %}<button class="btn btn-success follow" style="float:right;">
                关注
             </button>
-            <button class="btn btn-success unfollow" style="float:right;display:none;">
+            {% else %}
+            <button class="btn btn-success unfollow" style="float:right;">
                 取消关注
             </button>
+            {% endif %}
             {% endifequal %}
         </div>
         <div class="body clearfix" id="image">
