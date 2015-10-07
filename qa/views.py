@@ -2,8 +2,9 @@
 from django.shortcuts import render
 from form import LoginForm, RegisterForm, QuestionForm, AnswerForm, UpAnswerForm, UploadImageForm, EditProfileForm
 from models import User, Question, Answer, QuestionType, Comment
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.http import JsonResponse
+
 import hashlib
 import tempfile
 
@@ -353,10 +354,13 @@ def programmer(request, n):
     else:
         name = None
     # 当前用户是否关注过此用户
-    followed = User.objects.filter(id=n)
-    following = User.objects.filter(id=name[1])
-    if following.filter(following=followed):
-        is_following = True
+    if name is not None:
+        followed = User.objects.filter(id=n)
+        following = User.objects.filter(id=name[1])
+        if following.filter(following=followed):
+            is_following = True
+        else:
+            is_following = False
     else:
         is_following = False
     q = request.GET.get('q')
