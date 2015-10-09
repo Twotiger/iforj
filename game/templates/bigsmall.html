@@ -1,0 +1,64 @@
+{% extends 'game_base.html' %}
+{% block css %}
+    <style>
+        h1{  text-align: center; color: red}
+    </style>
+{% endblock %}
+{% block content %}
+
+    <div class="container">
+        <h1>必须先用邮箱<a href="/register/">注册</a>一个账号才能玩!!!</h1>
+        <p>这个游戏不是教大家赌博的,这是给新手练习爬虫的.没必要追求分数,因为这是看人品的.后台不会收录你的操作记录,玩过就别玩了,服务器吃不消..</p>
+        <h3>第一步输入</h3>
+        <ol>
+            <li>邮箱</li>
+            <li>大小</li>
+            <li>押多少</li>
+        </ol>
+        <h3>第二步GET提交</h3>
+        <p>初始1000 可以玩1000次</p>
+        <p>程序返回{"status": "0", "money": 1110, "wl": "w", "m": 20, "times": 984}</p>
+        <p>money是你现在的钱,wl是胜负,w代表赢,l代表输</p>
+        <p>m是你押了多少钱</p>
+        <p>代表你还有多少次机会玩</p>
+        <h3>重置积分只需要输入邮箱 点击重置积分就行了<a href="/game/">回首页</a> </h3>
+
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card card-block">
+                <form action="/game/1/" method="get">
+                    <div class="form-group">
+                        <label class="col-sm-2">邮箱:</label>
+                        <input name="email" type="text" id="email">
+                    </div>
+                    <div  class="form-group">
+                        <label class="col-sm-2">大小:</label>
+                        <input type="radio" name="bigsmall" id="exampleRadios2" value="0">
+                        <input type="radio" name="bigsmall" id="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2">押多少:</label>
+                        <input name="m" type="number" >
+                    </div>
+                    <input type="submit" class="btn btn-primary-outline" value="提交">
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-block">
+                <form action="/game/1/" method="get">
+                    <div class="form-group">
+                        <label class="col-sm-2">邮箱:</label>
+                        <input name="reset" type="text" id="reset">
+                        <input type="submit" class="btn btn-danger-outline" value="重置积分">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

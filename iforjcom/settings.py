@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'qa',   # Q&A system
+    'game',
 )
 
 MIDDLEWARE_CLASSES = (

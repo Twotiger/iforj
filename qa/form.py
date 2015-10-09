@@ -41,6 +41,8 @@ class RegisterForm(forms.ModelForm):
     psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
     introduction = forms.CharField(required=False)
 
+    denyName = [u'管理员', u'admin', u'root', u'匿名', u'版主', u'站长', u'屌', u'逼', u'fuck']
+
     class Meta:
         model = User
         fields = ("name","email","psd")
@@ -50,6 +52,10 @@ class RegisterForm(forms.ModelForm):
         user = User.objects.filter(name=name)
         if user:
             raise forms.ValidationError(u'所填用户名已经被注册过')
+        for deny in self.denyName:
+            if deny in name:
+                raise forms.ValidationError(u'禁止的用户名')
+
         return name
 
     def clean_email(self):

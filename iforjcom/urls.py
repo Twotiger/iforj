@@ -17,6 +17,18 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 # from qa import views
+from game import views as game_view
+
+######GAME##########
+game_patterns = [
+    url(r'^$', game_view.game_index),   # 主页
+    url(r'^(\d+)/$', game_view.game_index, name='game'), # 管理游戏列表
+    url(r'^(\d+)/honorlist/$', game_view.game_honorlist),   # 荣誉榜单
+    # url(r'^(\d+)$', game_view.game),
+]
+
+####################
+
 
 urlpatterns = [
     url(r'^$', 'qa.views.index', name='index'),
@@ -54,4 +66,8 @@ urlpatterns = [
     url(r'^follow/(\d+)$', 'qa.views.follow', name='follow'),
     url(r'^unfollow/(\d+)$', 'qa.views.unfollow', name='unfollow'),
     url(r'^edit-profile/$', 'qa.views.editProfile', name="edit-profile"),
+
+    ######GAME##########
+    url(r'game/', include(game_patterns)),
+    ##########
 ]
