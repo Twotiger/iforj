@@ -225,18 +225,22 @@ def editProfile(request):
     else:
         user_id = None
     user = User.objects.get(id=user_id)
+    old_email = user.email
     old_introduction = user.introduction
 
     if request.method == "POST":
         f = EditProfileForm(request.POST)
         if f.is_valid():
+            new_email = f.cleaned_data["new_email"]
             new_introduction = f.cleaned_data["new_introduction"]
+            user.email = new_email
+            user.vericode = hashlib.sha1(new_email+EMAIL_SALT).hexdigest()
             user.introduction = new_introduction
             user.save()
             return HttpResponseRedirect("/programmer/%s" % str(user_id))
         else:
             return render(request, "edit-profile.html", {'errors': f.errors, "name": name.split("&")})
-    return render(request, "edit-profile.html", {"introduction": old_introduction,
+    return render(request, "edit-profile.html", {"email": old_email, "introduction": old_introduction,
                                                  "name": name.split("&")})
 
 
