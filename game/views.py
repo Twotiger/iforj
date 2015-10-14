@@ -59,8 +59,8 @@ def game_index(request, num=None):
             else:
                 bigsmall.money -= m
                 bigsmall.save()
-                return JsonResponse({'status': '0', 'wl':'l', 'm':m,
-                                'money': bigsmall.money, 'times':bigsmall.times})
+                return JsonResponse({'status': '0', 'wl':'l', 'm': m,
+                                'money': bigsmall.money, 'times': bigsmall.times})
 
 
         g_list = {'1': 'bigsmall.html'}

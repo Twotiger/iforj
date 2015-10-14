@@ -9,7 +9,9 @@ import hashlib
 import tempfile
 
 from django.utils.timezone import utc
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
+
+
 import datetime
 
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
@@ -17,6 +19,9 @@ import qiniu, os
 from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT, IMAGE_BASE_PATH, \
                                     IMAGE_APPLICATION_PATH, DEFAULT_IMAGE_PATH
 from send_email import sendMail
+
+from cStringIO import StringIO
+import random
 
 # Create your views here.
 
@@ -550,3 +555,25 @@ def validate(request, code):
         user[0].is_veri = True
         user[0].save()
         return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")
+
+def veriimage():
+    text = u'斐波那契数列第20个数字'
+    fontName = 'black.ttf'
+    pngPath = 'test.png'
+
+    font = PIL.ImageFont.truetype(fontName, fontSize)
+    width, height = font.getsize(text)
+    logging.debug('(width, height) = (%d, %d)' % (width, height))
+    image = PIL.Image.new('RGBA', (width, height), (0, 0, 0, 0))  # 设置透明背景
+    draw = PIL.ImageDraw.Draw(image)
+    draw.text((0, -4), text, font = font, fill = '#000000')
+    image.save(pngPath)
+
+
+def veriuser(request):
+    """验证码"""
+    myimage= veriimage()
+    veriimage.Main()
+    im_1 = open('qa/static/test.png','rb')
+    request.session['captcha'] = 123123
+    return HttpResponse(im_1, 'image/jpeg')

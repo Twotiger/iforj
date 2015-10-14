@@ -42,6 +42,16 @@
                         <span class="help-block">介绍一下自己吧</span>
                     </div>
                 </div>
+                 <div class="form-group">
+                    <label class="col-sm-2 control-label" for="vari">
+                       验证码
+                    </label>
+                    <div class="col-sm-4">
+                        <input class="form-control" name="vari" type="password">
+                    </div>
+                      <img onclick="this.setAttribute('src','/verificationcode/?nocache='+Math.random());" src="/verificationcode/" alt="验证码"/>
+{#                      <img src="/static/test.png" alt="">#}
+                </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <input type="submit" class="btn btn-primary" style="float:left;" value="注册" id="submit">

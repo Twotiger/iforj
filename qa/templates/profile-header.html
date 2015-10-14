@@ -37,6 +37,7 @@
 
                      <div class="modal-body" style="height:60px;">
                          <form action="/uploadImage" enctype="multipart/form-data" method="post">
+                              {% csrf_token %}
                              <input type="file" id="user_file" name="user_image" style="float:left">
                              <input type="hidden" name="user_id" class="userid" value="{{ user.id }}">
                          <input type="submit" class="btn btn-primary" id="submit" value="提交" style="float:right">
