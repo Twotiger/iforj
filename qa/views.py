@@ -581,7 +581,9 @@ def verificationcode(request):
     b = random.randint(1,99)
     midd = random.choice(['+', '-', '*' , '**'])
     text = u'%s %s %s'% (a, midd, b)
-    fontName = 'qa/static/black.ttf'
+    fontName = 'qa/static/fonts/black.ttf'   # 如果没有这个字体会出现IOError
+    #  fontName = 'Yahei Consolas Hybrid.ttf'   # 如果没有这个字体会出现IOError
+    # fontName = 'qa/static/black.ttf'
     fontSize = 37
     buf = StringIO()
     font = ImageFont.truetype(fontName, fontSize)
