@@ -22,7 +22,6 @@ from send_email import sendMail
 
 from cStringIO import StringIO
 import random
-
 # Create your views here.
 
 
@@ -197,7 +196,12 @@ def register(request):
     """注册用户"""
     if request.method == "POST":
         f = RegisterForm(request.POST)
+
         if f.is_valid():
+            vari = request.POST.get('vari')
+            if not vari or vari != request.session.get("captcha"):
+                # return render(request, "register.html", {'errors': f.errors})
+                return render(request, "register.html", {'errors': '错误的验证码'})
             name = f.cleaned_data["name"]    # 用户名
             email = f.cleaned_data["email"]  # 邮箱
             psd = f.cleaned_data["psd"]  # 密码
@@ -208,12 +212,13 @@ def register(request):
                                        introduction=introduction, vericode=vericode, real_ip=real_ip,
                                        image=DEFAULT_IMAGE_PATH)
 
-            if sendMail([email], '验证邮箱', """IFORJ是致力于python的网络问答社区,帮助你寻找答案,分享知识。iforj是由用户可以根据自身的需
+            if sendMail([email], '验证邮箱', u"""{username},你好,IFORJ是致力于python的网络问答社区,帮助你寻找答案,分享知识。iforj是由用户可以根据自身的需
 求,有针对性地提出问题;同时,这些答案又将作为搜索结果。你可以搜索类似的问题，问题被分为，爬虫，数据分析，django，scrapy，
 python语法等基础分类，你可以按着分类搜索相关的问题。我们以打造最活跃的python问答平台为目的，很高兴为您提供便捷的服务。
 如果有好的意见和建议，欢迎联系我们
-<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>""".format(
+<a href="http://{HOSTNAME}/validate/{vericode}">验证邮箱</a>""".format(username=name,
                     HOSTNAME=HOSTNAME, vericode=vericode)):
+                del request.session['captcha']
                 user.save()
             else:
                 pass  # 邮件发送失败
@@ -556,24 +561,39 @@ def validate(request, code):
         user[0].save()
         return HttpResponse("<p>您已成功验证!&nbsp;&nbsp;<a href='/'>返回首页</a></p>")
 
-def veriimage():
-    text = u'斐波那契数列第20个数字'
-    fontName = 'black.ttf'
-    pngPath = 'test.png'
+# def veriimage():
+#     text = u''
+#     fontName = 'black.ttf'
+#     buf = cStringIO.StringIO()
+#
+#     font = PIL.ImageFont.truetype(fontName, fontSize)
+#     width, height = font.getsize(text)
+#     logging.debug('(width, height) = (%d, %d)' % (width, height))
+#     image = PIL.Image.new('RGBA', (width, height), (0, 0, 0, 0))  # 设置透明背景
+#     draw = PIL.ImageDraw.Draw(image)
+#     draw.text((0, -4), text, font = font, fill = '#000000')
+#     image.save(buf, "GIF")
 
-    font = PIL.ImageFont.truetype(fontName, fontSize)
-    width, height = font.getsize(text)
-    logging.debug('(width, height) = (%d, %d)' % (width, height))
-    image = PIL.Image.new('RGBA', (width, height), (0, 0, 0, 0))  # 设置透明背景
-    draw = PIL.ImageDraw.Draw(image)
-    draw.text((0, -4), text, font = font, fill = '#000000')
-    image.save(pngPath)
 
-
-def veriuser(request):
+def verificationcode(request):
     """验证码"""
-    myimage= veriimage()
-    veriimage.Main()
-    im_1 = open('qa/static/test.png','rb')
-    request.session['captcha'] = 123123
-    return HttpResponse(im_1, 'image/jpeg')
+    a = random.randint(-99,99)
+    b = random.randint(1,99)
+    midd = random.choice(['+', '-', '*' , '**'])
+    text = u'%s %s %s'% (a, midd, b)
+    fontName = 'qa/static/black.ttf'
+    fontSize = 37
+    buf = StringIO()
+    font = ImageFont.truetype(fontName, fontSize)
+    width, height = font.getsize(text)
+    image = Image.new('RGBA', (width, height), (255, 255, 255, 255))  # 设置透明背景
+    draw = ImageDraw.Draw(image)
+    draw.text((0, -4), text, font = font, fill = '#010000')
+    image.save(buf, "GIF")
+
+    imagedata = buf.getvalue()
+    buf.close()
+    request.session['captcha'] = str(eval(text))
+    response = HttpResponse(imagedata, 'image/jpeg')
+    # response.set_cookie('captcha', eval(text))
+    return response

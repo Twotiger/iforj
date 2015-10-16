@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.http import JsonResponse
 from qa.models import User
 from models import Bigsmall
+import time
 
 
 caibs = lambda :random.randint(0, 1)
@@ -51,7 +52,7 @@ def game_index(request, num=None):
             bs = request.GET.get('bigsmall', '2')   # 没有押大小,就送钱
 
             bigsmall.times -=1
-
+            time.sleep(5)
             if str(caibs()) == bs:
                 bigsmall.money += m
                 bigsmall.save()
@@ -59,8 +60,7 @@ def game_index(request, num=None):
             else:
                 bigsmall.money -= m
                 bigsmall.save()
-                return JsonResponse({'status': '0', 'wl':'l', 'm': m,
-                                'money': bigsmall.money, 'times': bigsmall.times})
+                return JsonResponse({'status': '0', 'wl':'l', 'm': m,'money': bigsmall.money, 'times': bigsmall.times})
 
 
         g_list = {'1': 'bigsmall.html'}

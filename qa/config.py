@@ -24,3 +24,5 @@ EMAIL_SALT = "AF4E%W8-9"    # 随机生成
 IMAGE_BASE_PATH = "qa/static/img/upload/"
 IMAGE_APPLICATION_PATH = "/static/img/upload/"
 DEFAULT_IMAGE_PATH = "/static/img/upload/default.jpg"
+
+DENY_USER_NAME = [u'管理', u'admin', u'root', u'匿名', u'版主', u'站长', u'屌', u'屄', u'fuck']   # 禁止的用户名

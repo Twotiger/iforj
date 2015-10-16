@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 from django import forms
-
+from config import DENY_USER_NAME
 from models import User
 
 
@@ -14,8 +14,8 @@ class LoginForm(forms.Form):
 error_messages = {
     'name': {
         'required': u'必须填写用户名',
-        'min_length': u'用户名长度过短（3-12个字符）',
-        'max_length': u'用户名长度过长（3-12个字符）',
+        'min_length': u'用户名长度过短（2-30个字符）',
+        'max_length': u'用户名长度过长（2-30个字符）',
         'invalid': u'用户名格式错误（只能包含汉字,英文字母，数字，下划线）'
     },
     'email': {
@@ -29,6 +29,9 @@ error_messages = {
         'min_length': u'密码长度过短（6-64个字符）',
         'max_length': u'密码长度过长（6-64个字符）'
     },
+    'vari':{
+        'required': u'必须填写验证码'
+    },
     }
 
 
@@ -40,8 +43,8 @@ class RegisterForm(forms.ModelForm):
     email = forms.EmailField(min_length=8, max_length=84, error_messages=error_messages.get("email"))
     psd = forms.CharField(min_length=6, max_length=64, error_messages=error_messages.get("psd"))
     introduction = forms.CharField(required=False)
-
-    denyName = [u'管理员', u'admin', u'root', u'匿名', u'版主', u'站长', u'屌', u'逼', u'fuck']
+    vari = forms.CharField(error_messages=error_messages.get("vari"))
+    denyName = DENY_USER_NAME
 
     class Meta:
         model = User
@@ -53,7 +56,7 @@ class RegisterForm(forms.ModelForm):
         if user:
             raise forms.ValidationError(u'所填用户名已经被注册过')
         for deny in self.denyName:
-            if deny in name:
+            if deny in name.lower():
                 raise forms.ValidationError(u'禁止的用户名')
 
         return name
@@ -64,6 +67,12 @@ class RegisterForm(forms.ModelForm):
         if user:
             raise forms.ValidationError(u'所填邮箱已经被注册过')
         return email
+
+    # def clean_vari(self):
+    #     vari = self.cleaned_data["vari"]
+    #     if not vari:
+    #         raise  forms.ValidationError(u'需要输入验证码')
+    #     return vari
 
 
 # CHOICES = []

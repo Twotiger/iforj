@@ -67,7 +67,7 @@ urlpatterns = [
     url(r'^unfollow/(\d+)$', 'qa.views.unfollow', name='unfollow'),
     url(r'^edit-profile/$', 'qa.views.editProfile', name="edit-profile"),
 
-    url(r'^verificationcode/$', 'qa.views.veriuser', name="verificationcode"),
+    url(r'^verificationcode/$', 'qa.views.verificationcode', name="verificationcode"),
 
     ######GAME##########
     url(r'game/', include(game_patterns)),
