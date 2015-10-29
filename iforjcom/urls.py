@@ -18,6 +18,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 # from qa import views
 from game import views as game_view
+from oneday import views as day_view
 
 ######GAME##########
 game_patterns = [
@@ -27,7 +28,16 @@ game_patterns = [
     # url(r'^(\d+)$', game_view.game),
 ]
 
-####################
+#######ONEDAY#######
+day_patterns = [
+    url(r'^$', day_view.index), #首页
+    url(r'^addreleaseday/$', day_view.addreleaseday, name='addreleaseday'), # 发布每日一练
+    url(r'^(\d+)/$', day_view.showoneday, name='showoneday'), # 展示每日一练
+    url(r'^addreply/$', day_view.addreply, name='addreply'), # 评论
+    url(r'^agreereply/$', day_view.agreereply, name='agreereply'), # 赞同评论
+
+    # url(r'^')
+]
 
 
 urlpatterns = [
@@ -70,6 +80,9 @@ urlpatterns = [
     url(r'^verificationcode/$', 'qa.views.verificationcode', name="verificationcode"),
 
     ######GAME##########
-    url(r'game/', include(game_patterns)),
-    ##########
+    url(r'game/', include(game_patterns, namespace='game')),
+    ####################
+    ######ONEDAY########
+    url(r'day/', include(day_patterns, namespace='day')),
+    ####################
 ]

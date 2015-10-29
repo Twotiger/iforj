@@ -26,3 +26,6 @@ IMAGE_APPLICATION_PATH = "/static/img/upload/"
 DEFAULT_IMAGE_PATH = "/static/img/upload/default.jpg"
 
 DENY_USER_NAME = [u'管理', u'admin', u'root', u'匿名', u'版主', u'站长', u'屌', u'屄', u'fuck']   # 禁止的用户名
+
+# 2015年 10月 19日 星期一 20:39:30 CST
+FONT_PATH = 'qa/static/fonts/black.ttf'

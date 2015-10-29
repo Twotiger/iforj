@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             name='QuestionType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=15)),
+                ('name', models.CharField(max_length=15, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -57,15 +57,18 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=80)),
                 ('psd', models.CharField(max_length=127)),
                 ('email', models.CharField(unique=True, max_length=254)),
-                ('register_time', models.DateTimeField(auto_now=True)),
+                ('register_time', models.DateTimeField(auto_now_add=True)),
                 ('last_time', models.DateTimeField(auto_now=True)),
                 ('is_veri', models.BooleanField(default=False)),
+                ('level', models.PositiveSmallIntegerField(default=0)),
                 ('vericode', models.CharField(max_length=40, null=True, blank=True)),
+                ('real_ip', models.GenericIPAddressField(null=True, blank=True)),
                 ('introduction', models.CharField(max_length=127, null=True, blank=True)),
                 ('image', models.URLField(null=True, blank=True)),
                 ('login_error', models.PositiveSmallIntegerField(default=0)),
                 ('agree_num', models.IntegerField(default=0)),
                 ('viewed', models.PositiveIntegerField(default=0)),
+                ('following', models.ManyToManyField(related_name='follower', to='qa.User')),
             ],
         ),
         migrations.AddField(

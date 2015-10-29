@@ -40,6 +40,7 @@ INSTALLED_APPS = (
 
     'qa',   # Q&A system
     'game',
+    'oneday',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -17,7 +17,7 @@ import datetime
 from mypaginator import MyPaginator, EmptyPage, PageNotAnInteger
 import qiniu, os
 from config import ACCESS_KEY, SECRET_KEY, BUCKET_NAME, HOSTNAME, EMAIL_SALT, IMAGE_BASE_PATH, \
-                                    IMAGE_APPLICATION_PATH, DEFAULT_IMAGE_PATH
+                                    IMAGE_APPLICATION_PATH, DEFAULT_IMAGE_PATH, FONT_PATH
 from send_email import sendMail
 
 from cStringIO import StringIO
@@ -74,7 +74,10 @@ def top(request):
 
 def getquestion(request, n):
     """问题页面"""
-    questions = Question.objects.get(id=n)
+    try:
+        questions = Question.objects.get(id=n)
+    except:
+        raise Http404('错误的url')
     answers = questions.answer_set.all()
     name = request.session.get('name')
     if name:
@@ -581,16 +584,16 @@ def verificationcode(request):
     b = random.randint(1,99)
     midd = random.choice(['+', '-', '*' , '**'])
     text = u'%s %s %s'% (a, midd, b)
-    fontName = 'qa/static/fonts/black.ttf'   # 如果没有这个字体会出现IOError
+    #fontName = 'qa/static/fonts/black.ttf'   # 如果没有这个字体会出现IOError
     #  fontName = 'Yahei Consolas Hybrid.ttf'   # 如果没有这个字体会出现IOError
     # fontName = 'qa/static/black.ttf'
     fontSize = 37
     buf = StringIO()
-    font = ImageFont.truetype(fontName, fontSize)
+    font = ImageFont.truetype('qa/static/fonts/black.ttf', fontSize)
     width, height = font.getsize(text)
     image = Image.new('RGBA', (width, height), (255, 255, 255, 255))  # 设置透明背景
     draw = ImageDraw.Draw(image)
-    draw.text((0, -4), text, font = font, fill = '#010000')
+    draw.text((0, -4), text, font = font, fill = '#000000')
     image.save(buf, "GIF")
 
     imagedata = buf.getvalue()

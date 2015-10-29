@@ -13,6 +13,7 @@ class User(models.Model):
     register_time = models.DateTimeField(auto_now_add=True) # 注册时间
     last_time = models.DateTimeField(auto_now=True)     # 最后次登陆时间
     is_veri = models.BooleanField(default=False)    # 是否验证过
+    level = models.CharField(max_length=36, blank=True, null=True) # 用户等级
     vericode = models.CharField(max_length=40,  null=True, blank=True)  # 验证码编码,发送到邮箱验证
     real_ip = models.GenericIPAddressField(null=True, blank=True)  # 注册时的ip地址
     # url = models.CharField(max_length=127) # 存储成好看的拼音
